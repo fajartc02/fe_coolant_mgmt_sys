@@ -1,5 +1,5 @@
-import React from 'react'
-import { Link } from 'react-router-dom'
+import React, { useEffect } from 'react'
+import { Link, useNavigate } from 'react-router-dom'
 import {
   CButton,
   CCard,
@@ -15,8 +15,26 @@ import {
 } from '@coreui/react'
 import CIcon from '@coreui/icons-react'
 import { cilLockLocked, cilUser } from '@coreui/icons'
+import { useSelector, useDispatch, shallowEqual } from 'react-redux'
+import { setIsLogin } from 'src/stores/actions/login'
 
 const Login = () => {
+  const navigate = useNavigate()
+  const dispatch = useDispatch()
+  const { isLogin } = useSelector(
+    ({ loginReducer }) => ({
+      isLogin: loginReducer.isLogin,
+    }),
+    shallowEqual,
+  )
+
+  useEffect(() => {
+    if (isLogin) {
+      navigate('/dashboard')
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
+
   return (
     <div className="bg-light min-vh-100 d-flex flex-row align-items-center">
       <CContainer>
@@ -46,7 +64,16 @@ const Login = () => {
                     </CInputGroup>
                     <CRow>
                       <CCol xs={6}>
-                        <CButton color="primary" className="px-4">
+                        <CButton
+                          color="primary"
+                          className="px-4"
+                          onClick={() => {
+                            const nav = () => {
+                              navigate('/dashboard')
+                            }
+                            dispatch(setIsLogin(true, nav))
+                          }}
+                        >
                           Login
                         </CButton>
                       </CCol>
