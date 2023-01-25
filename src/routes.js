@@ -50,9 +50,18 @@ const Toasts = React.lazy(() => import('./views/notifications/toasts/Toasts'))
 
 const Widgets = React.lazy(() => import('./views/widgets/Widgets'))
 
+// NEW
+const CostCalculation = React.lazy(() => import('./views/costCalculation/CostCalculation'))
+const Schedule = React.lazy(() => import('./views/schedule/Schedule'))
+const Cost = React.lazy(() => import('./views/cost/Cost'))
+
 const routes = [
   { path: '/', exact: true, name: 'Home' },
   { path: '/dashboard', name: 'Dashboard', element: Dashboard },
+  { path: '/costCalculation', name: 'CostCalculation', element: CostCalculation },
+  { path: '/master', name: 'Master', element: Schedule },
+  { path: '/master/schedule', name: 'Schedule', element: Schedule },
+  { path: '/master/cost', name: 'Cost', element: Cost },
   { path: '/theme', name: 'Theme', element: Colors, exact: true },
   { path: '/theme/colors', name: 'Colors', element: Colors },
   { path: '/theme/typography', name: 'Typography', element: Typography },

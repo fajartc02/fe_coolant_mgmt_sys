@@ -6,12 +6,15 @@ import {
   cilChartPie,
   cilCursor,
   cilDescription,
+  cilSpeedometer,
+  cilCalendar,
+  cilMoney,
   cilDrop,
   cilNotes,
   cilPencil,
   cilPuzzle,
-  cilSpeedometer,
   cilStar,
+  cilBarChart,
 } from '@coreui/icons'
 import { CNavGroup, CNavItem, CNavTitle } from '@coreui/react'
 
@@ -21,11 +24,38 @@ const _nav = [
     name: 'Dashboard',
     to: '/dashboard',
     icon: <CIcon icon={cilSpeedometer} customClassName="nav-icon" />,
-    badge: {
-      color: 'info',
-      text: 'NEW',
-    },
+    // badge: {
+    //   color: 'info',
+    //   text: 'NEW',
+    // },
   },
+  {
+    component: CNavItem,
+    name: 'Cost Calculation',
+    to: '/costCalculation',
+    icon: <CIcon icon={cilBarChart} customClassName="nav-icon" />,
+    // badge: {
+    //   color: 'info',
+    //   text: 'NEW',
+    // },
+  },
+  {
+    component: CNavTitle,
+    name: 'Master Data',
+  },
+  {
+    component: CNavItem,
+    name: 'Schedule',
+    to: '/master/schedule',
+    icon: <CIcon icon={cilCalendar} customClassName="nav-icon" />,
+  },
+  {
+    component: CNavItem,
+    name: 'Cost',
+    to: '/master/cost',
+    icon: <CIcon icon={cilMoney} customClassName="nav-icon" />,
+  },
+  // ================= HIDE
   {
     component: CNavTitle,
     name: 'Theme',
