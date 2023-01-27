@@ -2,7 +2,6 @@ import React, { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 
 import { CCard, CCardBody, CBadge, CCardHeader, CCol, CRow, CCardText } from '@coreui/react'
-import 'react-multi-carousel/lib/styles.css'
 
 import MachineSummary from './machine-block-summary.json'
 import MachineData from './machine-data.json'
