@@ -1,0 +1,42 @@
+[
+  {
+    "id": 0,
+    "isSelected": true,
+    "title": "Cylider Head",
+    "content": [
+      { "color": "danger", "total": 5 },
+      { "color": "warning", "total": 6 },
+      { "color": "success", "total": 0 }
+    ]
+  },
+  {
+    "id": 1,
+    "isSelected": false,
+    "title": "Cylider Block",
+    "content": [
+      { "color": "danger", "total": 5 },
+      { "color": "warning", "total": 6 },
+      { "color": "success", "total": 7 }
+    ]
+  },
+  {
+    "id": 2,
+    "isSelected": false,
+    "title": "Cam Shaft",
+    "content": [
+      { "color": "danger", "total": 5 },
+      { "color": "warning", "total": 6 },
+      { "color": "success", "total": 7 }
+    ]
+  },
+  {
+    "id": 3,
+    "isSelected": false,
+    "title": "Crank Shaft",
+    "content": [
+      { "color": "danger", "total": 5 },
+      { "color": "warning", "total": 6 },
+      { "color": "success", "total": 7 }
+    ]
+  }
+]

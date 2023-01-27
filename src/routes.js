@@ -54,10 +54,12 @@ const Widgets = React.lazy(() => import('./views/widgets/Widgets'))
 const CostCalculation = React.lazy(() => import('./views/costCalculation/CostCalculation'))
 const Schedule = React.lazy(() => import('./views/schedule/Schedule'))
 const Cost = React.lazy(() => import('./views/cost/Cost'))
+const Report = React.lazy(() => import('./views/report/Report'))
 
 const routes = [
   { path: '/', exact: true, name: 'Home' },
   { path: '/dashboard', name: 'Dashboard', element: Dashboard },
+  { path: '/dashboard/report', name: 'Report', element: Report },
   { path: '/costCalculation', name: 'CostCalculation', element: CostCalculation },
   { path: '/master', name: 'Master', element: Schedule },
   { path: '/master/schedule', name: 'Schedule', element: Schedule },

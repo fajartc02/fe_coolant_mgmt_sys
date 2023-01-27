@@ -1,0 +1,190 @@
+[
+    {
+      "idCategory": 0,
+      "listMachine": [
+        {
+          "lineName": "A",
+          "lineMachine": [
+            {
+              "machineName": "Cylider Head A1",
+              "status": "safe"
+            },
+            {
+              "machineName": "Cylider Head A2",
+              "status": "warning"
+            },
+            {
+              "machineName": "Cylider Head A3",
+              "status": "safe"
+            },
+            {
+              "machineName": "Cylider Head A4",
+              "status": "safe"
+            }
+          ]
+        },
+        {
+          "lineName": "B",
+          "lineMachine": [
+            {
+              "machineName": "Cylider Head B1",
+              "status": "safe"
+            },
+            {
+              "machineName": "Cylider Head B2",
+              "status": "safe"
+            },
+            {
+              "machineName": "Cylider Head B3",
+              "status": "safe"
+            },
+            {
+              "machineName": "Cylider Head B4",
+              "status": "safe"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "idCategory": 1,
+      "listMachine": [
+        {
+          "lineName": "A",
+          "lineMachine": [
+            {
+              "machineName": "Cylider Block A1",
+              "status": "safe"
+            },
+            {
+              "machineName": "Cylider Block A2",
+              "status": "warning"
+            },
+            {
+              "machineName": "Cylider Block A3",
+              "status": "safe"
+            },
+            {
+              "machineName": "Cylider Block A4",
+              "status": "safe"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "idCategory": 2,
+      "listMachine": [
+        {
+          "lineName": "A",
+          "lineMachine": [
+            {
+              "machineName": "Cam Shaft A1",
+              "status": "safe"
+            },
+            {
+              "machineName": "Cam Shaft A2",
+              "status": "warning"
+            },
+            {
+              "machineName": "Cam Shaft A3",
+              "status": "safe"
+            },
+            {
+              "machineName": "Cam Shaft A4",
+              "status": "safe"
+            }
+          ]
+        },
+        {
+          "lineName": "B",
+          "lineMachine": [
+            {
+              "machineName": "Cam Shaft B1",
+              "status": "safe"
+            },
+            {
+              "machineName": "Cam Shaft B2",
+              "status": "safe"
+            },
+            {
+              "machineName": "Cam Shaft B3",
+              "status": "safe"
+            },
+            {
+              "machineName": "Cam Shaft B4",
+              "status": "safe"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "idCategory": 3,
+      "listMachine": [
+        {
+          "lineName": "A",
+          "lineMachine": [
+            {
+              "machineName": "Crank Shaft A1",
+              "status": "safe"
+            },
+            {
+              "machineName": "Crank Shaft A2",
+              "status": "warning"
+            },
+            {
+              "machineName": "Crank Shaft A3",
+              "status": "safe"
+            },
+            {
+              "machineName": "Crank Shaft A4",
+              "status": "danger"
+            }
+          ]
+        },
+        {
+          "lineName": "B",
+          "lineMachine": [
+            {
+              "machineName": "Crank Shaft B1",
+              "status": "safe"
+            },
+            {
+              "machineName": "Crank Shaft B2",
+              "status": "safe"
+            },
+            {
+              "machineName": "Crank Shaft B3",
+              "status": "safe"
+            },
+            {
+              "machineName": "Crank Shaft B4",
+              "status": "warning"
+            }
+          ]
+        },
+        {
+          "lineName": "C",
+          "lineMachine": [
+            {
+              "machineName": "Crank Shaft C1",
+              "status": "safe"
+            },
+            {
+              "machineName": "Crank Shaft C2",
+              "status": "safe"
+            },
+            {
+              "machineName": "Crank Shaft C3",
+              "status": "safe"
+            },
+            {
+              "machineName": "Crank Shaft C4",
+              "status": "safe"
+            }
+          ]
+        }
+      ]
+    }
+  ]
