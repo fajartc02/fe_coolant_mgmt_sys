@@ -1,13 +1,15 @@
 import React, { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-
+import { useDispatch } from 'react-redux'
 import { CCard, CCardBody, CBadge, CCardHeader, CCol, CRow, CCardText } from '@coreui/react'
+import { setSelectedMachine } from '../../stores/actions'
 
 import MachineSummary from './machine-block-summary.json'
 import MachineData from './machine-data.json'
 
 const Dashboard = () => {
   const navigate = useNavigate()
+  const dispatch = useDispatch()
 
   const [machineDataPreview, setMachineDataPreview] = useState(MachineSummary)
   const [machineDataBlock, setMachineDataBlock] = useState(MachineData)
@@ -29,8 +31,9 @@ const Dashboard = () => {
     setMachineDataPreview(updateData)
   }
 
-  const handleClickMachine = () => {
+  const handleClickMachine = (machine) => {
     navigate(`/dashboard/report`)
+    dispatch(setSelectedMachine(machine))
   }
 
   return (

@@ -11,7 +11,6 @@ import {
   CTableHead,
   CTableHeaderCell,
   CTableRow,
-  CFormInput,
   CFormSelect,
 } from '@coreui/react'
 import DatePicker from 'react-datepicker'

@@ -1,0 +1,32 @@
+[
+  {
+    "employeeId": "123456",
+    "name": "Fajar",
+    "group": "red"
+  },
+  {
+    "employeeId": "123457",
+    "name": "Adi Kusuma",
+    "group": "red"
+  },
+  {
+    "employeeId": "123458",
+    "name": "Agum Guntoro",
+    "group": "white"
+  },
+  {
+    "employeeId": "123459",
+    "name": "Randi Pangalila",
+    "group": "red"
+  },
+  {
+    "employeeId": "123451",
+    "name": "Pangestu Gibson",
+    "group": "white"
+  },
+  {
+    "employeeId": "123452",
+    "name": "eren yaegar",
+    "group": "red"
+  }
+]
