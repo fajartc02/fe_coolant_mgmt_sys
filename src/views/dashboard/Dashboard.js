@@ -62,8 +62,8 @@ const Dashboard = () => {
                       </CCard> */}
                       <CCard className="text-center" textColor="white">
                         <CCardBody>
-                          <CCardText>
-                            <CBadge color={el.color} shape="rounded-circle">
+                          <CCardText className="text-center">
+                            <CBadge className="text-center" color={el.color} shape="rounded-circle">
                               {el.total}
                             </CBadge>
                           </CCardText>

@@ -25,25 +25,143 @@ import 'react-datepicker/dist/react-datepicker.css'
 import UploadImagePlaceholder from '../../assets/images/Placeholder.jpg'
 import EmployeeData from './employee.json'
 
-// const formParameterContent = [
-//   {
-//     fieldKey: 'input',
-//     placeholder: 'hahaha',
-//     inputType: 'number',
-//     options: [],
-//     label: 'PH',
-//   },
-//   {
-//     fieldKey: 'input',
-//     placeholder: '',
-//     inputType: 'text',
-//     options: [],
-//   },
-// ]
+const formParameterContent = [
+  {
+    inputType: 'toogle',
+    optionList: [],
+    trueLabel: 'Bau',
+    falseLabel: 'Tidak Bau',
+    label: 'Aroma',
+    placeholder: '',
+    value: 'aroma',
+    unit: '',
+  },
+  {
+    inputType: 'text',
+    optionList: [],
+    trueLabel: '',
+    falseLabel: '',
+    label: 'PH',
+    placeholder: 'Masukkan PH',
+    value: 'ph',
+    unit: '',
+  },
+  {
+    inputType: 'info',
+    optionList: [],
+    trueLabel: '',
+    falseLabel: '',
+    label: 'Status PH',
+    placeholder: 'PH Status',
+    value: 'ph',
+    unit: '',
+  },
+  {
+    inputType: 'info',
+    optionList: [],
+    trueLabel: '',
+    falseLabel: '',
+    label: 'Jadwal Pengurasan',
+    placeholder: '12/02/2023',
+    value: 'ph',
+    unit: '',
+  },
+  {
+    inputType: 'toogle',
+    optionList: [],
+    trueLabel: 'Ya',
+    falseLabel: 'Tidak',
+    label: 'Tambah Cairan',
+    placeholder: '',
+    value: 'tambahCairan',
+    unit: '',
+  },
+  {
+    inputType: 'text',
+    optionList: [],
+    trueLabel: '',
+    falseLabel: '',
+    label: 'Banyak Cairan',
+    placeholder: 'Masukkan Banyak Cairan',
+    value: 'banyakCairan',
+    unit: 'liter',
+  },
+  {
+    inputType: 'options',
+    optionList: [
+      {
+        name: 'Solar',
+        id: 2,
+      },
+      {
+        name: 'Pertamax',
+        id: 1,
+      },
+      {
+        name: 'Pertalite',
+        id: 2,
+      },
+    ],
+    trueLabel: '',
+    falseLabel: '',
+    label: 'Tipe Cairan',
+    placeholder: '',
+    value: 'tipeCairan',
+    unit: '',
+  },
+
+  {
+    inputType: 'file',
+    optionList: [
+      {
+        name: 'Putih',
+        id: 0,
+      },
+      {
+        name: 'Putih Coklat',
+        id: 1,
+      },
+      {
+        name: 'Coklat',
+        id: 2,
+      },
+      {
+        name: 'Coklat Tua',
+        id: 3,
+      },
+    ],
+    trueLabel: '',
+    falseLabel: '',
+    label: 'visual',
+    placeholder: '',
+    value: 'visual',
+    unit: '',
+  },
+  {
+    inputType: 'file',
+    optionList: [
+      {
+        name: 'Normal',
+        id: 0,
+      },
+      {
+        name: 'Tidak Normal',
+        id: 1,
+      },
+    ],
+    trueLabel: '',
+    falseLabel: '',
+    label: 'sludge',
+    placeholder: '',
+    value: 'sludge',
+    unit: '',
+  },
+]
 
 const Report = () => {
   const [checkDate, setCheckDate] = useState('')
   const [timeDate, setTimeDate] = useState('')
+  const [isFlavorful, setIsFlavorful] = useState(false)
   const [imagePrev, setImagePrev] = useState(UploadImagePlaceholder)
   const [employees, setEmployees] = useState(EmployeeData)
   const [selectedEmployee, setSelectedEmployee] = useState(EmployeeData)
@@ -64,6 +182,10 @@ const Report = () => {
     const filterData = employees.filter((el) => el.employeeId === e.target.value)[0]
     if (!filterData) return
     setSelectedEmployee(filterData)
+  }
+
+  const handleChangeInputFlavorful = (e) => {
+    setIsFlavorful(e.target.checked)
   }
 
   return (
@@ -152,156 +274,126 @@ const Report = () => {
       <CCard>
         <CCardHeader>Parameter</CCardHeader>
         <CCardBody>
-          <CCol>
-            <CRow className="mb-3">
-              <CFormLabel htmlFor="aroma" className="col-sm-2 col-form-label">
-                Aroma
-              </CFormLabel>
-              <CCol sm={5}>
-                <CFormCheck type="radio" name="aroma" id="flexRadioDefault1" label="Bau" />
-                <CFormCheck
-                  type="radio"
-                  name="aroma"
-                  id="flexRadioDefault2"
-                  label="Tidak Bau"
-                  defaultChecked
-                />
-              </CCol>
-            </CRow>
-            <CRow className="mb-3">
-              <CFormLabel htmlFor="PH" className="col-sm-2 col-form-label">
-                PH
-              </CFormLabel>
-              <CCol sm={5}>
-                <CFormInput type="text" id="PH" />
-              </CCol>
-            </CRow>
-          </CCol>
-          <CRow className="mb-3">
-            <CFormLabel htmlFor="PH" className="col-sm-2 col-form-label">
-              PH Status
-            </CFormLabel>
-            <CCol sm={5}>
-              <CFormInput type="text" id="PH" disabled value="kurang" />
-            </CCol>
-          </CRow>
-          <CRow className="mb-3">
-            <CFormLabel htmlFor="lifeTime" className="col-sm-2 col-form-label">
-              Life Time Chemical
-            </CFormLabel>
-            <CCol sm={5}>
-              <CFormInput type="text" id="lifeTime" />
-            </CCol>
-          </CRow>
-          <CRow className="mb-3">
-            <CFormLabel htmlFor="addChemical" className="col-sm-2 col-form-label">
-              Add More Chemical
-            </CFormLabel>
-            <CCol sm={5}>
-              <CFormSwitch label="Add More Chemical" id="formSwitchCheckChecked" defaultChecked />
-            </CCol>
-          </CRow>
-          <CRow className="mb-3">
-            <CFormLabel htmlFor="typeChemical" className="col-sm-2 col-form-label">
-              Type of Chemical
-            </CFormLabel>
-            <CCol sm={5}>
-              <CFormSelect aria-label="Default select example">
-                <option>-- select type --</option>
-                <option value="1">pertamax</option>
-                <option value="2">solar</option>
-                <option value="3">pertalite</option>
-              </CFormSelect>
-            </CCol>
-          </CRow>
-          <CRow className="mb-3">
-            <CFormLabel htmlFor="lifeTime" className="col-sm-2 col-form-label">
-              Banyak Cairan
-            </CFormLabel>
-            <CCol sm={5}>
-              <CInputGroup className="mb-3">
-                <CFormInput type="text" id="lifeTime" />
-                <CInputGroupText id="basic-addon2">liter</CInputGroupText>
-              </CInputGroup>
-            </CCol>
-          </CRow>
-          <CRow>
-            <div style={{ display: 'flex' }}>
-              <CFormLabel htmlFor="lifeTime" className="col-sm-2 col-form-label">
-                Visual
-              </CFormLabel>
-              <img
-                src={UploadImagePlaceholder}
-                alt=""
-                style={{ height: '200px', width: '200px', marginRight: '30px' }}
-              />
-              <input
-                type="file"
-                id="imageInpt"
-                style={{ display: 'none' }}
-                onChange={handleOnChangeImage}
-              />
-              <label htmlFor="imageInpt">
-                <img
-                  src={imagePrev}
-                  alt="uploadedImage"
-                  id="uploadedImage"
-                  style={{ height: '200px', width: '200px', marginRight: '30px' }}
-                />
-              </label>
-              <div
-                style={{
-                  display: 'flex',
-                  justifyContent: 'center',
-                  flexDirection: 'column',
-                }}
-              >
-                <CFormCheck type="radio" name="colorVisual" label="Putih" />
-                <CFormCheck type="radio" name="colorVisual" label="Putih Coklat" />
-                <CFormCheck type="radio" name="colorVisual" label="Coklat" />
-                <CFormCheck type="radio" name="colorVisual" label="Coklat Tua" />
-              </div>
-            </div>
-          </CRow>
-          <CRow>
-            <div style={{ display: 'flex', marginTop: '30px' }}>
-              <CFormLabel htmlFor="lifeTime" className="col-sm-2 col-form-label">
-                Sludge
-              </CFormLabel>
-              <img
-                src={UploadImagePlaceholder}
-                alt=""
-                style={{ height: '200px', width: '200px', marginRight: '30px' }}
-              />
-              <input
-                type="file"
-                id="imageInpt"
-                style={{ display: 'none' }}
-                onChange={handleOnChangeImage}
-              />
-              <label htmlFor="imageInpt">
-                <img
-                  src={imagePrev}
-                  alt="uploadedImage"
-                  id="uploadedImage"
-                  style={{ height: '200px', width: '200px', marginRight: '30px' }}
-                />
-              </label>
-              <div
-                style={{
-                  display: 'flex',
-                  justifyContent: 'center',
-                  flexDirection: 'column',
-                }}
-              >
-                <CFormCheck type="radio" name="sludgeVisual" label="Normal" />
-                <CFormCheck type="radio" name="sludgeVisual" label="Tidak Normal" />
-              </div>
-            </div>
-          </CRow>
+          {formParameterContent.map((form, index) => {
+            switch (form.inputType) {
+              case 'text':
+                return (
+                  <CRow className="mb-3" key={index}>
+                    <CFormLabel htmlFor={form.value} className="col-sm-2 col-form-label">
+                      {form.label}
+                    </CFormLabel>
+                    <CCol sm={5}>
+                      <CInputGroup className="mb-3">
+                        <CFormInput type="text" id={form.value} placeholder={form.placeholder} />
+                        {form.unit && (
+                          <CInputGroupText id="basic-addon2">{form.unit}</CInputGroupText>
+                        )}
+                      </CInputGroup>
+                    </CCol>
+                  </CRow>
+                )
+              case 'info':
+                return (
+                  <CRow className="mb-3" key={index}>
+                    <CFormLabel htmlFor={form.value} className="col-sm-2 col-form-label">
+                      {form.label}
+                    </CFormLabel>
+                    <CCol sm={5}>
+                      <CInputGroup className="mb-3">
+                        <CFormInput
+                          type="text"
+                          id={form.value}
+                          placeholder={form.placeholder}
+                          disabled
+                        />
+                        {form.unit && (
+                          <CInputGroupText id="basic-addon2">{form.unit}</CInputGroupText>
+                        )}
+                      </CInputGroup>
+                    </CCol>
+                  </CRow>
+                )
+              case 'options':
+                return (
+                  <CRow className="mb-3" key={index}>
+                    <CFormLabel htmlFor="typeChemical" className="col-sm-2 col-form-label">
+                      {form.label}
+                    </CFormLabel>
+                    <CCol sm={5}>
+                      <CFormSelect aria-label="Default select example">
+                        <option selected disabled>
+                          -- select type --
+                        </option>
+                        {form.optionList.map((list, index) => (
+                          <option value={list.id} key={index}>
+                            {list.name}
+                          </option>
+                        ))}
+                      </CFormSelect>
+                    </CCol>
+                  </CRow>
+                )
+              case 'toogle':
+                return (
+                  <CRow className="mb-3" key={index}>
+                    <CFormLabel htmlFor="aroma" className="col-sm-2 col-form-label">
+                      {form.label}
+                    </CFormLabel>
+                    <CCol sm={5}>
+                      <CFormSwitch
+                        label={isFlavorful ? form.trueLabel : form.falseLabel}
+                        id="formSwitchCheckChecked"
+                        value={isFlavorful}
+                        onChange={handleChangeInputFlavorful}
+                      />
+                    </CCol>
+                  </CRow>
+                )
+              case 'file':
+                return (
+                  <div key={index} style={{ display: 'flex', marginTop: '30px' }}>
+                    <CFormLabel htmlFor="lifeTime" className="col-sm-2 col-form-label">
+                      {form.label}
+                    </CFormLabel>
+                    <img
+                      src={UploadImagePlaceholder}
+                      alt=""
+                      style={{ height: '200px', width: '200px', marginRight: '30px' }}
+                    />
+                    <input
+                      type="file"
+                      id="imageInpt"
+                      style={{ display: 'none' }}
+                      onChange={handleOnChangeImage}
+                    />
+                    <label htmlFor="imageInpt">
+                      <img
+                        src={imagePrev}
+                        alt="uploadedImage"
+                        id="uploadedImage"
+                        style={{ height: '200px', width: '200px', marginRight: '30px' }}
+                      />
+                    </label>
+                    <div
+                      style={{
+                        display: 'flex',
+                        justifyContent: 'center',
+                        flexDirection: 'column',
+                      }}
+                    >
+                      {form.optionList.map((el, index) => (
+                        <CFormCheck type="radio" name={form.value} label={el.name} key={index} />
+                      ))}
+                    </div>
+                  </div>
+                )
+
+              default:
+                return null
+            }
+          })}
           <CRow>
             <CCol style={{ marginTop: '30px' }}>
-              {/* <CFormLabel className="col-sm-3 col-form-label" /> */}
               <CButton color={'primary'} style={{ marginRight: '20px' }}>
                 simpan
               </CButton>
@@ -309,9 +401,6 @@ const Report = () => {
             </CCol>
           </CRow>
         </CCardBody>
-        {/* <CCardFooter style={{ marginTop: '20px' }} color="info">
-          
-        </CCardFooter> */}
       </CCard>
     </CCol>
   )
