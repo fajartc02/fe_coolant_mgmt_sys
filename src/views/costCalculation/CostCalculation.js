@@ -13,26 +13,97 @@ import {
   CTableRow,
   CFormSelect,
   CFormLabel,
-  CFormInput,
-  CFormFeedback,
+  CButton,
 } from '@coreui/react'
 import { CChartBar } from '@coreui/react-chartjs'
 import DatePicker from 'react-datepicker'
+import moment from 'moment'
 import 'react-datepicker/dist/react-datepicker.css'
 
 import { DocsCallout } from 'src/components'
 
 import CalculationData from './cost-calculation.json'
+moment.locale('id')
+
+const lineData = [
+  {
+    id: '1',
+    name: 'cam shaft',
+  },
+  {
+    id: '2',
+    name: 'cylinder block',
+  },
+  {
+    id: '3',
+    name: 'crank shaft',
+  },
+  {
+    id: '4',
+    name: 'cylinder head',
+  },
+]
 
 const CostCalculation = () => {
   const [calData, setCalData] = useState(CalculationData)
 
   const [startDate, setStartDate] = useState('')
   const [endDate, setEndDate] = useState('')
+  const [line, setLine] = useState('')
+
+  const handleApply = () => {
+    var calDataWithDate = CalculationData.map((el) => {
+      var dateString = el.date
+      var dateParts = dateString.split('/')
+      var dateObject = new Date(+dateParts[2], dateParts[1] - 1, +dateParts[0])
+
+      return {
+        ...el,
+        dateObject,
+      }
+    })
+    var filterFunc = {
+      moreThanStartDate: (item) => item.dateObject > startDate,
+      lessThanEndDate: (item) => item.dateObject < endDate,
+      equalToLine: (item) => item.line === line,
+    }
+
+    var selectedFunc = []
+    if (startDate) {
+      selectedFunc.push(filterFunc.moreThanStartDate)
+    }
+
+    if (endDate) {
+      selectedFunc.push(filterFunc.lessThanEndDate)
+    }
+
+    if (line) {
+      selectedFunc.push(filterFunc.equalToLine)
+    }
+
+    let result = calDataWithDate.filter((item) => selectedFunc.every((f) => f(item)))
+
+    setCalData([...result])
+  }
 
   const onHandleStartDate = (date) => {
-    console.log(date)
     setStartDate(date)
+  }
+
+  const onHandleEndDate = (date) => {
+    setEndDate(date)
+  }
+
+  const handleSelectLine = (e) => {
+    // if (e.target.value === 'placeholder') return
+    setLine(e.target.value)
+  }
+
+  const handleReset = () => {
+    setCalData([...CalculationData])
+    setStartDate('')
+    setEndDate('')
+    setLine('')
   }
 
   const formatDataToArray = (data, name) => {
@@ -63,6 +134,7 @@ const CostCalculation = () => {
   ]
 
   // console.log(formatDataToArray(calData, 'chemical'))
+  console.log(line, 'line')
   return (
     <CRow>
       <CCol xs={12}>
@@ -77,7 +149,7 @@ const CostCalculation = () => {
           <CCardHeader>
             Bar Chart
             <CRow className="g-3">
-              <CCol sm={7} />
+              <CCol sm={6} />
 
               <CCol sm>
                 <CFormLabel>Start Date</CFormLabel>
@@ -88,6 +160,7 @@ const CostCalculation = () => {
                   onChange={(date) => onHandleStartDate(date)}
                   className={'form-control'}
                   placeholderText="start date"
+                  dateFormat={'dd/MM/yyyy'}
                 />
               </CCol>
               <CCol sm>
@@ -96,19 +169,42 @@ const CostCalculation = () => {
                   selected={endDate}
                   maxDate={new Date()}
                   minDate={startDate}
-                  onChange={(date) => setEndDate(date)}
+                  onChange={(date) => onHandleEndDate(date)}
                   className={'form-control'}
                   placeholderText="end date"
+                  dateFormat={'dd/MM/yyyy'}
                 />
               </CCol>
               <CCol sm>
                 <CFormLabel>Line</CFormLabel>
-                <CFormSelect aria-label="Default select example">
-                  <option>Line</option>
-                  <option value="1">1</option>
-                  <option value="2">2</option>
-                  <option value="3">3</option>
+                <CFormSelect
+                  aria-label="Default select example"
+                  onChange={handleSelectLine}
+                  value={line}
+                >
+                  <option selected value="placeholder">
+                    select
+                  </option>
+                  {lineData.map((el) => (
+                    <option key={el.id} value={el.name}>
+                      {el.name}
+                    </option>
+                  ))}
                 </CFormSelect>
+              </CCol>
+              <CCol sm>
+                <CFormLabel>&nbsp;</CFormLabel>
+                <div />
+                <CButton color="primary" onClick={handleApply}>
+                  apply
+                </CButton>
+              </CCol>
+              <CCol sm>
+                <CFormLabel>&nbsp;</CFormLabel>
+                <div />
+                <CButton style={{ marginLeft: '-15px' }} color="secondary" onClick={handleReset}>
+                  reset
+                </CButton>
               </CCol>
             </CRow>
           </CCardHeader>
@@ -138,6 +234,7 @@ const CostCalculation = () => {
               <CTableHead>
                 <CTableRow>
                   <CTableHeaderCell scope="col">id</CTableHeaderCell>
+                  <CTableHeaderCell scope="col">Date</CTableHeaderCell>
                   <CTableHeaderCell scope="col">Machine</CTableHeaderCell>
                   <CTableHeaderCell scope="col">Line</CTableHeaderCell>
                   <CTableHeaderCell scope="col">PIC</CTableHeaderCell>
@@ -150,6 +247,7 @@ const CostCalculation = () => {
                 {calData.map((element, index) => (
                   <CTableRow key={index}>
                     <CTableHeaderCell>{element.id}</CTableHeaderCell>
+                    <CTableHeaderCell>{element.date}</CTableHeaderCell>
                     <CTableDataCell>{element.machineName}</CTableDataCell>
                     <CTableDataCell>{element.line}</CTableDataCell>
                     <CTableDataCell>{element.pic}</CTableDataCell>
