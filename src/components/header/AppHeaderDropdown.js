@@ -1,25 +1,13 @@
 import React from 'react'
 import {
   CAvatar,
-  CBadge,
   CDropdown,
-  CDropdownDivider,
   CDropdownHeader,
   CDropdownItem,
   CDropdownMenu,
   CDropdownToggle,
 } from '@coreui/react'
-import {
-  cilBell,
-  cilCreditCard,
-  cilCommentSquare,
-  cilEnvelopeOpen,
-  cilFile,
-  cilLockLocked,
-  cilSettings,
-  cilTask,
-  cilUser,
-} from '@coreui/icons'
+import { cilLockLocked } from '@coreui/icons'
 import CIcon from '@coreui/icons-react'
 import { useNavigate } from 'react-router-dom'
 
@@ -36,8 +24,8 @@ const AppHeaderDropdown = () => {
         <CAvatar src={avatar8} size="md" />
       </CDropdownToggle>
       <CDropdownMenu className="pt-0" placement="bottom-end">
-        <CDropdownHeader className="bg-light fw-semibold py-2">Account</CDropdownHeader>
-        <CDropdownItem href="#">
+        <CDropdownHeader className="bg-light fw-semibold py-2">Menu</CDropdownHeader>
+        {/* <CDropdownItem href="#">
           <CIcon icon={cilBell} className="me-2" />
           Updates
           <CBadge color="info" className="ms-2">
@@ -87,8 +75,8 @@ const AppHeaderDropdown = () => {
           <CBadge color="primary" className="ms-2">
             42
           </CBadge>
-        </CDropdownItem>
-        <CDropdownDivider />
+        </CDropdownItem> */}
+        {/* <CDropdownDivider /> */}
         <CDropdownItem
           onClick={() => {
             navigate('/login')

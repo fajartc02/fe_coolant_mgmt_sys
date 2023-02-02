@@ -116,7 +116,8 @@ const CostCalculation = () => {
   ]
 
   // console.log(formatDataToArray(calData, 'chemical'))
-  console.log(line, 'line')
+  // console.log(line, 'line')
+  console.log(window.innerWidth, 'window.innerWidth---')
   return (
     <CRow>
       <CCol xs={12}>
@@ -131,9 +132,9 @@ const CostCalculation = () => {
           <CCardHeader>
             Bar Chart
             <CRow className="g-3">
-              <CCol sm={6} />
+              <CCol md={5} sm={2} />
 
-              <CCol sm>
+              <CCol>
                 <CFormLabel>Start Date</CFormLabel>
                 <DatePicker
                   selected={startDate}
@@ -145,7 +146,7 @@ const CostCalculation = () => {
                   dateFormat={'dd/MM/yyyy'}
                 />
               </CCol>
-              <CCol sm>
+              <CCol>
                 <CFormLabel>End Date</CFormLabel>
                 <DatePicker
                   selected={endDate}
@@ -157,7 +158,7 @@ const CostCalculation = () => {
                   dateFormat={'dd/MM/yyyy'}
                 />
               </CCol>
-              <CCol sm>
+              <CCol>
                 <CFormLabel>Line</CFormLabel>
                 <CFormSelect
                   aria-label="Default select example"
@@ -174,17 +175,14 @@ const CostCalculation = () => {
                   ))}
                 </CFormSelect>
               </CCol>
-              <CCol sm>
+              <CCol>
                 <CFormLabel>&nbsp;</CFormLabel>
                 <div />
-                <CButton color="primary" onClick={handleApply}>
+                <CButton style={{ marginRight: '10px' }} color="primary" onClick={handleApply}>
                   apply
                 </CButton>
-              </CCol>
-              <CCol sm>
-                <CFormLabel>&nbsp;</CFormLabel>
-                <div />
-                <CButton style={{ marginLeft: '-15px' }} color="secondary" onClick={handleReset}>
+
+                <CButton color="secondary" onClick={handleReset}>
                   reset
                 </CButton>
               </CCol>
