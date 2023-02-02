@@ -1,0 +1,132 @@
+[
+  {
+    "inputType": "toogle",
+    "optionList": [],
+    "trueLabel": "Bau",
+    "falseLabel": "Tidak Bau",
+    "label": "Aroma",
+    "placeholder": "",
+    "value": "aroma",
+    "unit": ""
+  },
+  {
+    "inputType": "text",
+    "optionList": [],
+    "trueLabel": "",
+    "falseLabel": "",
+    "label": "PH",
+    "placeholder": "Masukkan PH",
+    "value": "ph",
+    "unit": ""
+  },
+  {
+    "inputType": "info",
+    "optionList": [],
+    "trueLabel": "",
+    "falseLabel": "",
+    "label": "Status PH",
+    "placeholder": "PH Status",
+    "value": "ph",
+    "unit": ""
+  },
+  {
+    "inputType": "info",
+    "optionList": [],
+    "trueLabel": "",
+    "falseLabel": "",
+    "label": "Jadwal Pengurasan",
+    "placeholder": "12/02/2023",
+    "value": "ph",
+    "unit": ""
+  },
+  {
+    "inputType": "toogle",
+    "optionList": [],
+    "trueLabel": "Ya",
+    "falseLabel": "Tidak",
+    "label": "Tambah Cairan",
+    "placeholder": "",
+    "value": "tambahCairan",
+    "unit": ""
+  },
+  {
+    "inputType": "text",
+    "optionList": [],
+    "trueLabel": "",
+    "falseLabel": "",
+    "label": "Banyak Cairan",
+    "placeholder": "Masukkan Banyak Cairan",
+    "value": "banyakCairan",
+    "unit": "liter"
+  },
+  {
+    "inputType": "options",
+    "optionList": [
+      {
+        "name": "Solar",
+        "id": 2
+      },
+      {
+        "name": "Pertamax",
+        "id": 1
+      },
+      {
+        "name": "Pertalite",
+        "id": 2
+      }
+    ],
+    "trueLabel": "",
+    "falseLabel": "",
+    "label": "Tipe Cairan",
+    "placeholder": "",
+    "value": "tipeCairan",
+    "unit": ""
+  },
+
+  {
+    "inputType": "file",
+    "optionList": [
+      {
+        "name": "Putih",
+        "id": 0
+      },
+      {
+        "name": "Putih Coklat",
+        "id": 1
+      },
+      {
+        "name": "Coklat",
+        "id": 2
+      },
+      {
+        "name": "Coklat Tua",
+        "id": 3
+      }
+    ],
+    "trueLabel": "",
+    "falseLabel": "",
+    "label": "visual",
+    "placeholder": "",
+    "value": "visual",
+    "unit": ""
+  },
+  {
+    "inputType": "file",
+    "optionList": [
+      {
+        "name": "Normal",
+        "id": 0
+      },
+      {
+        "name": "Tidak Normal",
+        "id": 1
+      }
+    ],
+    "trueLabel": "",
+    "falseLabel": "",
+    "label": "sludge",
+    "placeholder": "",
+    "value": "sludge",
+    "unit": ""
+  }
+]

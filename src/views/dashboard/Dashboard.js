@@ -4,8 +4,8 @@ import { useDispatch } from 'react-redux'
 import { CCard, CCardBody, CBadge, CCardHeader, CCol, CRow, CCardText } from '@coreui/react'
 import { setSelectedMachine } from '../../stores/actions'
 
-import MachineSummary from './machine-block-summary.json'
-import MachineData from './machine-data.json'
+import MachineSummary from '../../assets/json/machine-block-summary.json'
+import MachineData from '../../assets/json/machine-data.json'
 
 const Dashboard = () => {
   const navigate = useNavigate()

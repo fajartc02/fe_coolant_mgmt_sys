@@ -22,27 +22,9 @@ import 'react-datepicker/dist/react-datepicker.css'
 
 import { DocsCallout } from 'src/components'
 
-import CalculationData from './cost-calculation.json'
+import CalculationData from '../../assets/json/cost-calculation.json'
+import LineData from '../../assets/json/line.json'
 moment.locale('id')
-
-const lineData = [
-  {
-    id: '1',
-    name: 'cam shaft',
-  },
-  {
-    id: '2',
-    name: 'cylinder block',
-  },
-  {
-    id: '3',
-    name: 'crank shaft',
-  },
-  {
-    id: '4',
-    name: 'cylinder head',
-  },
-]
 
 const CostCalculation = () => {
   const [calData, setCalData] = useState(CalculationData)
@@ -185,7 +167,7 @@ const CostCalculation = () => {
                   <option selected value="placeholder">
                     select
                   </option>
-                  {lineData.map((el) => (
+                  {LineData.map((el) => (
                     <option key={el.id} value={el.name}>
                       {el.name}
                     </option>
