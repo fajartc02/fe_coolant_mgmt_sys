@@ -1,190 +1,312 @@
 [
-    {
-      "idCategory": 0,
-      "listMachine": [
-        {
-          "lineName": "A",
-          "lineMachine": [
-            {
-              "machineName": "Cylider Head A1",
-              "status": "safe"
-            },
-            {
-              "machineName": "Cylider Head A2",
-              "status": "warning"
-            },
-            {
-              "machineName": "Cylider Head A3",
-              "status": "safe"
-            },
-            {
-              "machineName": "Cylider Head A4",
-              "status": "safe"
-            }
-          ]
-        },
-        {
-          "lineName": "B",
-          "lineMachine": [
-            {
-              "machineName": "Cylider Head B1",
-              "status": "safe"
-            },
-            {
-              "machineName": "Cylider Head B2",
-              "status": "safe"
-            },
-            {
-              "machineName": "Cylider Head B3",
-              "status": "safe"
-            },
-            {
-              "machineName": "Cylider Head B4",
-              "status": "safe"
-            }
-          ]
-        }
-      ]
-    },
-    {
-      "idCategory": 1,
-      "listMachine": [
-        {
-          "lineName": "A",
-          "lineMachine": [
-            {
-              "machineName": "Cylider Block A1",
-              "status": "safe"
-            },
-            {
-              "machineName": "Cylider Block A2",
-              "status": "warning"
-            },
-            {
-              "machineName": "Cylider Block A3",
-              "status": "safe"
-            },
-            {
-              "machineName": "Cylider Block A4",
-              "status": "safe"
-            }
-          ]
-        }
-      ]
-    },
-    {
-      "idCategory": 2,
-      "listMachine": [
-        {
-          "lineName": "A",
-          "lineMachine": [
-            {
-              "machineName": "Cam Shaft A1",
-              "status": "safe"
-            },
-            {
-              "machineName": "Cam Shaft A2",
-              "status": "warning"
-            },
-            {
-              "machineName": "Cam Shaft A3",
-              "status": "safe"
-            },
-            {
-              "machineName": "Cam Shaft A4",
-              "status": "safe"
-            }
-          ]
-        },
-        {
-          "lineName": "B",
-          "lineMachine": [
-            {
-              "machineName": "Cam Shaft B1",
-              "status": "safe"
-            },
-            {
-              "machineName": "Cam Shaft B2",
-              "status": "safe"
-            },
-            {
-              "machineName": "Cam Shaft B3",
-              "status": "safe"
-            },
-            {
-              "machineName": "Cam Shaft B4",
-              "status": "safe"
-            }
-          ]
-        }
-      ]
-    },
-    {
-      "idCategory": 3,
-      "listMachine": [
-        {
-          "lineName": "A",
-          "lineMachine": [
-            {
-              "machineName": "Crank Shaft A1",
-              "status": "safe"
-            },
-            {
-              "machineName": "Crank Shaft A2",
-              "status": "warning"
-            },
-            {
-              "machineName": "Crank Shaft A3",
-              "status": "safe"
-            },
-            {
-              "machineName": "Crank Shaft A4",
-              "status": "danger"
-            }
-          ]
-        },
-        {
-          "lineName": "B",
-          "lineMachine": [
-            {
-              "machineName": "Crank Shaft B1",
-              "status": "safe"
-            },
-            {
-              "machineName": "Crank Shaft B2",
-              "status": "safe"
-            },
-            {
-              "machineName": "Crank Shaft B3",
-              "status": "safe"
-            },
-            {
-              "machineName": "Crank Shaft B4",
-              "status": "warning"
-            }
-          ]
-        },
-        {
-          "lineName": "C",
-          "lineMachine": [
-            {
-              "machineName": "Crank Shaft C1",
-              "status": "safe"
-            },
-            {
-              "machineName": "Crank Shaft C2",
-              "status": "safe"
-            },
-            {
-              "machineName": "Crank Shaft C3",
-              "status": "safe"
-            },
-            {
-              "machineName": "Crank Shaft C4",
-              "status": "safe"
-            }
-          ]
-        }
-      ]
-    }
-  ]
+  {
+    "line_id": 0,
+    "line_nm": "Cylinder Head",
+    "line_area": [
+      {
+        "area_nm": "Rough Area",
+        "area_sub": "Rough Area A",
+        "machines": [
+          {
+            "machine_nm": "Cylinder Head A1",
+            "index_pos":0,
+            "status": "safe"
+          },
+          {
+            "machine_nm": "Cylinder Head A2",
+            "index_pos":1,
+            "status": "warning"
+          },
+          {
+            "machine_nm": "Cylinder Head A3",
+            "index_pos":2,
+            "status": "safe"
+          },
+          {
+            "machine_nm": "Cylinder Head A4",
+            "index_pos":3,
+            "status": "safe"
+          }
+        ]
+      },
+      {
+        "area_nm": "Rough Area",
+        "area_sub": "Rough Area B",
+        "machines": [
+          {
+            "machine_nm": "Cylinder Head B1",
+            "index_pos":0,
+            "status": "safe"
+          },
+          {
+            "machine_nm": "Cylinder Head B2",
+            "index_pos":1,
+            "status": "warning"
+          },
+          {
+            "machine_nm": "Cylinder Head B3",
+            "index_pos":2,
+            "status": "safe"
+          },
+          {
+            "machine_nm": "Cylinder Head B4",
+            "index_pos":3,
+            "status": "safe"
+          }
+        ]
+      },
+      {
+        "area_nm": "Finish Area",
+        "area_sub": "Finish Area A",
+        "machines": [
+          {
+            "machine_nm": "Cylinder Head C1",
+            "index_pos":0,
+            "status": "safe"
+          },
+          {
+            "machine_nm": "Cylinder Head C2",
+            "index_pos":1,
+            "status": "warning"
+          },
+          {
+            "machine_nm": "Cylinder Head C3",
+            "index_pos":2,
+            "status": "safe"
+          },
+          {
+            "machine_nm": "Cylinder Head C4",
+            "index_pos":3,
+            "status": "safe"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "line_id": 1,
+    "line_nm": "Cylinder Block",
+    "line_area": [
+      {
+        "area_nm": "Rough Area",
+        "area_sub": "Rough Area A",
+        "machines": [
+          {
+            "machine_nm": "Cylinder Block A1",
+            "index_pos":0,
+            "status": "safe"
+          },
+          {
+            "machine_nm": "Cylinder Block A2",
+            "index_pos":1,
+            "status": "warning"
+          },
+          {
+            "machine_nm": "Cylinder Block A3",
+            "index_pos":2,
+            "status": "safe"
+          },
+          {
+            "machine_nm": "Cylinder Block A4",
+            "index_pos":3,
+            "status": "safe"
+          }
+        ]
+      },
+      {
+        "area_nm": "Finish Area",
+        "area_sub": "Finish Area A",
+        "machines": [
+          {
+            "machine_nm": "Cylinder Block B1",
+            "index_pos":4,
+            "status": "safe"
+          },
+          {
+            "machine_nm": "Cylinder Block B2",
+            "index_pos":5,
+            "status": "warning"
+          },
+          {
+            "machine_nm": "Cylinder Block B3",
+            "index_pos":6,
+            "status": "safe"
+          },
+          {
+            "machine_nm": "Cylinder Block B4",
+            "index_pos":7,
+            "status": "safe"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "line_id": 2,
+    "line_nm": "Cam Shaft",
+    "line_area": [
+      {
+        "area_nm": "Rough Area",
+        "area_sub": "Rough Area A",
+        "machines": [
+          {
+            "machine_nm": "Cam Shaft A1",
+            "index_pos":0,
+            "status": "safe"
+          },
+          {
+            "machine_nm": "Cam Shaft A2",
+            "index_pos":1,
+            "status": "warning"
+          },
+          {
+            "machine_nm": "Cam Shaft A3",
+            "index_pos":2,
+            "status": "safe"
+          },
+          {
+            "machine_nm": "Cam Shaft A4",
+            "index_pos":3,
+            "status": "safe"
+          }
+        ]
+      },
+      {
+        "area_nm": "Rough Area",
+        "area_sub": "Rough Area B",
+        "machines": [
+          {
+            "machine_nm": "Cam Shaft B1",
+            "index_pos":4,
+            "status": "safe"
+          },
+          {
+            "machine_nm": "Cam Shaft B2",
+            "index_pos":5,
+            "status": "warning"
+          },
+          {
+            "machine_nm": "Cam Shaft B3",
+            "index_pos":6,
+            "status": "safe"
+          },
+          {
+            "machine_nm": "Cam Shaft B4",
+            "index_pos":7,
+            "status": "safe"
+          }
+        ]
+      },
+      {
+        "area_nm": "Finish Area",
+        "area_sub": "Finish Area A",
+        "machines": [
+          {
+            "machine_nm": "Cam Shaft C1",
+            "index_pos":8,
+            "status": "safe"
+          },
+          {
+            "machine_nm": "Cam Shaft C2",
+            "index_pos":9,
+            "status": "warning"
+          },
+          {
+            "machine_nm": "Cam Shaft C3",
+            "index_pos":10,
+            "status": "safe"
+          },
+          {
+            "machine_nm": "Cam Shaft C4",
+            "index_pos":11,
+            "status": "safe"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "line_id": 3,
+    "line_nm": "Crank Shaft",
+    "line_area": [
+      {
+        "area_nm": "Rough Area",
+        "area_sub": "Rough Area A",
+        "machines": [
+          {
+            "machine_nm": "Crank Shaft A1",
+            "index_pos":0,
+            "status": "safe"
+          },
+          {
+            "machine_nm": "Crank Shaft A2",
+            "index_pos":1,
+            "status": "warning"
+          },
+          {
+            "machine_nm": "Crank Shaft A3",
+            "index_pos":2,
+            "status": "safe"
+          },
+          {
+            "machine_nm": "Crank Shaft A4",
+            "index_pos":3,
+            "status": "safe"
+          }
+        ]
+      },
+      {
+        "area_nm": "Rough Area",
+        "area_sub": "Rough Area B",
+        "machines": [
+          {
+            "machine_nm": "Crank Shaft B1",
+            "index_pos":4,
+            "status": "safe"
+          },
+          {
+            "machine_nm": "Crank Shaft B2",
+            "index_pos":5,
+            "status": "warning"
+          },
+          {
+            "machine_nm": "Crank Shaft B3",
+            "index_pos":6,
+            "status": "safe"
+          },
+          {
+            "machine_nm": "Crank Shaft B4",
+            "index_pos":7,
+            "status": "safe"
+          }
+        ]
+      },
+      {
+        "area_nm": "Finish Area",
+        "area_sub": "Finish Area A",
+        "machines": [
+          {
+            "machine_nm": "Crank Shaft C1",
+            "index_pos":8,
+            "status": "safe"
+          },
+          {
+            "machine_nm": "Crank Shaft C2",
+            "index_pos":9,
+            "status": "warning"
+          },
+          {
+            "machine_nm": "Crank Shaft C3",
+            "index_pos":10,
+            "status": "safe"
+          },
+          {
+            "machine_nm": "Crank Shaft C4",
+            "index_pos":11,
+            "status": "safe"
+          }
+        ]
+      }
+    ]
+  }
+]

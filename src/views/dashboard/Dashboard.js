@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useDispatch } from 'react-redux'
 import { CCard, CCardBody, CBadge, CCardHeader, CCol, CRow, CCardText } from '@coreui/react'
@@ -6,6 +6,26 @@ import { setSelectedMachine } from '../../stores/actions'
 
 import MachineSummary from '../../assets/json/machine-block-summary.json'
 import MachineData from '../../assets/json/machine-data.json'
+import CamShaft from '../../assets/images/cam-shaft.jpeg'
+import CrankShaft from '../../assets/images/crank-shaft.jpeg'
+import CylinderHead from '../../assets/images/cylinder-head.jpg'
+import CylinderBlock from '../../assets/images/cylinder-block.jpeg'
+
+const imageSelection = (name) => {
+  switch (true) {
+    case name.indexOf('Cylinder Head') !== -1:
+      return CylinderHead
+    case name.indexOf('Cylinder Block') !== -1:
+      return CylinderBlock
+    case name.indexOf('Cam Shaft') !== -1:
+      return CamShaft
+    case name.indexOf('Crank Shaft') !== -1:
+      return CrankShaft
+
+    default:
+      return CylinderHead
+  }
+}
 
 const Dashboard = () => {
   const navigate = useNavigate()
@@ -13,7 +33,19 @@ const Dashboard = () => {
 
   const [machineDataPreview, setMachineDataPreview] = useState(MachineSummary)
   const [machineDataBlock, setMachineDataBlock] = useState(MachineData)
-  const [selectedMachineBlock, setSelectedMachineBlock] = useState(machineDataBlock[0])
+  const [selectedMachineBlock, setSelectedMachineBlock] = useState()
+
+  useEffect(() => {
+    let result = []
+
+    MachineData[0]?.line_area?.forEach((el) => {
+      el.machines.forEach((e) => {
+        result.push(e)
+      })
+    })
+
+    setSelectedMachineBlock(result)
+  }, [])
 
   const handleClickCard = (item) => {
     const newData = [...machineDataPreview]
@@ -23,10 +55,18 @@ const Dashboard = () => {
     }))
 
     const filteredData = machineDataBlock.filter(
-      (machineBlock) => machineBlock.idCategory === item.id,
+      (machineBlock) => machineBlock.line_id === item.id,
     )[0]
 
-    setSelectedMachineBlock(filteredData)
+    let result = []
+
+    filteredData?.line_area?.forEach((el) => {
+      el.machines.forEach((e) => {
+        result.push(e)
+      })
+    })
+
+    setSelectedMachineBlock(result)
 
     setMachineDataPreview(updateData)
   }
@@ -35,6 +75,8 @@ const Dashboard = () => {
     navigate(`/dashboard/report`)
     dispatch(setSelectedMachine(machine))
   }
+
+  console.log(selectedMachineBlock)
 
   return (
     <>
@@ -47,10 +89,10 @@ const Dashboard = () => {
               className="text-center"
               onClick={() => handleClickCard(item)}
             >
-              <CCardHeader>{item.title}</CCardHeader>
+              <CCardHeader>{item.line_nm}</CCardHeader>
               <CCardBody>
                 <CRow className="align-items-start">
-                  {item.content.map((el, index) => (
+                  {item.summary.map((el, index) => (
                     <CCol lg={4} md={4} key={index}>
                       {/* <CBadge color={el.color} shape="rounded-circle">
                         {el.total}
@@ -78,24 +120,48 @@ const Dashboard = () => {
         ))}
       </CRow>
       <div style={styles.machineContainer}>
-        {selectedMachineBlock.listMachine.map((line, indexLine) => (
-          <React.Fragment key={indexLine}>
-            <div style={{ marginTop: '20px' }}>
-              <p style={{ textAlign: 'center' }}>LINE {line.lineName}</p>
-            </div>
-            <div style={styles.machineLine}>
-              {line.lineMachine.map((machine, indexMachine) => (
-                <div
-                  style={{ ...styles.machineCard, ...styles[machine.status] }}
-                  key={indexMachine}
-                  onClick={() => handleClickMachine(machine)}
-                >
-                  <p style={{ textAlign: 'center', marginBottom: '0px' }}>{machine.machineName}</p>
+        <React.Fragment>
+          <div style={{ marginTop: '20px' }}>
+            <p style={{ textAlign: 'center' }}>LINE </p>
+          </div>
+          <div style={styles.machineLine}>
+            {selectedMachineBlock?.map((machine, indexMachine) => (
+              <div
+                style={{ ...styles.machineCard }}
+                // style={{ ...styles.machineCard, ...styles[machine.status] }}
+                key={indexMachine}
+                onClick={() => handleClickMachine(machine)}
+              >
+                <div>
+                  <img
+                    src={imageSelection(machine.machine_nm)}
+                    alt="uploadedImage"
+                    id="uploadedImage"
+                    style={{
+                      height: '80px',
+                      width: '80px',
+                      marginLeft: 'auto',
+                      marginRight: 'auto',
+                      display: 'block',
+                    }}
+                  />
                 </div>
-              ))}
-            </div>
-          </React.Fragment>
-        ))}
+                <div
+                  style={{
+                    borderWidth: `5px`,
+                    borderStyle: 'solid',
+                    ...styles[machine.status],
+                  }}
+                />
+                <div>
+                  <p style={{ textAlign: 'center', marginBottom: '0px', fontSize: '12px' }}>
+                    {machine.machine_nm}
+                  </p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </React.Fragment>
       </div>
     </>
   )
@@ -119,28 +185,26 @@ const styles = {
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
+
+    flexWrap: 'wrap',
   },
   machineCard: {
-    width: '50px',
-    height: '100px',
+    // width: '80px',
     borderWidth: '1px',
     borderColor: '#c4c9d0',
     borderStyle: 'solid',
-    margin: '10px',
-    padding: '30px',
-    justifyContent: 'center',
-    alignItems: 'center',
-    display: 'flex',
-    borderRadius: '10px',
+    padding: '10px',
+    borderRadius: '20px',
     cursor: 'pointer',
+    margin: '10px',
   },
   danger: {
-    backgroundColor: 'red',
+    borderColor: 'red',
   },
   warning: {
-    backgroundColor: 'orange',
+    borderColor: 'orange',
   },
   safe: {
-    backgroundColor: 'green',
+    borderColor: 'green',
   },
 }
