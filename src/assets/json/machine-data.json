@@ -10,7 +10,7 @@
           {
             "machine_nm": "Cylinder Head A1",
             "index_pos":0,
-            "status": "safe"
+            "status": "danger"
           },
           {
             "machine_nm": "Cylinder Head A2",
@@ -25,7 +25,7 @@
           {
             "machine_nm": "Cylinder Head A4",
             "index_pos":3,
-            "status": "safe"
+            "status": "danger"
           }
         ]
       },
@@ -46,7 +46,7 @@
           {
             "machine_nm": "Cylinder Head B3",
             "index_pos":2,
-            "status": "safe"
+            "status": "danger"
           },
           {
             "machine_nm": "Cylinder Head B4",
@@ -120,7 +120,7 @@
           {
             "machine_nm": "Cylinder Block B1",
             "index_pos":4,
-            "status": "safe"
+            "status": "danger"
           },
           {
             "machine_nm": "Cylinder Block B2",
@@ -135,7 +135,7 @@
           {
             "machine_nm": "Cylinder Block B4",
             "index_pos":7,
-            "status": "safe"
+            "status": "danger"
           }
         ]
       }
@@ -204,7 +204,7 @@
           {
             "machine_nm": "Cam Shaft C1",
             "index_pos":8,
-            "status": "safe"
+            "status": "danger"
           },
           {
             "machine_nm": "Cam Shaft C2",
@@ -246,7 +246,7 @@
           {
             "machine_nm": "Crank Shaft A3",
             "index_pos":2,
-            "status": "safe"
+            "status": "danger"
           },
           {
             "machine_nm": "Crank Shaft A4",

@@ -4,6 +4,8 @@ import { useDispatch } from 'react-redux'
 import { CCard, CCardBody, CBadge, CCardHeader, CCol, CRow, CCardText } from '@coreui/react'
 import { setSelectedMachine } from '../../stores/actions'
 
+import './styles.scss'
+
 import MachineSummary from '../../assets/json/machine-block-summary.json'
 import MachineData from '../../assets/json/machine-data.json'
 import CamShaft from '../../assets/images/cam-shaft.jpeg'
@@ -119,49 +121,37 @@ const Dashboard = () => {
           </CCol>
         ))}
       </CRow>
-      <div style={styles.machineContainer}>
-        <React.Fragment>
+      <div className="machineContainer">
+        <div>
           <div style={{ marginTop: '20px' }}>
             <p style={{ textAlign: 'center' }}>LINE </p>
           </div>
-          <div style={styles.machineLine}>
+          <div className="machineLine">
             {selectedMachineBlock?.map((machine, indexMachine) => (
               <div
+                className="machineCard"
                 style={{ ...styles.machineCard }}
-                // style={{ ...styles.machineCard, ...styles[machine.status] }}
                 key={indexMachine}
                 onClick={() => handleClickMachine(machine)}
               >
-                <div>
-                  <img
-                    src={imageSelection(machine.machine_nm)}
-                    alt="uploadedImage"
-                    id="uploadedImage"
-                    style={{
-                      height: '80px',
-                      width: '80px',
-                      marginLeft: 'auto',
-                      marginRight: 'auto',
-                      display: 'block',
-                    }}
-                  />
+                <div className="cubeWrapper">
+                  <div className="cube">
+                    <div className={`top ${machine.status}`}></div>
+                    <div>
+                      <span className={`span ${machine.status}-1`}></span>
+                      <span className={`span ${machine.status}-2`}></span>
+                      <span className={`span ${machine.status}-3`}></span>
+                      <span className={`span ${machine.status}-4`}></span>
+                    </div>
+                  </div>
                 </div>
-                <div
-                  style={{
-                    borderWidth: `5px`,
-                    borderStyle: 'solid',
-                    ...styles[machine.status],
-                  }}
-                />
                 <div>
-                  <p style={{ textAlign: 'center', marginBottom: '0px', fontSize: '12px' }}>
-                    {machine.machine_nm}
-                  </p>
+                  <p className="machineName">{machine.machine_nm}</p>
                 </div>
               </div>
             ))}
           </div>
-        </React.Fragment>
+        </div>
       </div>
     </>
   )
@@ -170,41 +160,13 @@ const Dashboard = () => {
 export default Dashboard
 
 const styles = {
-  machineContainer: {
-    marginTop: '20px',
-    width: '100%',
-    backgroundColor: 'white',
-    borderWidth: '1px',
-    borderColor: '#c4c9d0',
-    borderStyle: 'solid',
-    padding: '20px',
-    borderRadius: '10px',
-  },
-  machineLine: {
-    display: 'flex',
-    flexDirection: 'row',
-    justifyContent: 'center',
-    alignItems: 'center',
-
-    flexWrap: 'wrap',
-  },
-  machineCard: {
-    // width: '80px',
-    borderWidth: '1px',
-    borderColor: '#c4c9d0',
-    borderStyle: 'solid',
-    padding: '10px',
-    borderRadius: '20px',
-    cursor: 'pointer',
-    margin: '10px',
-  },
-  danger: {
-    borderColor: 'red',
-  },
-  warning: {
-    borderColor: 'orange',
-  },
-  safe: {
-    borderColor: 'green',
-  },
+  // span1: {
+  //   position: 'absolute',
+  //   top: '0',
+  //   left: '0',
+  //   width: '100%',
+  //   height: '100%',
+  //   background: 'linear-gradient(#151515, #00ec00)',
+  //   transform: 'rotate(calc(0deg)) translateZ(15px)',
+  // },
 }
