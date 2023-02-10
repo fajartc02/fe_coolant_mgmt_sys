@@ -65,7 +65,7 @@ const Report = () => {
               Machine Name
             </CFormLabel>
             <CCol sm={5}>
-              <CFormInput type="text" id="PH" value={selectedMachine.machineName} disabled />
+              <CFormInput type="text" id="PH" value={selectedMachine.machine_nm} disabled />
             </CCol>
           </CRow>
           <CRow className="mb-3">

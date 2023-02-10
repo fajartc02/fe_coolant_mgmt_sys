@@ -2,32 +2,46 @@ import React, { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useDispatch } from 'react-redux'
 import { CCard, CCardBody, CBadge, CCardHeader, CCol, CRow, CCardText } from '@coreui/react'
+import { SortableContainer, SortableElement, arrayMove } from 'react-sortable-hoc'
+// import { arrayMove } from 'array-move'
+// import {  } from 'react-sortable-hoc';
+
+// REDUX
 import { setSelectedMachine } from '../../stores/actions'
 
+// STYLING
 import './styles.scss'
 
+// ASSETS / JSON
 import MachineSummary from '../../assets/json/machine-block-summary.json'
 import MachineData from '../../assets/json/machine-data.json'
-import CamShaft from '../../assets/images/cam-shaft.jpeg'
-import CrankShaft from '../../assets/images/crank-shaft.jpeg'
-import CylinderHead from '../../assets/images/cylinder-head.jpg'
-import CylinderBlock from '../../assets/images/cylinder-block.jpeg'
 
-const imageSelection = (name) => {
-  switch (true) {
-    case name.indexOf('Cylinder Head') !== -1:
-      return CylinderHead
-    case name.indexOf('Cylinder Block') !== -1:
-      return CylinderBlock
-    case name.indexOf('Cam Shaft') !== -1:
-      return CamShaft
-    case name.indexOf('Crank Shaft') !== -1:
-      return CrankShaft
-
-    default:
-      return CylinderHead
-  }
-}
+const machinesTemp = [
+  {
+    machine_nm: 'Cylinder Head A1',
+    index_pos: 0,
+    index_machine: 0,
+    status: 'danger',
+  },
+  {
+    machine_nm: 'Cylinder Head A2',
+    index_pos: 1,
+    index_machine: 1,
+    status: 'warning',
+  },
+  {
+    machine_nm: 'Cylinder Head A3',
+    index_pos: 2,
+    index_machine: 2,
+    status: 'safe',
+  },
+  {
+    machine_nm: 'Cylinder Head A4',
+    index_pos: 3,
+    index_machine: 3,
+    status: 'danger',
+  },
+]
 
 const Dashboard = () => {
   const navigate = useNavigate()
@@ -38,39 +52,22 @@ const Dashboard = () => {
   const [selectedMachineBlock, setSelectedMachineBlock] = useState()
 
   useEffect(() => {
-    let result = []
-
-    MachineData[0]?.line_area?.forEach((el) => {
-      el.machines.forEach((e) => {
-        result.push(e)
-      })
-    })
-
-    setSelectedMachineBlock(result)
+    setSelectedMachineBlock(machineDataBlock[0])
   }, [])
 
-  const handleClickCard = (item) => {
+  const handleClickSummaryCard = (item) => {
     const newData = [...machineDataPreview]
     const updateData = newData.map((el) => ({
       ...el,
       isSelected: item.id === el.id,
     }))
+    setMachineDataPreview(updateData)
 
     const filteredData = machineDataBlock.filter(
       (machineBlock) => machineBlock.line_id === item.id,
     )[0]
 
-    let result = []
-
-    filteredData?.line_area?.forEach((el) => {
-      el.machines.forEach((e) => {
-        result.push(e)
-      })
-    })
-
-    setSelectedMachineBlock(result)
-
-    setMachineDataPreview(updateData)
+    setSelectedMachineBlock(filteredData)
   }
 
   const handleClickMachine = (machine) => {
@@ -78,7 +75,79 @@ const Dashboard = () => {
     dispatch(setSelectedMachine(machine))
   }
 
-  console.log(selectedMachineBlock)
+  const SortableItem = SortableElement(({ value, index }) => (
+    <div
+      className="machineCard"
+      style={{ ...styles.machineCard }}
+      key={value.index_machine}
+      onClick={() => handleClickMachine(value)}
+      id={index}
+    >
+      <div className="cubeWrapper">
+        <div className="cube">
+          <div className={`top ${value.status}`}></div>
+          <div>
+            <span className={`span ${value.status}-1`}></span>
+            <span className={`span ${value.status}-2`}></span>
+            <span className={`span ${value.status}-3`}></span>
+            <span className={`span ${value.status}-4`}></span>
+          </div>
+        </div>
+      </div>
+      <div>
+        <p className="machineName">{value.machine_nm}</p>
+      </div>
+    </div>
+  ))
+
+  const SortableList = SortableContainer(({ items }) => (
+    <div className="machineContainer">
+      {items?.line_area?.map((element, index) => (
+        <div key={index}>
+          <div style={{ marginTop: '20px' }}>
+            <p style={{ textAlign: 'center' }}>{`${element.area_sub}`} </p>
+          </div>
+          <div className="machineLine">
+            {element.machines.map((machine, idx) => (
+              <SortableItem
+                value={machine}
+                index={idx}
+                key={machine.index_machine}
+                collection={index}
+              />
+            ))}
+          </div>
+        </div>
+      ))}
+    </div>
+  ))
+
+  const onSortEnd = ({ oldIndex, newIndex, collection }) => {
+    let arr = arrayMove(selectedMachineBlock.line_area[collection].machines, oldIndex, newIndex)
+    // update index position
+    for (let i = 0; i < arr.length; i++) {
+      arr[i].index_pos = i
+    }
+
+    // update array
+    const temp = selectedMachineBlock.line_area.map((element, index) => {
+      if (index === collection) {
+        return {
+          ...element,
+          machines: arr,
+        }
+      }
+      return element
+    })
+
+    // update object selectedMachineBlock
+    const updateData = {
+      ...selectedMachineBlock,
+      line_area: temp,
+    }
+
+    setSelectedMachineBlock(updateData)
+  }
 
   return (
     <>
@@ -89,21 +158,13 @@ const Dashboard = () => {
               color={item.isSelected ? 'info' : 'white'}
               textColor={item.textColor}
               className="text-center"
-              onClick={() => handleClickCard(item)}
+              onClick={() => handleClickSummaryCard(item)}
             >
               <CCardHeader>{item.line_nm}</CCardHeader>
               <CCardBody>
                 <CRow className="align-items-start">
                   {item.summary.map((el, index) => (
                     <CCol lg={4} md={4} key={index}>
-                      {/* <CBadge color={el.color} shape="rounded-circle">
-                        {el.total}
-                      </CBadge> */}
-                      {/* <CCard color={el.color} className="text-center" textColor="white">
-                        <CCardBody>
-                          <CCardText>{el.total}</CCardText>
-                        </CCardBody>
-                      </CCard> */}
                       <CCard className="text-center" textColor="white">
                         <CCardBody>
                           <CCardText className="text-center">
@@ -121,38 +182,8 @@ const Dashboard = () => {
           </CCol>
         ))}
       </CRow>
-      <div className="machineContainer">
-        <div>
-          <div style={{ marginTop: '20px' }}>
-            <p style={{ textAlign: 'center' }}>LINE </p>
-          </div>
-          <div className="machineLine">
-            {selectedMachineBlock?.map((machine, indexMachine) => (
-              <div
-                className="machineCard"
-                style={{ ...styles.machineCard }}
-                key={indexMachine}
-                onClick={() => handleClickMachine(machine)}
-              >
-                <div className="cubeWrapper">
-                  <div className="cube">
-                    <div className={`top ${machine.status}`}></div>
-                    <div>
-                      <span className={`span ${machine.status}-1`}></span>
-                      <span className={`span ${machine.status}-2`}></span>
-                      <span className={`span ${machine.status}-3`}></span>
-                      <span className={`span ${machine.status}-4`}></span>
-                    </div>
-                  </div>
-                </div>
-                <div>
-                  <p className="machineName">{machine.machine_nm}</p>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </div>
+
+      <SortableList items={selectedMachineBlock} axis="xy" onSortEnd={onSortEnd} />
     </>
   )
 }
