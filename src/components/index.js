@@ -7,6 +7,8 @@ import AppSidebar from './AppSidebar'
 import DocsCallout from './DocsCallout'
 import DocsLink from './DocsLink'
 import DocsExample from './DocsExample'
+import CardCube from './CardCube/CardCube'
+import Loader from './Loader'
 
 export {
   AppBreadcrumb,
@@ -18,4 +20,6 @@ export {
   DocsCallout,
   DocsLink,
   DocsExample,
+  CardCube,
+  Loader,
 }

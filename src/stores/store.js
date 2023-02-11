@@ -3,6 +3,9 @@ import { routerMiddleware } from 'connected-react-router'
 import thunk from 'redux-thunk'
 import { createBrowserHistory } from 'history'
 import createRootReducer from './reducers'
+import { requestInterceptors } from 'src/utils/middlewares/interceptors'
+
+requestInterceptors()
 
 export const history = createBrowserHistory({
   basename: process.env.REACT_APP_ROUTER_BASE || '',

@@ -1,5 +1,13 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
+import { toast } from 'react-toastify'
+import {
+  useQuery,
+  useMutation,
+  useQueryClient,
+  QueryClient,
+  QueryClientProvider,
+} from 'react-query'
 import {
   CButton,
   CCard,
@@ -14,19 +22,55 @@ import {
   CRow,
 } from '@coreui/react'
 import CIcon from '@coreui/icons-react'
-import { cilLockLocked, cilUser } from '@coreui/icons'
+import { cilLockLocked, cilNotes } from '@coreui/icons'
 import { useSelector, useDispatch, shallowEqual } from 'react-redux'
 import { setIsLogin } from 'src/stores/actions/login'
+
+import { Loader } from 'src/components'
+
+import 'react-toastify/dist/ReactToastify.css'
+
+import { postLogin } from '../../../utils/api'
 
 const Login = () => {
   const navigate = useNavigate()
   const dispatch = useDispatch()
+  const [noreg, setNoreg] = useState('1629083')
+  const [password, setPassword] = useState('admin123')
   const { isLogin } = useSelector(
     ({ loginReducer }) => ({
       isLogin: loginReducer.isLogin,
     }),
     shallowEqual,
   )
+
+  const { isLoading, mutate } = useMutation(postLogin, {
+    onSuccess: ({ data }) => {
+      console.log(data, '===')
+      navigate('/dashboard')
+      dispatch(setIsLogin(true))
+      localStorage.setItem('token', data.token)
+    },
+    onError: ({ response }) => {
+      toast.error(response.data.message)
+    },
+  })
+
+  const handleChange = (e) => {
+    const { target } = e
+    if (target.name === 'noreg') {
+      setNoreg(target.value)
+    } else {
+      setPassword(target.value)
+    }
+  }
+
+  const handleClickLogin = (e) => {
+    mutate({
+      noreg,
+      password,
+    })
+  }
 
   useEffect(() => {
     if (isLogin) {
@@ -37,6 +81,8 @@ const Login = () => {
 
   return (
     <div className="bg-light min-vh-100 d-flex flex-row align-items-center">
+      {isLoading && <Loader />}
+
       <CContainer>
         <CRow className="justify-content-center">
           <CCol md={8}>
@@ -45,12 +91,16 @@ const Login = () => {
                 <CCardBody>
                   <CForm>
                     <h1>Login</h1>
-                    <p className="text-medium-emphasis">Sign In to your account</p>
                     <CInputGroup className="mb-3">
                       <CInputGroupText>
-                        <CIcon icon={cilUser} />
+                        <CIcon icon={cilNotes} />
                       </CInputGroupText>
-                      <CFormInput placeholder="Username" autoComplete="username" />
+                      <CFormInput
+                        placeholder="No Registrasi"
+                        value={noreg}
+                        onChange={handleChange}
+                        name="noreg"
+                      />
                     </CInputGroup>
                     <CInputGroup className="mb-4">
                       <CInputGroupText>
@@ -59,29 +109,22 @@ const Login = () => {
                       <CFormInput
                         type="password"
                         placeholder="Password"
-                        autoComplete="current-password"
+                        value={password}
+                        name="password"
+                        onChange={handleChange}
                       />
                     </CInputGroup>
                     <CRow>
                       <CCol xs={6}>
-                        <CButton
-                          color="primary"
-                          className="px-4"
-                          onClick={() => {
-                            const nav = () => {
-                              navigate('/dashboard')
-                            }
-                            dispatch(setIsLogin(true, nav))
-                          }}
-                        >
+                        <CButton color="primary" className="px-4" onClick={handleClickLogin}>
                           Login
                         </CButton>
                       </CCol>
-                      <CCol xs={6} className="text-right">
+                      {/* <CCol xs={6} className="text-right">
                         <CButton color="link" className="px-0">
                           Forgot password?
                         </CButton>
-                      </CCol>
+                      </CCol> */}
                     </CRow>
                   </CForm>
                 </CCardBody>
@@ -89,14 +132,11 @@ const Login = () => {
               <CCard className="text-white bg-primary py-5" style={{ width: '44%' }}>
                 <CCardBody className="text-center">
                   <div>
-                    <h2>Sign up</h2>
-                    <p>
-                      Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
-                      tempor incididunt ut labore et dolore magna aliqua.
-                    </p>
+                    <h2>Registrasi</h2>
+                    <p>Silakan registrasi terlebih dahulu jika belum mempunyai akun.</p>
                     <Link to="/register">
                       <CButton color="primary" className="mt-3" active tabIndex={-1}>
-                        Register Now!
+                        Registrasi Sekarang!
                       </CButton>
                     </Link>
                   </div>

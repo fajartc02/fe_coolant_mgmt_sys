@@ -12,7 +12,7 @@ import {
   CRow,
 } from '@coreui/react'
 import CIcon from '@coreui/icons-react'
-import { cilLockLocked, cilUser } from '@coreui/icons'
+import { cilLockLocked, cilUser, cilNotes, cilAddressBook } from '@coreui/icons'
 
 const Register = () => {
   return (
@@ -24,17 +24,26 @@ const Register = () => {
               <CCardBody className="p-4">
                 <CForm>
                   <h1>Register</h1>
-                  <p className="text-medium-emphasis">Create your account</p>
+                  <p className="text-medium-emphasis">Buat akun</p>
                   <CInputGroup className="mb-3">
                     <CInputGroupText>
                       <CIcon icon={cilUser} />
                     </CInputGroupText>
-                    <CFormInput placeholder="Username" autoComplete="username" />
+                    <CFormInput placeholder="Name" />
                   </CInputGroup>
                   <CInputGroup className="mb-3">
-                    <CInputGroupText>@</CInputGroupText>
-                    <CFormInput placeholder="Email" autoComplete="email" />
+                    <CInputGroupText>
+                      <CIcon icon={cilNotes} />
+                    </CInputGroupText>
+                    <CFormInput placeholder="No Registrasi" />
                   </CInputGroup>
+                  <CInputGroup className="mb-3">
+                    <CInputGroupText>
+                      <CIcon icon={cilAddressBook} />
+                    </CInputGroupText>
+                    <CFormInput placeholder="No. Handphone" />
+                  </CInputGroup>
+
                   <CInputGroup className="mb-3">
                     <CInputGroupText>
                       <CIcon icon={cilLockLocked} />
@@ -56,7 +65,7 @@ const Register = () => {
                     />
                   </CInputGroup>
                   <div className="d-grid">
-                    <CButton color="success">Create Account</CButton>
+                    <CButton color="primary">Create Account</CButton>
                   </div>
                 </CForm>
               </CCardBody>

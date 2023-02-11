@@ -3,8 +3,8 @@ import { useNavigate } from 'react-router-dom'
 import { useDispatch } from 'react-redux'
 import { CCard, CCardBody, CBadge, CCardHeader, CCol, CRow, CCardText } from '@coreui/react'
 import { SortableContainer, SortableElement, arrayMove } from 'react-sortable-hoc'
-// import { arrayMove } from 'array-move'
-// import {  } from 'react-sortable-hoc';
+
+import { CardCube } from '../../components'
 
 // REDUX
 import { setSelectedMachine } from '../../stores/actions'
@@ -15,33 +15,6 @@ import './styles.scss'
 // ASSETS / JSON
 import MachineSummary from '../../assets/json/machine-block-summary.json'
 import MachineData from '../../assets/json/machine-data.json'
-
-const machinesTemp = [
-  {
-    machine_nm: 'Cylinder Head A1',
-    index_pos: 0,
-    index_machine: 0,
-    status: 'danger',
-  },
-  {
-    machine_nm: 'Cylinder Head A2',
-    index_pos: 1,
-    index_machine: 1,
-    status: 'warning',
-  },
-  {
-    machine_nm: 'Cylinder Head A3',
-    index_pos: 2,
-    index_machine: 2,
-    status: 'safe',
-  },
-  {
-    machine_nm: 'Cylinder Head A4',
-    index_pos: 3,
-    index_machine: 3,
-    status: 'danger',
-  },
-]
 
 const Dashboard = () => {
   const navigate = useNavigate()
@@ -76,28 +49,7 @@ const Dashboard = () => {
   }
 
   const SortableItem = SortableElement(({ value, index }) => (
-    <div
-      className="machineCard"
-      style={{ ...styles.machineCard }}
-      key={value.index_machine}
-      onClick={() => handleClickMachine(value)}
-      id={index}
-    >
-      <div className="cubeWrapper">
-        <div className="cube">
-          <div className={`top ${value.status}`}></div>
-          <div>
-            <span className={`span ${value.status}-1`}></span>
-            <span className={`span ${value.status}-2`}></span>
-            <span className={`span ${value.status}-3`}></span>
-            <span className={`span ${value.status}-4`}></span>
-          </div>
-        </div>
-      </div>
-      <div>
-        <p className="machineName">{value.machine_nm}</p>
-      </div>
-    </div>
+    <CardCube value={value} index={index} onClick={handleClickMachine} />
   ))
 
   const SortableList = SortableContainer(({ items }) => (
@@ -183,7 +135,7 @@ const Dashboard = () => {
         ))}
       </CRow>
 
-      <SortableList items={selectedMachineBlock} axis="xy" onSortEnd={onSortEnd} />
+      <SortableList items={selectedMachineBlock} axis="xy" onSortEnd={onSortEnd} distance={1} />
     </>
   )
 }

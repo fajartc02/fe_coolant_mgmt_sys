@@ -81,8 +81,8 @@ const AppHeaderDropdown = () => {
           onClick={() => {
             navigate('/login')
             dispatch(setIsLogin(false))
+            localStorage.removeItem('token')
           }}
-          href=""
         >
           <CIcon icon={cilLockLocked} className="me-2" />
           LogOut

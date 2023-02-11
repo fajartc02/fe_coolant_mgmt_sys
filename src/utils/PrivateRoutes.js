@@ -10,7 +10,9 @@ const PrivateRoutes = () => {
     shallowEqual,
   )
 
-  return isLogin ? <Outlet /> : <Navigate to="/login" />
+  const token = localStorage.getItem('token')
+
+  return token ? <Outlet /> : <Navigate to="/login" />
 }
 
 export default PrivateRoutes

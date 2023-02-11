@@ -1,5 +1,7 @@
 import React, { Component, Suspense } from 'react'
 import { Route, Routes, BrowserRouter as Router } from 'react-router-dom'
+import { Loader } from './components'
+
 import PrivateRoutes from './utils/PrivateRoutes'
 import './scss/style.scss'
 
