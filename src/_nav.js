@@ -8,6 +8,8 @@ import {
   cilDescription,
   cilSpeedometer,
   cilCalendar,
+  // cilFactory,
+  cilApplicationsSettings,
   cilMoney,
   cilDrop,
   cilNotes,
@@ -42,6 +44,12 @@ const _nav = [
   {
     component: CNavTitle,
     name: 'Master Data',
+  },
+  {
+    component: CNavItem,
+    name: 'Machines',
+    to: '/master/machines',
+    icon: <CIcon icon={cilApplicationsSettings} customClassName="nav-icon" />,
   },
   {
     component: CNavItem,

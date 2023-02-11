@@ -20,12 +20,12 @@ const CardCube = ({ value, index, onClick }) => {
       <div>
         <Cube>
           <TopCube />
-          <BottomCube color={value.color} />
+          <BottomCube color={value.status_color} />
           <ContentCube>
-            <FirstCubeSide color={value.color}></FirstCubeSide>
-            <SecondCubeSide color={value.color}></SecondCubeSide>
-            <ThirdCubeSide color={value.color}></ThirdCubeSide>
-            <FourthCubeSide color={value.color}></FourthCubeSide>
+            <FirstCubeSide color={value.status_color}></FirstCubeSide>
+            <SecondCubeSide color={value.status_color}></SecondCubeSide>
+            <ThirdCubeSide color={value.status_color}></ThirdCubeSide>
+            <FourthCubeSide color={value.status_color}></FourthCubeSide>
           </ContentCube>
         </Cube>
       </div>
@@ -39,7 +39,7 @@ const CardCube = ({ value, index, onClick }) => {
 CardCube.propTypes = {
   value: PropTypes.object,
   onClick: PropTypes.func,
-  index: PropTypes.string,
+  index: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
 }
 
 CardCube.defaultProps = {

@@ -1,8 +1,9 @@
-import React, { useState, useEffect } from 'react'
+/* eslint-disable react/prop-types */
+import React, { useState, useEffect, useRef } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useDispatch } from 'react-redux'
 import { CCard, CCardBody, CBadge, CCardHeader, CCol, CRow, CCardText } from '@coreui/react'
-import { SortableContainer, SortableElement, arrayMove } from 'react-sortable-hoc'
+// import { SortableContainer, SortableElement, arrayMove } from 'react-sortable-hoc'
 
 import { CardCube } from '../../components'
 
@@ -16,17 +17,201 @@ import './styles.scss'
 import MachineSummary from '../../assets/json/machine-block-summary.json'
 import MachineData from '../../assets/json/machine-data.json'
 
+const dummy1 = {
+  line_nm: 'Cylinder Head',
+  line_desc: '',
+  line_lvl: 'LINE',
+  idx_pos: 0,
+  childs: [
+    {
+      line_nm: 'Area Rough',
+      line_desc: '',
+      line_lvl: 'AREA',
+      idx_pos: 1,
+      childs: [
+        {
+          line_nm: 'Cell Rough A',
+          line_desc: '',
+          line_lvl: 'CELL',
+          idx_pos: 1,
+          machines: [
+            {
+              machine_id: 0,
+              machine_nm: 'IMSP-0001',
+              idx_pos: 1,
+              status_color: '#00ff94',
+              status_check: 'Normal',
+            },
+            {
+              machine_id: 0,
+              machine_nm: 'IMSP-0001',
+              idx_pos: 1,
+              status_color: '#00ff94',
+              status_check: 'Normal',
+            },
+          ],
+        },
+        {
+          line_nm: 'Cell Rough B',
+          line_desc: '',
+          line_lvl: 'CELL',
+          idx_pos: 2,
+          machines: [
+            {
+              machine_id: 0,
+              machine_nm: 'IMSP-0001',
+              idx_pos: 1,
+              status_color: '#00ff94',
+              status_check: 'Normal',
+            },
+            {
+              machine_id: 0,
+              machine_nm: 'IMSP-0001',
+              idx_pos: 1,
+              status_color: '#00ff94',
+              status_check: 'Normal',
+            },
+          ],
+        },
+      ],
+    },
+    {
+      line_nm: 'Area Finish',
+      line_desc: '',
+      line_lvl: 'AREA',
+      idx_pos: 2,
+      childs: [
+        {
+          line_nm: 'Cell Finish A',
+          line_desc: '',
+          line_lvl: 'CELL',
+          idx_pos: 1,
+          machines: [
+            {
+              machine_id: 0,
+              machine_nm: 'IMSP-0001',
+              idx_pos: 1,
+              status_color: '#00ff94',
+              status_check: 'Normal',
+            },
+            {
+              machine_id: 0,
+              machine_nm: 'IMSP-0001',
+              idx_pos: 1,
+              status_color: '#fff600 ',
+              status_check: 'Normal',
+            },
+          ],
+        },
+        {
+          line_nm: 'Cell Finish B',
+          line_desc: '',
+          line_lvl: 'CELL',
+          idx_pos: 2,
+          machines: [
+            {
+              machine_id: 0,
+              machine_nm: 'IMSP-0001',
+              idx_pos: 1,
+              status_color: '#fff600',
+              status_check: 'Normal',
+            },
+            {
+              machine_id: 0,
+              machine_nm: 'IMSP-0001',
+              idx_pos: 1,
+              status_color: '#00ff94',
+              status_check: 'Normal',
+            },
+          ],
+        },
+      ],
+    },
+  ],
+}
+
+const dummy2 = {
+  line_nm: 'test line',
+  line_desc: '',
+  line_lvl: 'LINE',
+  idx_pos: 0,
+  childs: [
+    {
+      line_nm: 'test cell',
+      line_desc: '',
+      line_lvl: 'CELL',
+      idx_pos: 0,
+      machines: [
+        {
+          machine_id: 0,
+          machine_nm: 'IMSP-0001',
+          idx_pos: 1,
+          status_color: '#fff600',
+          status_check: 'Normal',
+        },
+        {
+          machine_id: 1,
+          machine_nm: 'IMSP-0001',
+          idx_pos: 2,
+          status_color: '#00ff94',
+          status_check: 'Normal',
+        },
+      ],
+    },
+    {
+      line_nm: 'test cell 2',
+      line_desc: '',
+      line_lvl: 'CELL',
+      idx_pos: 1,
+      machines: [
+        {
+          machine_id: 0,
+          machine_nm: 'IMSP-0001',
+          idx_pos: 1,
+          status_color: '#db1a1a',
+          status_check: 'Normal',
+        },
+        {
+          machine_id: 2,
+          machine_nm: 'IMSP-0001',
+          idx_pos: 2,
+          status_color: '#00ff94',
+          status_check: 'Normal',
+        },
+      ],
+    },
+  ],
+}
+
 const Dashboard = () => {
   const navigate = useNavigate()
   const dispatch = useDispatch()
+  const didMount = useRef(false)
 
   const [machineDataPreview, setMachineDataPreview] = useState(MachineSummary)
   const [machineDataBlock, setMachineDataBlock] = useState(MachineData)
   const [selectedMachineBlock, setSelectedMachineBlock] = useState()
+  const [isWithArea, setIsWithArea] = useState(false)
 
   useEffect(() => {
-    setSelectedMachineBlock(machineDataBlock[0])
+    setSelectedMachineBlock(dummy1)
+    if (dummy1.childs[0].line_lvl === 'AREA') {
+      setIsWithArea(true)
+    }
   }, [])
+
+  useEffect(() => {
+    if (!didMount.current) {
+      didMount.current = true
+      return
+    }
+
+    if (selectedMachineBlock.childs[0].line_lvl === 'AREA') {
+      setIsWithArea(true)
+    } else {
+      setIsWithArea(false)
+    }
+  }, [selectedMachineBlock])
 
   const handleClickSummaryCard = (item) => {
     const newData = [...machineDataPreview]
@@ -36,11 +221,15 @@ const Dashboard = () => {
     }))
     setMachineDataPreview(updateData)
 
-    const filteredData = machineDataBlock.filter(
-      (machineBlock) => machineBlock.line_id === item.id,
-    )[0]
+    if (item.id < 2) {
+      setSelectedMachineBlock(dummy1)
+    } else {
+      setSelectedMachineBlock(dummy2)
+    }
 
-    setSelectedMachineBlock(filteredData)
+    // const filteredData = machineDataBlock.filter(
+    //   (machineBlock) => machineBlock.line_id === item.id,
+    // )[0]
   }
 
   const handleClickMachine = (machine) => {
@@ -48,57 +237,40 @@ const Dashboard = () => {
     dispatch(setSelectedMachine(machine))
   }
 
-  const SortableItem = SortableElement(({ value, index }) => (
-    <CardCube value={value} index={index} onClick={handleClickMachine} />
-  ))
-
-  const SortableList = SortableContainer(({ items }) => (
-    <div className="machineContainer">
-      {items?.line_area?.map((element, index) => (
-        <div key={index}>
-          <div style={{ marginTop: '20px' }}>
-            <p style={{ textAlign: 'center' }}>{`${element.area_sub}`} </p>
-          </div>
-          <div className="machineLine">
-            {element.machines.map((machine, idx) => (
-              <SortableItem
-                value={machine}
-                index={idx}
-                key={machine.index_machine}
-                collection={index}
-              />
-            ))}
-          </div>
-        </div>
-      ))}
+  const ListArea = ({ el, idx }) => (
+    <div key={idx}>
+      <div style={{ marginTop: '20px' }}>
+        <p style={{ textAlign: 'center' }}>{`${el.line_nm}`} </p>
+      </div>
+      <div className="machineLine">
+        {el?.machines?.map((machine, id) => (
+          <React.Fragment key={id}>
+            <CardCube key={id} value={machine} index={id} onClick={handleClickMachine} />
+          </React.Fragment>
+        ))}
+      </div>
     </div>
-  ))
+  )
 
-  const onSortEnd = ({ oldIndex, newIndex, collection }) => {
-    let arr = arrayMove(selectedMachineBlock.line_area[collection].machines, oldIndex, newIndex)
-    // update index position
-    for (let i = 0; i < arr.length; i++) {
-      arr[i].index_pos = i
-    }
-
-    // update array
-    const temp = selectedMachineBlock.line_area.map((element, index) => {
-      if (index === collection) {
-        return {
-          ...element,
-          machines: arr,
-        }
-      }
-      return element
-    })
-
-    // update object selectedMachineBlock
-    const updateData = {
-      ...selectedMachineBlock,
-      line_area: temp,
-    }
-
-    setSelectedMachineBlock(updateData)
+  // eslint-disable-next-line react/prop-types
+  const List = ({ items }) => {
+    return (
+      <div className="machineContainer">
+        {items?.childs?.map((line, index) => (
+          <React.Fragment key={index}>
+            {isWithArea ? (
+              line?.childs?.map((el, idx) => (
+                <React.Fragment key={idx}>
+                  <ListArea el={el} idx={idx} />
+                </React.Fragment>
+              ))
+            ) : (
+              <ListArea el={line} idx={index} />
+            )}
+          </React.Fragment>
+        ))}
+      </div>
+    )
   }
 
   return (
@@ -135,21 +307,9 @@ const Dashboard = () => {
         ))}
       </CRow>
 
-      <SortableList items={selectedMachineBlock} axis="xy" onSortEnd={onSortEnd} distance={1} />
+      <List items={selectedMachineBlock} />
     </>
   )
 }
 
 export default Dashboard
-
-const styles = {
-  // span1: {
-  //   position: 'absolute',
-  //   top: '0',
-  //   left: '0',
-  //   width: '100%',
-  //   height: '100%',
-  //   background: 'linear-gradient(#151515, #00ec00)',
-  //   transform: 'rotate(calc(0deg)) translateZ(15px)',
-  // },
-}

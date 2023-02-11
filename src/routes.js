@@ -55,6 +55,7 @@ const CostCalculation = React.lazy(() => import('./views/costCalculation/CostCal
 const Schedule = React.lazy(() => import('./views/schedule/Schedule'))
 const Cost = React.lazy(() => import('./views/cost/Cost'))
 const Report = React.lazy(() => import('./views/report/Report'))
+const Machines = React.lazy(() => import('./views/machines/Machines'))
 
 const routes = [
   { path: '/', exact: true, name: 'Home' },
@@ -62,6 +63,7 @@ const routes = [
   { path: '/dashboard/report', name: 'Report', element: Report },
   { path: '/costCalculation', name: 'CostCalculation', element: CostCalculation },
   { path: '/master', name: 'Master', element: Schedule },
+  { path: '/master/machines', name: 'Machines', element: Machines },
   { path: '/master/schedule', name: 'Schedule', element: Schedule },
   { path: '/master/cost', name: 'Cost', element: Cost },
   { path: '/theme', name: 'Theme', element: Colors, exact: true },
