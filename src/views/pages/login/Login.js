@@ -1,13 +1,8 @@
 import React, { useEffect, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
+import { useSelector, useDispatch, shallowEqual } from 'react-redux'
+import { useMutation } from 'react-query'
 import { toast } from 'react-toastify'
-import {
-  useQuery,
-  useMutation,
-  useQueryClient,
-  QueryClient,
-  QueryClientProvider,
-} from 'react-query'
 import {
   CButton,
   CCard,
@@ -23,14 +18,13 @@ import {
 } from '@coreui/react'
 import CIcon from '@coreui/icons-react'
 import { cilLockLocked, cilNotes } from '@coreui/icons'
-import { useSelector, useDispatch, shallowEqual } from 'react-redux'
-import { setIsLogin } from 'src/stores/actions/login'
 
+// COMPONENTS
 import { Loader } from 'src/components'
 
-import 'react-toastify/dist/ReactToastify.css'
-
+// API n REDUX
 import { postLogin } from '../../../utils/api'
+import { setIsLogin } from 'src/stores/actions/login'
 
 const Login = () => {
   const navigate = useNavigate()
@@ -46,7 +40,6 @@ const Login = () => {
 
   const { isLoading, mutate } = useMutation(postLogin, {
     onSuccess: ({ data }) => {
-      console.log(data, '===')
       navigate('/dashboard')
       dispatch(setIsLogin(true))
       localStorage.setItem('token', data.token)

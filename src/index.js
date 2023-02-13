@@ -9,6 +9,12 @@ import reportWebVitals from './reportWebVitals'
 import { Provider } from 'react-redux'
 import store from './stores/store'
 
+import 'primereact/resources/themes/lara-light-indigo/theme.css'
+import 'primereact/resources/primereact.min.css'
+import 'primeicons/primeicons.css'
+
+import 'react-toastify/dist/ReactToastify.css'
+
 const queryClient = new QueryClient()
 
 createRoot(document.getElementById('root')).render(
