@@ -10,3 +10,7 @@ export const postRegister = (payload) =>
   axios.post(`${apiUrl}/register`, payload).then((res) => res.data)
 
 export const getPublicGroup = () => axios.get(`${apiUrl}/public/group`).then((res) => res.data)
+
+export const getLinesMap = (param) => axios.get(`${apiUrl}/operational/dashboard/linesMap/${param}`)
+export const getMachineStatusMap = (param) =>
+  axios.get(`${apiUrl}/operational/dashboard/machinesStatusMap/${param}`)

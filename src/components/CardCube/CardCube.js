@@ -20,12 +20,12 @@ const CardCube = ({ value, index, onClick }) => {
       <div>
         <Cube>
           <TopCube />
-          <BottomCube color={value.status_color} />
+          <BottomCube color={value.color_status} />
           <ContentCube>
-            <FirstCubeSide color={value.status_color}></FirstCubeSide>
-            <SecondCubeSide color={value.status_color}></SecondCubeSide>
-            <ThirdCubeSide color={value.status_color}></ThirdCubeSide>
-            <FourthCubeSide color={value.status_color}></FourthCubeSide>
+            <FirstCubeSide color={value.color_status}></FirstCubeSide>
+            <SecondCubeSide color={value.color_status}></SecondCubeSide>
+            <ThirdCubeSide color={value.color_status}></ThirdCubeSide>
+            <FourthCubeSide color={value.color_status}></FourthCubeSide>
           </ContentCube>
         </Cube>
       </div>

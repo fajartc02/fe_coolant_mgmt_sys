@@ -1,4 +1,14 @@
 import styled from '@emotion/styled'
+import { keyframes } from '@emotion/react'
+
+const animate = keyframes`
+  0% {
+    transform: rotateX(-30deg) rotateY(0deg);
+  }
+  100% {
+    transform: rotateX(-30deg) rotateY(360deg);
+  }
+`
 
 export const MachineCard = styled.div`
   width: 60px;
@@ -31,7 +41,7 @@ export const Cube = styled.div`
   height: 30px;
   transform-style: preserve-3d;
   transform: rotateX(-30deg);
-  animation: animate 4s linear infinite;
+  animation: ${animate} 4s linear infinite;
   margin: auto;
 `
 
