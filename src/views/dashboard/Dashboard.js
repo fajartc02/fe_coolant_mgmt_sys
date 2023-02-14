@@ -70,43 +70,48 @@ const Dashboard = () => {
   }
 
   const ReComp = ({ data }) => {
+    console.log(data)
     return (
-      <CCard>
-        <CCardHeader>{data.line_nm}</CCardHeader>
-        {data?.children?.length > 0 &&
-          data.loop_by === 'COL' &&
-          data.children.map((element, index) => (
-            <CCardBody key={index}>
-              <ReComp data={element} />
-            </CCardBody>
-          ))}
-        {data?.children?.length > 0 && data.loop_by === 'ROW' && (
+      <React.Fragment>
+        {data[0].loop_by === 'COL' && (
           <CRow>
-            {data.children.map((element, index) => (
-              <CCol lg={6} md={6} key={index}>
+            {data.map((parent, idx) => (
+              <CCol key={idx}>
                 <CCard>
-                  <CCardHeader>{element.line_nm}</CCardHeader>
-                  {element.children.length === 0 && (
-                    <CCardBody key={index}>
+                  <CCardHeader>{parent.line_nm}</CCardHeader>
+                  <CCardBody>
+                    {parent.children.length > 0 ? (
+                      <ReComp data={parent.children} />
+                    ) : (
                       <MachineLine>
-                        <Machine data={element} />
+                        <Machine data={parent} />
                       </MachineLine>
-                    </CCardBody>
-                  )}
-                  {element.children.length > 0 &&
-                    element.children.map((el, idx) => (
-                      <CCardBody key={index}>
-                        <MachineLine>
-                          <Machine data={el} />
-                        </MachineLine>
-                      </CCardBody>
-                    ))}
+                    )}
+                  </CCardBody>
                 </CCard>
               </CCol>
             ))}
           </CRow>
         )}
-      </CCard>
+        {data[0].loop_by === 'ROW' && (
+          <React.Fragment>
+            {data.map((parent, idx) => (
+              <CCard key={idx}>
+                <CCardHeader key={idx}>{parent.line_nm}</CCardHeader>
+                <CCardBody>
+                  {parent.children.length > 0 ? (
+                    <ReComp data={parent.children} />
+                  ) : (
+                    <MachineLine>
+                      <Machine data={parent} />
+                    </MachineLine>
+                  )}
+                </CCardBody>
+              </CCard>
+            ))}
+          </React.Fragment>
+        )}
+      </React.Fragment>
     )
   }
 
@@ -146,7 +151,12 @@ const Dashboard = () => {
         ))}
       </CRow>
       <MachineBlock>
-        {recursiveResult?.data?.data && <ReComp data={recursiveResult?.data?.data} />}
+        {recursiveResult?.data?.data && (
+          <CCard>
+            <CCardHeader>{recursiveResult?.data?.data?.line_nm}</CCardHeader>
+            <CCardBody>{<ReComp data={recursiveResult?.data?.data?.children} />}</CCardBody>
+          </CCard>
+        )}
       </MachineBlock>
     </>
   )
