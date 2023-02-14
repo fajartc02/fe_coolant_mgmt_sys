@@ -483,8 +483,8 @@ $cyan-900: shade-color($cyan, 80%) !default;
 // $font-size-root effects the value of `rem`, which is used for as well font sizes, paddings and margins
 // $font-size-base effects the font size of the body text
 // $font-size-root:              null !default;
-// $font-size-base:              1rem !default; // Assumes the browser default, typically `16px`
-// $font-size-sm:                $font-size-base * .875 !default;
+$font-size-base:              1rem !default; // Assumes the browser default, typically `16px`
+$font-size-sm:                $font-size-base * .875 !default;
 // $font-size-lg:                $font-size-base * 1.25 !default;
 
 // $font-weight-lighter:         lighter !default;
@@ -1244,15 +1244,15 @@ $cyan-900: shade-color($cyan, 80%) !default;
 // Tooltips
 
 // scss-docs-start tooltip-variables
-// $tooltip-font-size:                 $font-size-sm !default;
-// $tooltip-max-width:                 200px !default;
+// $tooltip-font-size:                $font-size-sm !default;
+$tooltip-max-width:                 300px !default;
 // $tooltip-color:                     $high-emphasis-inverse !default;
-// $tooltip-bg:                        $black !default;
+$tooltip-bg:                        $gray-400 !default;
 // $tooltip-border-radius:             $border-radius !default;
-// $tooltip-opacity:                   .9 !default;
+$tooltip-opacity:                   1 !default;
 // $tooltip-padding-y:                 $spacer / 4 !default;
 // $tooltip-padding-x:                 $spacer / 2 !default;
-// $tooltip-margin:                    0 !default;
+$tooltip-margin:                    0 !default;
 
 // $tooltip-arrow-width:               .8rem !default;
 // $tooltip-arrow-height:              .4rem !default;

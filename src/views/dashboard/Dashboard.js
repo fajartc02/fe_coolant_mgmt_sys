@@ -80,10 +80,37 @@ const Dashboard = () => {
               <ReComp data={element} />
             </CCardBody>
           ))}
-        <MachineLine>{data?.children?.length === 0 && <Machine data={data} />}</MachineLine>
+        {data?.children?.length > 0 && data.loop_by === 'ROW' && (
+          <CRow>
+            {data.children.map((element, index) => (
+              <CCol lg={6} md={6} key={index}>
+                <CCard>
+                  <CCardHeader>{element.line_nm}</CCardHeader>
+                  {element.children.length === 0 && (
+                    <CCardBody key={index}>
+                      <MachineLine>
+                        <Machine data={element} />
+                      </MachineLine>
+                    </CCardBody>
+                  )}
+                  {element.children.length > 0 &&
+                    element.children.map((el, idx) => (
+                      <CCardBody key={index}>
+                        <MachineLine>
+                          <Machine data={el} />
+                        </MachineLine>
+                      </CCardBody>
+                    ))}
+                </CCard>
+              </CCol>
+            ))}
+          </CRow>
+        )}
       </CCard>
     )
   }
+
+  console.log(recursiveResult?.data?.data)
 
   return (
     <>
