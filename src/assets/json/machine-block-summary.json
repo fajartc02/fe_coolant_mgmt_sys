@@ -4,9 +4,9 @@
     "isSelected": true,
     "line_nm": "Cylinder Head",
     "summary": [
-      { "color": "danger", "total": 5 },
-      { "color": "warning", "total": 6 },
-      { "color": "success", "total": 0 }
+      { "color": "danger", "total": 2 },
+      { "color": "warning", "total": 2 },
+      { "color": "success", "total": 7 }
     ]
   },
   {
@@ -14,8 +14,8 @@
     "isSelected": false,
     "line_nm": "Cylinder Block",
     "summary": [
-      { "color": "danger", "total": 5 },
-      { "color": "warning", "total": 6 },
+      { "color": "danger", "total": 2 },
+      { "color": "warning", "total": 2 },
       { "color": "success", "total": 7 }
     ]
   },
@@ -24,8 +24,8 @@
     "isSelected": false,
     "line_nm": "Cam Shaft",
     "summary": [
-      { "color": "danger", "total": 5 },
-      { "color": "warning", "total": 6 },
+      { "color": "danger", "total": 1 },
+      { "color": "warning", "total": 1 },
       { "color": "success", "total": 7 }
     ]
   },
@@ -34,8 +34,8 @@
     "isSelected": false,
     "line_nm": "Crank Shaft",
     "summary": [
-      { "color": "danger", "total": 5 },
-      { "color": "warning", "total": 6 },
+      { "color": "danger", "total": 1 },
+      { "color": "warning", "total": 1 },
       { "color": "success", "total": 7 }
     ]
   }

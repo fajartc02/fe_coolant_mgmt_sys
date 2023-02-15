@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 /* eslint-disable react/prop-types */
 import React, { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
@@ -15,12 +16,18 @@ import { MachineLine, MachineBlock } from './StyledComponent'
 
 // ASSETS / JSON
 import MachineSummary from '../../assets/json/machine-block-summary.json'
+import MachineStatusCam from '../../assets/json/machine-status-cam.json'
+import MachineStatusCylinder from '../../assets/json/machine-status-cylinder.json'
+import LineCam from '../../assets/json/line-cam.json'
+import LineCylinder from '../../assets/json/line-cylinder.json'
 // API
 import { getLinesMap, getMachineStatusMap } from 'src/utils/api'
 
 const Dashboard = () => {
   const navigate = useNavigate()
   const dispatch = useDispatch()
+  const [machineStatusUsed, setMachineStatusUsed] = useState(MachineStatusCylinder)
+  const [dataLineUsed, setDataLineUsed] = useState(LineCylinder)
 
   const { data: recursiveResult } = useQuery(['lines-map', 1], () => getLinesMap(1), {
     refetchOnWindowFocus: false,
@@ -35,12 +42,22 @@ const Dashboard = () => {
       ...el,
       isSelected: item.id === el.id,
     }))
+
+    var index = machineDataPreview.findIndex((obj) => obj.line_nm === item.line_nm)
+    setDataLineUsed(index < 2 ? LineCylinder : LineCam)
+    setMachineStatusUsed(index < 2 ? MachineStatusCylinder : MachineStatusCam)
     setMachineDataPreview(updateData)
   }
 
   const handleClickMachine = (machine) => {
-    navigate(`/dashboard/report/${machine.machine_id}/${machine.machine_nm}`)
-    dispatch(setSelectedMachine(machine))
+    console.log(machine, '  machine')
+    if (machine.is_changes_checmical_status) {
+      navigate(`/dashboard/draining/${machine.machine_id}/${machine.machine_nm}`)
+      dispatch(setSelectedMachine(machine))
+    } else {
+      navigate(`/dashboard/report/${machine.machine_id}/${machine.machine_nm}`)
+      dispatch(setSelectedMachine(machine))
+    }
   }
 
   const Machine = ({ data }) => {
@@ -58,9 +75,9 @@ const Dashboard = () => {
 
     return (
       <>
-        {machines &&
-          machines.length > 0 &&
-          machines?.map((machine, id) => (
+        {machineStatusUsed.data &&
+          machineStatusUsed.data.length > 0 &&
+          machineStatusUsed.data?.map((machine, id) => (
             <React.Fragment key={id}>
               <CardCube key={id} value={machine} index={id} onClick={handleClickMachine} />
             </React.Fragment>
@@ -114,7 +131,8 @@ const Dashboard = () => {
     )
   }
 
-  // console.log(recursiveResult?.data?.data)
+  console.log(recursiveResult?.data?.data)
+  console.log(machineStatusUsed)
 
   return (
     <>
@@ -150,10 +168,10 @@ const Dashboard = () => {
         ))}
       </CRow>
       <MachineBlock>
-        {recursiveResult?.data?.data && (
+        {dataLineUsed?.data && (
           <CCard color="white">
-            <CCardHeader>{recursiveResult?.data?.data?.line_nm}</CCardHeader>
-            <CCardBody>{<ReComp data={recursiveResult?.data?.data?.children} />}</CCardBody>
+            <CCardHeader>{dataLineUsed?.data?.line_nm}</CCardHeader>
+            <CCardBody>{<ReComp data={dataLineUsed?.data?.children} />}</CCardBody>
           </CCard>
         )}
       </MachineBlock>

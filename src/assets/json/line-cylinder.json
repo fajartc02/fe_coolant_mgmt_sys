@@ -1,0 +1,79 @@
+{
+  "status": 200,
+  "message": "Success to get Lines Machines Map Data",
+  "data": {
+    "line_id": 1,
+    "line_nm": "Cylinder Head",
+    "line_desc": "Machining Cylinder Head",
+    "line_lvl": "LINE",
+    "loop_by": null,
+    "children": [
+      {
+        "line_id": 2,
+        "line_nm": "Rough Area",
+        "line_desc": "Rough Cell Cylinder Head",
+        "line_lvl": "AREA",
+        "loop_by": "COL",
+        "children": [
+          {
+            "line_id": 7,
+            "line_nm": "Rough D",
+            "line_desc": "Rough Cell D Cylinder Head",
+            "line_lvl": "CELL",
+            "loop_by": "ROW",
+            "children": []
+          },
+          {
+            "line_id": 6,
+            "line_nm": "Rough C",
+            "line_desc": "Rough Cell C Cylinder Head",
+            "line_lvl": "CELL",
+            "loop_by": "ROW",
+            "children": []
+          },
+          {
+            "line_id": 5,
+            "line_nm": "Rough B",
+            "line_desc": "Rough Cell B Cylinder Head",
+            "line_lvl": "CELL",
+            "loop_by": "ROW",
+            "children": []
+          },
+          {
+            "line_id": 4,
+            "line_nm": "Rough A",
+            "line_desc": "Rough Cell A Cylinder Head",
+            "line_lvl": "CELL",
+            "loop_by": "ROW",
+            "children": []
+          }
+        ]
+      },
+      {
+        "line_id": 3,
+        "line_nm": "Finish Area",
+        "line_desc": "Finish Cell Cylinder Head",
+        "line_lvl": "AREA",
+        "loop_by": "COL",
+        "children": [
+          {
+            "line_id": 9,
+            "line_nm": "Finish B",
+            "line_desc": "Finish Cell B Cylinder Head",
+            "line_lvl": "CELL",
+            "loop_by": "ROW",
+            "children": []
+          },
+          {
+            "line_id": 8,
+            "line_nm": "Finish A",
+            "line_desc": "Finish Cell A Cylinder Head",
+            "line_lvl": "CELL",
+            "loop_by": "ROW",
+            "children": []
+          }
+        ]
+      }
+    ]
+  }
+}

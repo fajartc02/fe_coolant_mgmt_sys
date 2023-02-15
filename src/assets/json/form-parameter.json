@@ -122,12 +122,16 @@
     "inputType": "file",
     "optionList": [
       {
-        "name": "Normal",
+        "name": "Banyak",
         "id": 0
       },
       {
-        "name": "Tidak Normal",
+        "name": "Sedang",
         "id": 1
+      },
+      {
+        "name": "Sedikit",
+        "id": 2
       }
     ],
     "trueLabel": "",

@@ -24,12 +24,22 @@ import {
 import 'react-datepicker/dist/react-datepicker.css'
 
 import UploadImagePlaceholder from '../../assets/images/Placeholder.jpg'
+import Coktu from '../../assets/images/coktu.png'
+import Cok from '../../assets/images/cok.png'
+import PutCok from '../../assets/images/putcok.png'
+import Putih from '../../assets/images/putih.png'
+import Sedang from '../../assets/images/sedang.png'
+import Banyak from '../../assets/images/banyak.png'
+import Sedikit from '../../assets/images/sedikit.png'
 import EmployeeData from '../../assets/json/employee.json'
 import FormParameter from '../../assets/json/form-parameter.json'
 
 const Report = () => {
   const [checkDate, setCheckDate] = useState('')
   const [timeDate, setTimeDate] = useState('')
+  const [visual, setVisual] = useState('putih')
+  const [sludge, setSludge] = useState('sedang')
+  const [drainingTime, setDrainingTime] = useState('')
   const [imagePrev, setImagePrev] = useState(UploadImagePlaceholder)
   const [employees, setEmployees] = useState(EmployeeData)
   const [selectedEmployee, setSelectedEmployee] = useState(EmployeeData)
@@ -61,6 +71,39 @@ const Report = () => {
 
     console.log(updateParam)
     setParameter(updateParam)
+  }
+
+  const imageDefault = (name) => {
+    if (name === 'visual') {
+      switch (visual) {
+        case 'Coklat Tua':
+          return Coktu
+        case 'Putih Coklat':
+          return PutCok
+        case 'Coklat':
+          return Cok
+        default:
+          return Putih
+      }
+    } else {
+      switch (sludge) {
+        case 'Sedikit':
+          return Sedikit
+        case 'Sedang':
+          return Sedang
+        default:
+          return Banyak
+      }
+    }
+  }
+
+  const handleChangeFileOption = (name, value) => {
+    console.log(name)
+    if (name === 'visual') {
+      setVisual(value)
+    } else {
+      setSludge(value)
+    }
   }
 
   return (
@@ -144,6 +187,19 @@ const Report = () => {
                 timeCaption="Time"
                 dateFormat="hh:mm"
                 locale={id}
+              />
+            </CCol>
+          </CRow>
+          <CRow className="mb-3">
+            <CFormLabel htmlFor="drainingTime" className="col-sm-2 col-form-label">
+              Lama Pengerjaan
+            </CFormLabel>
+            <CCol sm={5}>
+              <CFormInput
+                type="text"
+                id="drainingTime"
+                value={drainingTime}
+                placeholder="Masukkan Lama Pengerjaan"
               />
             </CCol>
           </CRow>
@@ -232,25 +288,31 @@ const Report = () => {
                     <CFormLabel htmlFor="lifeTime" className="col-sm-2 col-form-label">
                       {form.label}
                     </CFormLabel>
-                    <img
-                      src={UploadImagePlaceholder}
-                      alt=""
-                      style={{ height: '200px', width: '200px', marginRight: '30px' }}
-                    />
+                    <div>
+                      <p>Acuan</p>
+                      <img
+                        src={imageDefault(form.label)}
+                        alt=""
+                        style={{ height: '200px', width: '200px', marginRight: '30px' }}
+                      />
+                    </div>
                     <input
                       type="file"
                       id="imageInpt"
                       style={{ display: 'none' }}
                       onChange={handleOnChangeImage}
                     />
-                    <label htmlFor="imageInpt">
-                      <img
-                        src={imagePrev}
-                        alt="uploadedImage"
-                        id="uploadedImage"
-                        style={{ height: '200px', width: '200px', marginRight: '30px' }}
-                      />
-                    </label>
+                    <div>
+                      <p>Aktual</p>
+                      <label htmlFor="imageInpt">
+                        <img
+                          src={imagePrev}
+                          alt="uploadedImage"
+                          id="uploadedImage"
+                          style={{ height: '200px', width: '200px', marginRight: '30px' }}
+                        />
+                      </label>
+                    </div>
                     <div
                       style={{
                         display: 'flex',
@@ -259,7 +321,15 @@ const Report = () => {
                       }}
                     >
                       {form.optionList.map((el, index) => (
-                        <CFormCheck type="radio" name={form.value} label={el.name} key={index} />
+                        <CFormCheck
+                          defaultChecked={index === 0}
+                          type="radio"
+                          value={el.name}
+                          name={form.value}
+                          label={el.name}
+                          key={index}
+                          onChange={(e) => handleChangeFileOption(form.value, e.target.value)}
+                        />
                       ))}
                     </div>
                   </div>

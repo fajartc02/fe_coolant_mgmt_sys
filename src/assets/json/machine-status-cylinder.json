@@ -1,0 +1,138 @@
+{
+  "status": 200,
+  "message": "Success to get Machines Status Map",
+  "data": [
+    {
+      "machine_id": 34,
+      "machine_nm": "IMSP-0031",
+      "machine_desc": "Process machining",
+      "machine_maker": "NTC Komatsu",
+      "idx_pos": 1,
+      "is_checked_status": false,
+      "color_status": "#dc3545",
+      "checked_status": "Danger",
+      "is_changes_checmical_status": false,
+      "changes_checmical_status": "Belum Waktunya Pengurasan"
+    },
+    {
+      "machine_id": 35,
+      "machine_nm": "IMSP-0032",
+      "machine_desc": "Process machining",
+      "machine_maker": "NTC Komatsu",
+      "idx_pos": 2,
+      "is_checked_status": false,
+      "color_status": "#dc3545",
+      "checked_status": "Danger",
+      "is_changes_checmical_status": true,
+      "changes_checmical_status": "Sudah Waktunya Pengurasan"
+    },
+    {
+      "machine_id": 36,
+      "machine_nm": "IMSP-0033",
+      "machine_desc": "Process machining",
+      "machine_maker": "NTC Komatsu",
+      "idx_pos": 3,
+      "is_checked_status": false,
+      "color_status": "#ffc107",
+      "checked_status": "Warning",
+      "is_changes_checmical_status": false,
+      "changes_checmical_status": "Belum Waktunya Pengurasan"
+    },
+    {
+      "machine_id": 37,
+      "machine_nm": "IMSP-0034",
+      "machine_desc": "Process machining",
+      "machine_maker": "NTC Komatsu",
+      "idx_pos": 4,
+      "is_checked_status": false,
+      "color_status": "#ffc107",
+      "checked_status": "Warning",
+      "is_changes_checmical_status": true,
+      "changes_checmical_status": "Sudah Waktunya Pengurasan"
+    },
+    {
+      "machine_id": 38,
+      "machine_nm": "IMSP-0035",
+      "machine_desc": "Process machining",
+      "machine_maker": "NTC Komatsu",
+      "idx_pos": 5,
+      "is_checked_status": false,
+      "color_status": "#00ff90",
+      "checked_status": "Normal",
+      "is_changes_checmical_status": false,
+      "changes_checmical_status": "Belum Waktunya Pengurasan"
+    },
+    {
+      "machine_id": 39,
+      "machine_nm": "IMSP-0036",
+      "machine_desc": "Process machining",
+      "machine_maker": "NTC Komatsu",
+      "idx_pos": 6,
+      "is_checked_status": false,
+      "color_status": "#00ff90",
+      "checked_status": "Normal",
+      "is_changes_checmical_status": true,
+      "changes_checmical_status": "Sudah Waktunya Pengurasan"
+    },
+    {
+      "machine_id": 40,
+      "machine_nm": "IMSP-0037",
+      "machine_desc": "Process machining",
+      "machine_maker": "NTC Komatsu",
+      "idx_pos": 7,
+      "is_checked_status": true,
+      "color_status": "#00ff90",
+      "checked_status": "Normal",
+      "is_changes_checmical_status": false,
+      "changes_checmical_status": "Belum Waktunya Pengurasan"
+    },
+    {
+      "machine_id": 41,
+      "machine_nm": "IMSP-0038",
+      "machine_desc": "Process machining",
+      "machine_maker": "NTC Komatsu",
+      "idx_pos": 8,
+      "is_checked_status": true,
+      "color_status": "#00ff90",
+      "checked_status": "Normal",
+      "is_changes_checmical_status": false,
+      "changes_checmical_status": "Belum Waktunya Pengurasan"
+    },
+    {
+      "machine_id": 42,
+      "machine_nm": "IMSP-0039",
+      "machine_desc": "Process machining",
+      "machine_maker": "NTC Komatsu",
+      "idx_pos": 9,
+      "is_checked_status": true,
+      "color_status": "#00ff90",
+      "checked_status": "Normal",
+      "is_changes_checmical_status": false,
+      "changes_checmical_status": "Belum Waktunya Pengurasan"
+    },
+    {
+      "machine_id": 43,
+      "machine_nm": "IMSP-0040",
+      "machine_desc": "Process machining",
+      "machine_maker": "NTC Komatsu",
+      "idx_pos": 10,
+      "is_checked_status": true,
+      "color_status": "#00ff90",
+      "checked_status": "Normal",
+      "is_changes_checmical_status": false,
+      "changes_checmical_status": "Belum Waktunya Pengurasan"
+    },
+    {
+      "machine_id": 44,
+      "machine_nm": "IMWB-0005",
+      "machine_desc": "Process Washing",
+      "machine_maker": "AQUA-J",
+      "idx_pos": 11,
+      "is_checked_status": true,
+      "color_status": "#00ff90",
+      "checked_status": "Normal",
+      "is_changes_checmical_status": false,
+      "changes_checmical_status": "Belum Waktunya Pengurasan"
+    }
+  ]
+}

@@ -9,6 +9,7 @@ import {
   CTableHeaderCell,
   CTableBody,
   CTableDataCell,
+  CBadge,
 } from '@coreui/react'
 
 import {
@@ -25,6 +26,8 @@ import {
 } from './StyledComponent'
 
 import { DARK_THEME } from 'src/utils/helpers'
+import CIcon from '@coreui/icons-react'
+import { cilColorFill, cilPen } from '@coreui/icons'
 
 const CardCube = ({ value, index, onClick }) => {
   const { theme } = useSelector((state) => state.uiGeneralReducer)
@@ -54,6 +57,22 @@ const CardCube = ({ value, index, onClick }) => {
         bgColor={theme === DARK_THEME ? '#282a33' : '#fff'}
         onClick={() => onClick(value)}
       >
+        <div style={{ position: 'absolute', right: '0', top: '-3px', zIndex: 2 }}>
+          {!value.is_checked_status &&
+          (value.checked_status === 'Warning' || value.checked_status === 'Danger') ? (
+            <CBadge color="secondary" size="sm">
+              <CIcon icon={cilPen} />
+            </CBadge>
+          ) : value.is_changes_checmical_status ? (
+            <CBadge color="secondary" size="sm">
+              <CIcon icon={cilColorFill} />
+            </CBadge>
+          ) : (
+            <CBadge color="transparent" size="sm">
+              &nbsp;
+            </CBadge>
+          )}
+        </div>
         <div>
           <Cube>
             <TopCube />

@@ -1,0 +1,29 @@
+{
+  "status": 200,
+  "message": "Success to get Lines Machines Map Data",
+  "data": {
+    "line_id": 22,
+    "line_nm": "Cam Shaft",
+    "line_desc": "Machining Cam Shaft",
+    "line_lvl": "LINE",
+    "loop_by": null,
+    "children": [
+      {
+        "line_id": 24,
+        "line_nm": "Line EX",
+        "line_desc": "Cell EX Cam Shaft",
+        "line_lvl": "CELL",
+        "loop_by": "ROW",
+        "children": []
+      },
+      {
+        "line_id": 23,
+        "line_nm": "Line IN",
+        "line_desc": "Cell IN Cam Shaft",
+        "line_lvl": "CELL",
+        "loop_by": "ROW",
+        "children": []
+      }
+    ]
+  }
+}

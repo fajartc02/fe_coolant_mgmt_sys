@@ -1,0 +1,114 @@
+{
+  "status": 200,
+  "message": "Success to get Machines Status Map",
+  "data": [
+    {
+      "machine_id": 59,
+      "machine_nm": "IMSP-0109",
+      "machine_desc": "Process machining",
+      "machine_maker": "NTC Komatsu",
+      "idx_pos": 1,
+      "is_checked_status": true,
+      "color_status": "#00ff90",
+      "checked_status": "Normal",
+      "is_changes_checmical_status": false,
+      "changes_checmical_status": "Belum Waktunya Pengurasan"
+    },
+    {
+      "machine_id": 60,
+      "machine_nm": "IMSP-0110",
+      "machine_desc": "Process machining",
+      "machine_maker": "NTC Komatsu",
+      "idx_pos": 2,
+      "is_checked_status": false,
+      "color_status": "#dc3545",
+      "checked_status": "Danger",
+      "is_changes_checmical_status": false,
+      "changes_checmical_status": "Belum Waktunya Pengurasan"
+    },
+    {
+      "machine_id": 61,
+      "machine_nm": "IMSP-0111",
+      "machine_desc": "Process machining",
+      "machine_maker": "NTC Komatsu",
+      "idx_pos": 3,
+      "is_checked_status": false,
+      "color_status": "#ffc107",
+      "checked_status": "Warning",
+      "is_changes_checmical_status": false,
+      "changes_checmical_status": "Belum Waktunya Pengurasan"
+    },
+    {
+      "machine_id": 62,
+      "machine_nm": "IMSP-0112",
+      "machine_desc": "Process machining",
+      "machine_maker": "NTC Komatsu",
+      "idx_pos": 4,
+      "is_checked_status": true,
+      "color_status": "#00ff90",
+      "checked_status": "Normal",
+      "is_changes_checmical_status": false,
+      "changes_checmical_status": "Belum Waktunya Pengurasan"
+    },
+    {
+      "machine_id": 63,
+      "machine_nm": "IMGR-0009",
+      "machine_desc": "Process Grinding",
+      "machine_maker": "JTEKT",
+      "idx_pos": 5,
+      "is_checked_status": true,
+      "color_status": "#00ff90",
+      "checked_status": "Normal",
+      "is_changes_checmical_status": false,
+      "changes_checmical_status": "Belum Waktunya Pengurasan"
+    },
+    {
+      "machine_id": 64,
+      "machine_nm": "IMGR-0010",
+      "machine_desc": "Process Grinding",
+      "machine_maker": "JTEKT",
+      "idx_pos": 6,
+      "is_checked_status": true,
+      "color_status": "#00ff90",
+      "checked_status": "Normal",
+      "is_changes_checmical_status": false,
+      "changes_checmical_status": "Belum Waktunya Pengurasan"
+    },
+    {
+      "machine_id": 65,
+      "machine_nm": "IMGR-0011",
+      "machine_desc": "Process Grinding",
+      "machine_maker": "JTEKT",
+      "idx_pos": 7,
+      "is_checked_status": true,
+      "color_status": "#00ff90",
+      "checked_status": "Normal",
+      "is_changes_checmical_status": false,
+      "changes_checmical_status": "Belum Waktunya Pengurasan"
+    },
+    {
+      "machine_id": 66,
+      "machine_nm": "IMGR-0012",
+      "machine_desc": "Process Grinding",
+      "machine_maker": "JTEKT",
+      "idx_pos": 8,
+      "is_checked_status": true,
+      "color_status": "#00ff90",
+      "checked_status": "Normal",
+      "is_changes_checmical_status": false,
+      "changes_checmical_status": "Belum Waktunya Pengurasan"
+    },
+    {
+      "machine_id": 67,
+      "machine_nm": "IMWB-0019",
+      "machine_desc": "Process Washing",
+      "machine_maker": "PRN",
+      "idx_pos": 9,
+      "is_checked_status": true,
+      "color_status": "#00ff90",
+      "checked_status": "Normal",
+      "is_changes_checmical_status": false,
+      "changes_checmical_status": "Belum Waktunya Pengurasan"
+    }
+  ]
+}

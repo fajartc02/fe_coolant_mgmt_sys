@@ -15,6 +15,7 @@ const animate = keyframes`
 `
 
 export const MachineCard = styled.div`
+  position: relative;
   width: 60px;
   height: 70px;
   padding-top: 8px;
@@ -29,7 +30,7 @@ export const MachineCard = styled.div`
     -webkit-transform: translateY(-2px) scale(1.3); /* Chrome, Safari, Opera */
     transform: translateY(-2px) scale(1.3);
     background-color: ${(props) => props.bgColor};
-    z-index: 1;
+    z-index: 3;
   }
 
   &:active {
