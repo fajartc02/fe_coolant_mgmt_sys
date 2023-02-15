@@ -24,6 +24,7 @@ import { DocsCallout } from 'src/components'
 
 import CalculationData from '../../assets/json/cost-calculation.json'
 import LineData from '../../assets/json/line.json'
+import { Paragraph } from './StyledComponent'
 moment.locale('id')
 
 const CostCalculation = () => {
@@ -128,13 +129,13 @@ const CostCalculation = () => {
         />
       </CCol>
       <CCol>
-        <CCard className="mb-4">
+        <CCard className="mb-4" color="white">
           <CCardHeader>
             Bar Chart
             <CRow className="g-3">
-              <CCol md={5} sm={2} />
+              <CCol md={6} lg={6} sm={6} />
 
-              <CCol>
+              <CCol className="ml-auto">
                 <CFormLabel>Start Date</CFormLabel>
                 <DatePicker
                   selected={startDate}
@@ -175,14 +176,20 @@ const CostCalculation = () => {
                   ))}
                 </CFormSelect>
               </CCol>
-              <CCol>
-                <CFormLabel>&nbsp;</CFormLabel>
-                <div />
-                <CButton style={{ marginRight: '10px' }} color="primary" onClick={handleApply}>
+              <CCol style={{ display: 'flex', flexGrow: 1, alignItems: 'flex-end' }}>
+                <CButton
+                  style={{ marginRight: '10px', display: 'inline-block' }}
+                  color="primary"
+                  onClick={handleApply}
+                >
                   apply
                 </CButton>
 
-                <CButton color="secondary" onClick={handleReset}>
+                <CButton
+                  color="secondary"
+                  onClick={handleReset}
+                  style={{ marginRight: '10px', display: 'inline-block' }}
+                >
                   reset
                 </CButton>
               </CCol>
@@ -200,7 +207,7 @@ const CostCalculation = () => {
         </CCard>
       </CCol>
       <CCol xs={12}>
-        <CCard className="mb-4">
+        <CCard className="mb-4" color="white">
           <CCardHeader>
             <strong>React Table</strong> <small>Striped rows</small>
           </CCardHeader>
@@ -210,58 +217,57 @@ const CostCalculation = () => {
               <code>&lt;CTableBody&gt;</code>.
             </p>
             {/* <DocsExample href="components/table#striped-rows"> */}
-            <CTable striped hover>
-              <CTableHead>
-                <CTableRow>
-                  <CTableHeaderCell scope="col">id</CTableHeaderCell>
-                  <CTableHeaderCell scope="col">Date</CTableHeaderCell>
-                  <CTableHeaderCell scope="col">Machine</CTableHeaderCell>
-                  <CTableHeaderCell scope="col">Line</CTableHeaderCell>
-                  <CTableHeaderCell scope="col">PIC</CTableHeaderCell>
-                  <CTableHeaderCell scope="col">Chemical</CTableHeaderCell>
-                  <CTableHeaderCell scope="col">Man Hour</CTableHeaderCell>
-                  <CTableHeaderCell scope="col">Total</CTableHeaderCell>
-                </CTableRow>
-              </CTableHead>
-              <CTableBody>
-                {calData.map((element, index) => (
-                  <CTableRow key={index}>
-                    <CTableHeaderCell>{element.id}</CTableHeaderCell>
-                    <CTableHeaderCell>{element.date}</CTableHeaderCell>
-                    <CTableDataCell>{element.machineName}</CTableDataCell>
-                    <CTableDataCell>{element.line}</CTableDataCell>
-                    <CTableDataCell>{element.pic}</CTableDataCell>
-                    <CTableDataCell>
-                      <p
-                        style={{
-                          color: element.chemical.indexOf('-') === -1 ? '#2eb85c' : '#e55353',
-                        }}
-                      >
-                        {element.chemical}
-                      </p>
-                    </CTableDataCell>
-                    <CTableDataCell>
-                      <p
-                        style={{
-                          color: element.manHour.indexOf('-') === -1 ? '#2eb85c' : '#e55353',
-                        }}
-                      >
-                        {element.manHour}
-                      </p>
-                    </CTableDataCell>
-                    <CTableDataCell>
-                      <p
-                        style={{
-                          color: element.total.indexOf('-') === -1 ? '#2eb85c' : '#e55353',
-                        }}
-                      >
-                        {element.total}
-                      </p>
-                    </CTableDataCell>
+            <div className="table-responsive">
+              <CTable hover>
+                <CTableHead>
+                  <CTableRow>
+                    <CTableHeaderCell scope="col">id</CTableHeaderCell>
+                    <CTableHeaderCell scope="col">Date</CTableHeaderCell>
+                    <CTableHeaderCell scope="col">Machine</CTableHeaderCell>
+                    <CTableHeaderCell scope="col">Line</CTableHeaderCell>
+                    <CTableHeaderCell scope="col">PIC</CTableHeaderCell>
+                    <CTableHeaderCell scope="col">Chemical</CTableHeaderCell>
+                    <CTableHeaderCell scope="col">Man Hour</CTableHeaderCell>
+                    <CTableHeaderCell scope="col">Total</CTableHeaderCell>
                   </CTableRow>
-                ))}
-              </CTableBody>
-            </CTable>
+                </CTableHead>
+                <CTableBody>
+                  {calData.map((element, index) => (
+                    <CTableRow key={index}>
+                      <CTableHeaderCell>{element.id}</CTableHeaderCell>
+                      <CTableHeaderCell>{element.date}</CTableHeaderCell>
+                      <CTableDataCell>{element.machineName}</CTableDataCell>
+                      <CTableDataCell>{element.line}</CTableDataCell>
+                      <CTableDataCell>{element.pic}</CTableDataCell>
+                      <CTableDataCell>
+                        <Paragraph
+                          color={element.chemical.indexOf('-') === -1 ? `#2eb85c` : `#e55353`}
+                          id="chemical"
+                        >
+                          {element.chemical}
+                        </Paragraph>
+                      </CTableDataCell>
+                      <CTableDataCell>
+                        <Paragraph
+                          color={element.manHour.indexOf('-') === -1 ? `#2eb85c` : `#e55353`}
+                          id="chemical"
+                        >
+                          {element.manHour}
+                        </Paragraph>
+                      </CTableDataCell>
+                      <CTableDataCell>
+                        <Paragraph
+                          color={element.total.indexOf('-') === -1 ? `#2eb85c` : `#e55353`}
+                          id="chemical"
+                        >
+                          {element.total}
+                        </Paragraph>
+                      </CTableDataCell>
+                    </CTableRow>
+                  ))}
+                </CTableBody>
+              </CTable>
+            </div>
             {/* </DocsExample> */}
           </CCardBody>
         </CCard>

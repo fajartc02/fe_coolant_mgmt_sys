@@ -71,7 +71,7 @@ const Cost = () => {
       </CCol>
 
       <CCol xs={12}>
-        <CCard className="mb-4">
+        <CCard className="mb-4" color="white">
           <CCardHeader>
             <CRow className="g-3">
               <CCol sm={7} />
@@ -107,31 +107,32 @@ const Cost = () => {
           </CCardHeader>
           <CCardBody>
             {/* <DocsExample href="components/table#striped-rows"> */}
-
-            <CTable striped hover>
-              <CTableHead>
-                <CTableRow>
-                  <CTableHeaderCell scope="col">No</CTableHeaderCell>
-                  <CTableHeaderCell scope="col">Mesin</CTableHeaderCell>
-                  <CTableHeaderCell scope="col">PIC</CTableHeaderCell>
-                  <CTableHeaderCell scope="col">Chemical</CTableHeaderCell>
-                  <CTableHeaderCell scope="col">Man Hour</CTableHeaderCell>
-                  <CTableHeaderCell scope="col">Total</CTableHeaderCell>
-                </CTableRow>
-              </CTableHead>
-              <CTableBody>
-                {data.map((el, id) => (
-                  <CTableRow key={id}>
-                    <CTableHeaderCell scope="row">{el.id}</CTableHeaderCell>
-                    <CTableDataCell>{el.name}</CTableDataCell>
-                    <CTableDataCell>{el.pic}</CTableDataCell>
-                    <CTableDataCell>{el.chemical}</CTableDataCell>
-                    <CTableDataCell>{el.manHour}</CTableDataCell>
-                    <CTableDataCell>{el.manHour + el.chemical}</CTableDataCell>
+            <div className="table-responsive">
+              <CTable hover>
+                <CTableHead>
+                  <CTableRow>
+                    <CTableHeaderCell scope="col">No</CTableHeaderCell>
+                    <CTableHeaderCell scope="col">Mesin</CTableHeaderCell>
+                    <CTableHeaderCell scope="col">PIC</CTableHeaderCell>
+                    <CTableHeaderCell scope="col">Chemical</CTableHeaderCell>
+                    <CTableHeaderCell scope="col">Man Hour</CTableHeaderCell>
+                    <CTableHeaderCell scope="col">Total</CTableHeaderCell>
                   </CTableRow>
-                ))}
-              </CTableBody>
-            </CTable>
+                </CTableHead>
+                <CTableBody>
+                  {data.map((el, id) => (
+                    <CTableRow key={id}>
+                      <CTableHeaderCell scope="row">{el.id}</CTableHeaderCell>
+                      <CTableDataCell>{el.name}</CTableDataCell>
+                      <CTableDataCell>{el.pic}</CTableDataCell>
+                      <CTableDataCell>{el.chemical}</CTableDataCell>
+                      <CTableDataCell>{el.manHour}</CTableDataCell>
+                      <CTableDataCell>{el.manHour + el.chemical}</CTableDataCell>
+                    </CTableRow>
+                  ))}
+                </CTableBody>
+              </CTable>
+            </div>
             {/* </DocsExample> */}
           </CCardBody>
         </CCard>

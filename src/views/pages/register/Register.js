@@ -108,7 +108,7 @@ const Register = () => {
       <CContainer>
         <CRow className="justify-content-center">
           <CCol md={9} lg={7} xl={6}>
-            <CCard className="mx-4">
+            <CCard className="mx-4" color="white">
               <CCardBody className="p-4">
                 <CForm onSubmit={handleSubmit(onSubmit)}>
                   <h1>Register</h1>
@@ -198,7 +198,7 @@ const Register = () => {
             <CModalHeader>
               <CModalTitle>Sukses</CModalTitle>
             </CModalHeader>
-            <CModalBody>Registrasi berhasil, login untuk mengakses sistem</CModalBody>
+            <CModalBody>Registrasi berhasil, Silahkan login untuk mengakses sistem</CModalBody>
             <CModalFooter>
               <CButton color="primary" onClick={() => navigate('/login')}>
                 Ok

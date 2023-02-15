@@ -14,6 +14,7 @@ import 'primereact/resources/primereact.min.css'
 import 'primeicons/primeicons.css'
 
 import 'react-toastify/dist/ReactToastify.css'
+import { DARK_THEME } from './utils/helpers'
 
 const queryClient = new QueryClient()
 
@@ -32,7 +33,7 @@ createRoot(document.getElementById('root')).render(
       pauseOnFocusLoss
       draggable
       pauseOnHover
-      theme="light"
+      theme={localStorage.getItem('theme') === DARK_THEME ? 'dark' : 'light'}
     />
   </Provider>,
 )

@@ -1,5 +1,6 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import DatePicker from 'react-datepicker'
+import { useParams } from 'react-router-dom'
 
 import id from 'date-fns/locale/id'
 import { useSelector, shallowEqual } from 'react-redux'
@@ -29,11 +30,11 @@ import FormParameter from '../../assets/json/form-parameter.json'
 const Report = () => {
   const [checkDate, setCheckDate] = useState('')
   const [timeDate, setTimeDate] = useState('')
-  const [isFlavorful, setIsFlavorful] = useState(false)
   const [imagePrev, setImagePrev] = useState(UploadImagePlaceholder)
   const [employees, setEmployees] = useState(EmployeeData)
   const [selectedEmployee, setSelectedEmployee] = useState(EmployeeData)
-
+  const [parameter, setParameter] = useState(FormParameter)
+  let { machine_id, machine_name } = useParams()
   const { selectedMachine } = useSelector(
     ({ machineReducer }) => ({
       selectedMachine: machineReducer.selectedMachine,
@@ -52,20 +53,26 @@ const Report = () => {
     setSelectedEmployee(filterData)
   }
 
-  const handleChangeInputFlavorful = (e) => {
-    setIsFlavorful(e.target.checked)
+  const handleChangeInputFlavorful = (form) => {
+    console.log(form)
+    const temp = [...parameter]
+
+    let updateParam = temp.map((el) => (el.name === form.name ? { ...el, value: !el.value } : el))
+
+    console.log(updateParam)
+    setParameter(updateParam)
   }
 
   return (
     <CCol xs={12}>
-      <CCard className="mb-4">
+      <CCard className="mb-4" color="white">
         <CCardBody>
           <CRow className="mb-3">
-            <CFormLabel htmlFor="PH" className="col-sm-2 col-form-label">
+            <CFormLabel htmlFor="machineName" className="col-sm-2 col-form-label">
               Machine Name
             </CFormLabel>
             <CCol sm={5}>
-              <CFormInput type="text" id="PH" value={selectedMachine.machine_nm} disabled />
+              <CFormInput type="text" id="machineName" value={machine_name} disabled />
             </CCol>
           </CRow>
           <CRow className="mb-3">
@@ -95,7 +102,10 @@ const Report = () => {
             <CCol sm={5}>
               <CButton
                 color={selectedEmployee.group === 'red' ? 'danger' : 'white'}
-                style={{ border: '0.5px solid #c4c9d0' }}
+                style={{
+                  border: '0.5px solid #c4c9d0',
+                  backgroundColor: selectedEmployee.group === 'red' ? 'red' : 'white',
+                }}
               >
                 &nbsp;&nbsp;&nbsp;&nbsp;
               </CButton>
@@ -139,10 +149,10 @@ const Report = () => {
           </CRow>
         </CCardBody>
       </CCard>
-      <CCard>
+      <CCard color="white">
         <CCardHeader>Parameter</CCardHeader>
         <CCardBody>
-          {FormParameter.map((form, index) => {
+          {parameter.map((form, index) => {
             switch (form.inputType) {
               case 'text':
                 return (
@@ -188,7 +198,7 @@ const Report = () => {
                       {form.label}
                     </CFormLabel>
                     <CCol sm={5}>
-                      <CFormSelect aria-label="Default select example">
+                      <CFormSelect aria-label="Default select example" value={form.value}>
                         <option selected disabled>
                           -- select type --
                         </option>
@@ -204,15 +214,14 @@ const Report = () => {
               case 'toogle':
                 return (
                   <CRow className="mb-3" key={index}>
-                    <CFormLabel htmlFor="aroma" className="col-sm-2 col-form-label">
-                      {form.label}
-                    </CFormLabel>
+                    <CFormLabel className="col-sm-2 col-form-label">{form.label}</CFormLabel>
                     <CCol sm={5}>
                       <CFormSwitch
-                        label={isFlavorful ? form.trueLabel : form.falseLabel}
+                        label={form.value ? form.trueLabel : form.falseLabel}
                         id="formSwitchCheckChecked"
-                        value={isFlavorful}
-                        onChange={handleChangeInputFlavorful}
+                        value={form.value}
+                        onChange={() => handleChangeInputFlavorful(form)}
+                        size="large"
                       />
                     </CCol>
                   </CRow>

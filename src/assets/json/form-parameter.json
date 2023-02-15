@@ -5,8 +5,9 @@
     "trueLabel": "Bau",
     "falseLabel": "Tidak Bau",
     "label": "Aroma",
+    "name": "Aroma",
     "placeholder": "",
-    "value": "aroma",
+    "value": false,
     "unit": ""
   },
   {
@@ -15,6 +16,7 @@
     "trueLabel": "",
     "falseLabel": "",
     "label": "PH",
+    "name": "PH",
     "placeholder": "Masukkan PH",
     "value": "ph",
     "unit": ""
@@ -25,6 +27,7 @@
     "trueLabel": "",
     "falseLabel": "",
     "label": "Status PH",
+    "name": "Status PH",
     "placeholder": "PH Status",
     "value": "ph",
     "unit": ""
@@ -35,6 +38,7 @@
     "trueLabel": "",
     "falseLabel": "",
     "label": "Jadwal Pengurasan",
+    "name": "Jadwal Pengurasan",
     "placeholder": "12/02/2023",
     "value": "ph",
     "unit": ""
@@ -45,8 +49,9 @@
     "trueLabel": "Ya",
     "falseLabel": "Tidak",
     "label": "Tambah Cairan",
+    "name": "Tambah Cairan",
     "placeholder": "",
-    "value": "tambahCairan",
+    "value": false,
     "unit": ""
   },
   {
@@ -55,6 +60,7 @@
     "trueLabel": "",
     "falseLabel": "",
     "label": "Banyak Cairan",
+    "name": "Banyak Cairan",
     "placeholder": "Masukkan Banyak Cairan",
     "value": "banyakCairan",
     "unit": "liter"
@@ -78,6 +84,7 @@
     "trueLabel": "",
     "falseLabel": "",
     "label": "Tipe Cairan",
+    "name": "Tipe Cairan",
     "placeholder": "",
     "value": "tipeCairan",
     "unit": ""
@@ -106,6 +113,7 @@
     "trueLabel": "",
     "falseLabel": "",
     "label": "visual",
+    "name": "visual",
     "placeholder": "",
     "value": "visual",
     "unit": ""
@@ -125,6 +133,7 @@
     "trueLabel": "",
     "falseLabel": "",
     "label": "sludge",
+    "name": "sludge",
     "placeholder": "",
     "value": "sludge",
     "unit": ""

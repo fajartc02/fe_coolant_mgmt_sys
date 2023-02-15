@@ -39,7 +39,7 @@ const Dashboard = () => {
   }
 
   const handleClickMachine = (machine) => {
-    navigate(`/dashboard/report`)
+    navigate(`/dashboard/report/${machine.machine_id}/${machine.machine_nm}`)
     dispatch(setSelectedMachine(machine))
   }
 
@@ -70,14 +70,13 @@ const Dashboard = () => {
   }
 
   const ReComp = ({ data }) => {
-    console.log(data)
     return (
       <React.Fragment>
         {data[0].loop_by === 'COL' && (
           <CRow>
             {data.map((parent, idx) => (
               <CCol key={idx}>
-                <CCard>
+                <CCard color="white">
                   <CCardHeader>{parent.line_nm}</CCardHeader>
                   <CCardBody>
                     {parent.children.length > 0 ? (
@@ -96,7 +95,7 @@ const Dashboard = () => {
         {data[0].loop_by === 'ROW' && (
           <React.Fragment>
             {data.map((parent, idx) => (
-              <CCard key={idx}>
+              <CCard key={idx} color="white">
                 <CCardHeader key={idx}>{parent.line_nm}</CCardHeader>
                 <CCardBody>
                   {parent.children.length > 0 ? (
@@ -115,13 +114,13 @@ const Dashboard = () => {
     )
   }
 
-  console.log(recursiveResult?.data?.data)
+  // console.log(recursiveResult?.data?.data)
 
   return (
     <>
       <CRow>
         {machineDataPreview.map((item, index) => (
-          <CCol lg={3} md={3} key={index}>
+          <CCol lg={3} md={3} sm={3} key={index}>
             <CCard
               color={item.isSelected ? 'info' : 'white'}
               textColor={item.textColor}
@@ -133,7 +132,7 @@ const Dashboard = () => {
                 <CRow className="align-items-start">
                   {item.summary.map((el, index) => (
                     <CCol lg={4} md={4} key={index}>
-                      <CCard className="text-center" textColor="white">
+                      <CCard className="text-center" textColor="white" color="white">
                         <CCardBody>
                           <CCardText className="text-center">
                             <CBadge className="text-center" color={el.color} shape="rounded-circle">
@@ -152,7 +151,7 @@ const Dashboard = () => {
       </CRow>
       <MachineBlock>
         {recursiveResult?.data?.data && (
-          <CCard>
+          <CCard color="white">
             <CCardHeader>{recursiveResult?.data?.data?.line_nm}</CCardHeader>
             <CCardBody>{<ReComp data={recursiveResult?.data?.data?.children} />}</CCardBody>
           </CCard>

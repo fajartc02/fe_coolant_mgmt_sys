@@ -1,1 +1,165 @@
 // Here you can add other styles
+@import './variables';
+
+
+
+.dark-theme {
+  color: #E6E6E7 !important;
+  p {
+    &:not(#chemical) {
+
+      color: #E6E6E7 !important;
+    }
+  }
+
+  .header {
+    background: #2A2B36!important;
+
+  }
+
+  .nav-item {
+    background-color: #2A2B36 !important;
+  }
+
+  .dropdown-menu {
+    background: #2A2B36!important;
+    .dropdown-item {
+      color: #E6E6E7 !important;
+      cursor: default !important;
+
+      &:hover {
+        background-color: #4B4B53;
+      }
+  
+      &:active {
+        background-color: #404048 !important;
+      }
+    }
+  }
+
+  .modal-content {
+    background-color: #404048 !important;
+  }
+
+  .btn-primary {
+    background-color: #9D97D6 !important;
+    border-color: #9D97D6 !important;
+  }
+
+  .btn-close {
+    color: #E6E6E7 !important;
+    background-color: #E6E6E7 !important;
+  }
+  
+  .bg-primary {
+    background-color: #857DCC !important;
+  }
+  
+  .bg-light {
+    background-color: #181925 !important;
+  }
+  .bg-white {
+    background-color: #404048 !important;
+  }
+  
+  .bg-info {
+    background-color: #3399FF !important;
+  }
+  
+  .card-header {
+    background-color: #282A33 !important;
+  }
+  
+  .table-hover {
+    tr {
+  
+      &:hover {
+        * {
+          color: white !important;
+        }
+  
+      }
+    } 
+  
+  }
+  
+  .table {
+    background-color: #4B4B53 !important;
+    color: #E6E6E7 !important;
+    tr {
+      &:hover {
+        color: white !important;
+      }
+    }
+  
+    .table-hover tbody tr:hover td, .table-hover tbody tr:hover th {
+      background-color: white !important;
+    }
+  }
+  
+  li {
+    color: #E6E6E7 !important;
+
+    
+  }
+
+  .react-datepicker__time-list-item  {
+    color: #181925 !important;
+  }
+
+  
+  a {
+    color: #948dd2 !important;
+  }
+  
+  .sidebar {
+    background-color: #181925 !important;
+
+    .sidebar-nav {
+      // background-color: #181925 !important;
+      background-color: #2A2B36 !important;
+      .nav-item {
+        color: #E6E6E7 !important;
+        background-color: #2A2B36 !important;
+      }
+
+      .nav-link {
+        color: #E6E6E7 !important;
+      }
+       .nav-link .active {
+        background-color: #373842 !important;
+       }
+    }
+   
+  }
+
+  .form-switch {
+    .form-check-input {
+      &:checked {
+        color: #948dd2 !important;
+        background-color: #948dd2 !important;;
+      }
+    }
+  }
+  
+  .footer {
+    background-color: #2a2b36 !important;
+  }
+
+  .form-control, 
+  .form-select {
+    color: #E6E6E7 !important;
+    background-color: #2A2B36 !important;
+    &:disabled {
+      background-color: #d8dbe0 !important;
+      color: #8A94A2 !important;
+    }
+
+    
+  }
+
+  option {
+    color: #E6E6E7 !important;
+  }
+
+}

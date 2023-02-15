@@ -28,7 +28,7 @@ export const MachineCard = styled.div`
     box-shadow: 1px 2px 10px #4e4d4d;
     -webkit-transform: translateY(-2px) scale(1.3); /* Chrome, Safari, Opera */
     transform: translateY(-2px) scale(1.3);
-    background-color: #fff;
+    background-color: ${(props) => props.bgColor};
     z-index: 1;
   }
 

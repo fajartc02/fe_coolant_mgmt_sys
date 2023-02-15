@@ -80,7 +80,7 @@ const Login = () => {
         <CRow className="justify-content-center">
           <CCol md={8}>
             <CCardGroup>
-              <CCard className="p-4">
+              <CCard className="p-4" color="white">
                 <CCardBody>
                   <CForm>
                     <h1>Login</h1>

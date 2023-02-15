@@ -1,9 +1,12 @@
-import React, { Component, Suspense } from 'react'
+import React, { Component, Suspense, useEffect } from 'react'
 import { Route, Routes, BrowserRouter as Router } from 'react-router-dom'
 import { Loader } from './components'
 
+import ThemeSelector from 'src/layout/ThemeSelector'
+
 import PrivateRoutes from './utils/PrivateRoutes'
-import './scss/style.scss'
+import { DARK_THEME } from './utils/helpers'
+// import './scss/style.scss'
 
 const loading = (
   <div className="pt-3 text-center">
@@ -21,20 +24,35 @@ const Page404 = React.lazy(() => import('./views/pages/page404/Page404'))
 const Page500 = React.lazy(() => import('./views/pages/page500/Page500'))
 
 class App extends Component {
+  componentDidMount() {
+    const theme = localStorage.getItem('theme')
+
+    if (!theme) {
+      document.body.classList.add(DARK_THEME)
+    } else {
+      if (theme && theme === DARK_THEME) {
+        document.body.classList.add(DARK_THEME)
+      } else {
+        document.body.classList.remove(DARK_THEME)
+      }
+    }
+  }
   render() {
     return (
       <Router>
-        <Suspense fallback={loading}>
-          <Routes>
-            <Route element={<PrivateRoutes />}>
-              <Route path="*" name="Home" element={<DefaultLayout />} />
-            </Route>
-            <Route exact path="/login" name="Login Page" element={<Login />} />
-            <Route exact path="/register" name="Register Page" element={<Register />} />
-            <Route exact path="/404" name="Page 404" element={<Page404 />} />
-            <Route exact path="/500" name="Page 500" element={<Page500 />} />
-          </Routes>
-        </Suspense>
+        <ThemeSelector>
+          <Suspense fallback={loading}>
+            <Routes>
+              <Route element={<PrivateRoutes />}>
+                <Route path="*" name="Home" element={<DefaultLayout />} />
+              </Route>
+              <Route exact path="/login" name="Login Page" element={<Login />} />
+              <Route exact path="/register" name="Register Page" element={<Register />} />
+              <Route exact path="/404" name="Page 404" element={<Page404 />} />
+              <Route exact path="/500" name="Page 500" element={<Page500 />} />
+            </Routes>
+          </Suspense>
+        </ThemeSelector>
       </Router>
     )
   }

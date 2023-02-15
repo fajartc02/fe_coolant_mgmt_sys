@@ -117,7 +117,7 @@ const Machines = () => {
                 <CRow className="align-items-start">
                   {item.summary.map((el, index) => (
                     <CCol lg={4} md={4} key={index}>
-                      <CCard className="text-center" textColor="white">
+                      <CCard className="text-center" textColor="white" color="white">
                         <CCardBody>
                           <CCardText className="text-center">
                             <CBadge className="text-center" color={el.color} shape="rounded-circle">

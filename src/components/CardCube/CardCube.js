@@ -1,5 +1,6 @@
-import React, { useState } from 'react'
+import React from 'react'
 import PropTypes from 'prop-types'
+import { useSelector } from 'react-redux'
 
 import {
   CTooltip,
@@ -23,8 +24,10 @@ import {
   MachineName,
 } from './StyledComponent'
 
+import { DARK_THEME } from 'src/utils/helpers'
+
 const CardCube = ({ value, index, onClick }) => {
-  console.log(value)
+  const { theme } = useSelector((state) => state.uiGeneralReducer)
   return (
     <CTooltip
       content={
@@ -47,7 +50,10 @@ const CardCube = ({ value, index, onClick }) => {
       }
       placement="top"
     >
-      <MachineCard>
+      <MachineCard
+        bgColor={theme === DARK_THEME ? '#282a33' : '#fff'}
+        onClick={() => onClick(value)}
+      >
         <div>
           <Cube>
             <TopCube />
