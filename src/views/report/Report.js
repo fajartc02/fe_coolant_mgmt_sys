@@ -18,8 +18,17 @@ import {
   CInputGroup,
   CCardHeader,
   CButton,
-  // CCardFooter,
+  CForm,
+  CTable,
+  CTableBody,
+  CTableDataCell,
+  CTableHead,
+  CTableHeaderCell,
+  CTableRow,
 } from '@coreui/react'
+import { useForm, Controller, useFieldArray } from 'react-hook-form'
+import { yupResolver } from '@hookform/resolvers/yup'
+import * as yup from 'yup'
 
 import 'react-datepicker/dist/react-datepicker.css'
 
@@ -33,6 +42,20 @@ import Banyak from '../../assets/images/banyak.png'
 import Sedikit from '../../assets/images/sedikit.png'
 import EmployeeData from '../../assets/json/employee.json'
 import FormParameter from '../../assets/json/form-parameter.json'
+
+const schema = yup
+  .object({
+    drainingTime: yup.string().required('Lama Pengurasan harus diisi'),
+    checkDate: yup.string().required('Check Date harus diisi'),
+    timeDate: yup.string().required('Time Date harus diisi'),
+    employeeId: yup
+      .string()
+      .required('Karyawan harus dipilih')
+      .notOneOf(['select'], 'PIC harus dipilih'),
+    PH: yup.string().required('PH harus diisi'),
+    banyakCairan: yup.string().required('Banyak cairan harus diisi'),
+  })
+  .required()
 
 const Report = () => {
   const [checkDate, setCheckDate] = useState('')
@@ -51,6 +74,20 @@ const Report = () => {
     }),
     shallowEqual,
   )
+
+  const {
+    control,
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm({
+    resolver: yupResolver(schema),
+  })
+
+  const { fields, remove, append } = useFieldArray({
+    control,
+    name: 'indikator',
+  })
 
   const handleOnChangeImage = (e) => {
     const file = e.target.files[0]
@@ -106,249 +143,297 @@ const Report = () => {
     }
   }
 
+  const onSubmit = (data) => {
+    console.log(data, '===')
+  }
+
   return (
     <CCol xs={12}>
-      <CCard className="mb-4" color="white">
-        <CCardBody>
-          <CRow className="mb-3">
-            <CFormLabel htmlFor="machineName" className="col-sm-2 col-form-label">
-              Machine Name
-            </CFormLabel>
-            <CCol sm={5}>
-              <CFormInput type="text" id="machineName" value={machine_name} disabled />
-            </CCol>
-          </CRow>
-          <CRow className="mb-3">
-            <CFormLabel htmlFor="pic" className="col-sm-2 col-form-label">
-              PIC
-            </CFormLabel>
-            <CCol md={5}>
-              <CFormSelect
-                aria-label="Default select example"
-                onChange={handleSelectOptionsEmployee}
-              >
-                <option value="1" selected disabled>
-                  Select your option
-                </option>
-                {employees.map((element, index) => (
-                  <option value={element.employeeId} key={index}>
-                    {element.name}
+      <CForm onSubmit={handleSubmit(onSubmit)}>
+        <CCard className="mb-4" color="white">
+          <CCardBody>
+            <CRow className="mb-3">
+              <CFormLabel htmlFor="machineName" className="col-sm-2 col-form-label">
+                Machine Name
+              </CFormLabel>
+              <CCol sm={5}>
+                <CFormInput type="text" id="machineName" value={machine_name} disabled />
+              </CCol>
+            </CRow>
+            <CRow className="mb-3">
+              <CFormLabel htmlFor="pic" className="col-sm-2 col-form-label">
+                PIC
+              </CFormLabel>
+              <CCol md={5}>
+                <CFormSelect {...register('employeeId')}>
+                  <option value="select" disabled>
+                    Silakan Pilih PIC
                   </option>
-                ))}
-              </CFormSelect>
-            </CCol>
-          </CRow>
-          <CRow className="mb-3">
-            <CFormLabel htmlFor="pic" className="col-sm-2 col-form-label">
-              Group/Shift
-            </CFormLabel>
-            <CCol sm={5}>
-              <CButton
-                color={selectedEmployee.group === 'red' ? 'danger' : 'white'}
-                style={{
-                  border: '0.5px solid #c4c9d0',
-                  backgroundColor: selectedEmployee.group === 'red' ? 'red' : 'white',
-                }}
-              >
-                &nbsp;&nbsp;&nbsp;&nbsp;
-              </CButton>
-              {/* <CFormInput type="text" id="PH" value={selectedMachine.machineName} disabled /> */}
-            </CCol>
-          </CRow>
-          <CRow className="mb-3">
-            <CFormLabel htmlFor="checkdate" className="col-sm-2 col-form-label">
-              Check Date
-            </CFormLabel>
-            <CCol sm={5}>
-              <DatePicker
-                selected={checkDate}
-                onChange={(date) => setCheckDate(date)}
-                className={'form-control'}
-                placeholderText="dd/MM/yyyy"
-                id="checkdate"
-                dateFormat="dd/MM/yyyy"
-              />
-            </CCol>
-          </CRow>
-          <CRow className="mb-3">
-            <CFormLabel htmlFor="time" className="col-sm-2 col-form-label">
-              Time
-            </CFormLabel>
-            <CCol md={5}>
-              <DatePicker
-                selected={timeDate}
-                onChange={(date) => setTimeDate(date)}
-                className={'form-control'}
-                placeholderText="time-date"
-                id="time"
-                showTimeSelect
-                showTimeSelectOnly
-                timeIntervals={1}
-                timeCaption="Time"
-                dateFormat="hh:mm"
-                locale={id}
-              />
-            </CCol>
-          </CRow>
-          <CRow className="mb-3">
-            <CFormLabel htmlFor="drainingTime" className="col-sm-2 col-form-label">
-              Lama Pengerjaan
-            </CFormLabel>
-            <CCol sm={5}>
-              <CFormInput
-                type="text"
-                id="drainingTime"
-                value={drainingTime}
-                placeholder="Masukkan Lama Pengerjaan"
-              />
-            </CCol>
-          </CRow>
-        </CCardBody>
-      </CCard>
-      <CCard color="white">
-        <CCardHeader>Parameter</CCardHeader>
-        <CCardBody>
-          {parameter.map((form, index) => {
-            switch (form.inputType) {
-              case 'text':
-                return (
-                  <CRow className="mb-3" key={index}>
-                    <CFormLabel htmlFor={form.value} className="col-sm-2 col-form-label">
-                      {form.label}
-                    </CFormLabel>
-                    <CCol sm={5}>
-                      <CInputGroup className="mb-3">
-                        <CFormInput type="text" id={form.value} placeholder={form.placeholder} />
-                        {form.unit && (
-                          <CInputGroupText id="basic-addon2">{form.unit}</CInputGroupText>
-                        )}
-                      </CInputGroup>
-                    </CCol>
-                  </CRow>
-                )
-              case 'info':
-                return (
-                  <CRow className="mb-3" key={index}>
-                    <CFormLabel htmlFor={form.value} className="col-sm-2 col-form-label">
-                      {form.label}
-                    </CFormLabel>
-                    <CCol sm={5}>
-                      <CInputGroup className="mb-3">
-                        <CFormInput
-                          type="text"
-                          id={form.value}
-                          placeholder={form.placeholder}
-                          disabled
-                        />
-                        {form.unit && (
-                          <CInputGroupText id="basic-addon2">{form.unit}</CInputGroupText>
-                        )}
-                      </CInputGroup>
-                    </CCol>
-                  </CRow>
-                )
-              case 'options':
-                return (
-                  <CRow className="mb-3" key={index}>
-                    <CFormLabel htmlFor="typeChemical" className="col-sm-2 col-form-label">
-                      {form.label}
-                    </CFormLabel>
-                    <CCol sm={5}>
-                      <CFormSelect aria-label="Default select example" value={form.value}>
-                        <option selected disabled>
-                          -- select type --
-                        </option>
-                        {form.optionList.map((list, index) => (
-                          <option value={list.id} key={index}>
-                            {list.name}
-                          </option>
-                        ))}
-                      </CFormSelect>
-                    </CCol>
-                  </CRow>
-                )
-              case 'toogle':
-                return (
-                  <CRow className="mb-3" key={index}>
-                    <CFormLabel className="col-sm-2 col-form-label">{form.label}</CFormLabel>
-                    <CCol sm={5}>
-                      <CFormSwitch
-                        label={form.value ? form.trueLabel : form.falseLabel}
-                        id="formSwitchCheckChecked"
-                        value={form.value}
-                        onChange={() => handleChangeInputFlavorful(form)}
-                        size="large"
-                      />
-                    </CCol>
-                  </CRow>
-                )
-              case 'file':
-                return (
-                  <div key={index} style={{ display: 'flex', marginTop: '30px' }}>
-                    <CFormLabel htmlFor="lifeTime" className="col-sm-2 col-form-label">
-                      {form.label}
-                    </CFormLabel>
-                    <div>
-                      <p>Acuan</p>
-                      <img
-                        src={imageDefault(form.label)}
-                        alt=""
-                        style={{ height: '200px', width: '200px', marginRight: '30px' }}
-                      />
-                    </div>
-                    <input
-                      type="file"
-                      id="imageInpt"
-                      style={{ display: 'none' }}
-                      onChange={handleOnChangeImage}
+                  {employees.map((element, index) => (
+                    <option value={element.employeeId} key={index}>
+                      {element.name}
+                    </option>
+                  ))}
+                </CFormSelect>
+                <div className="error-form">{errors.employeeId?.message}</div>
+              </CCol>
+            </CRow>
+            <CRow className="mb-3">
+              <CFormLabel htmlFor="pic" className="col-sm-2 col-form-label">
+                Group/Shift
+              </CFormLabel>
+              <CCol sm={5}>
+                <CButton
+                  color={selectedEmployee.group === 'red' ? 'danger' : 'white'}
+                  style={{
+                    border: '0.5px solid #c4c9d0',
+                    backgroundColor: selectedEmployee.group === 'red' ? 'red' : 'white',
+                  }}
+                >
+                  &nbsp;&nbsp;&nbsp;&nbsp;
+                </CButton>
+                {/* <CFormInput type="text" id="PH" value={selectedMachine.machineName} disabled /> */}
+              </CCol>
+            </CRow>
+            <CRow className="mb-3">
+              <CFormLabel htmlFor="checkdate" className="col-sm-2 col-form-label">
+                Check Date
+              </CFormLabel>
+              <CCol sm={5}>
+                <Controller
+                  control={control}
+                  name="checkDate"
+                  render={({ field }) => (
+                    <DatePicker
+                      selected={field.value}
+                      onChange={(date) => field.onChange(date)}
+                      className={'form-control'}
+                      placeholderText="dd/MM/yyyy"
+                      id="checkdate"
+                      dateFormat="dd/MM/yyyy"
                     />
-                    <div>
-                      <p>Aktual</p>
-                      <label htmlFor="imageInpt">
-                        <img
-                          src={imagePrev}
-                          alt="uploadedImage"
-                          id="uploadedImage"
-                          style={{ height: '200px', width: '200px', marginRight: '30px' }}
+                  )}
+                />
+                <div className="error-form">{errors.checkDate?.message}</div>
+              </CCol>
+            </CRow>
+            <CRow className="mb-3">
+              <CFormLabel htmlFor="time" className="col-sm-2 col-form-label">
+                Time
+              </CFormLabel>
+              <CCol md={5}>
+                <Controller
+                  control={control}
+                  name="timeDate"
+                  render={({ field }) => (
+                    <DatePicker
+                      selected={timeDate}
+                      onChange={(date) => setTimeDate(date)}
+                      className={'form-control'}
+                      placeholderText="time-date"
+                      id="time"
+                      showTimeSelect
+                      showTimeSelectOnly
+                      timeIntervals={1}
+                      timeCaption="Time"
+                      dateFormat="hh:mm"
+                      locale={id}
+                    />
+                  )}
+                />
+                <div className="error-form">{errors.timeDate?.message}</div>
+              </CCol>
+            </CRow>
+            <CRow className="mb-3">
+              <CFormLabel htmlFor="drainingTime" className="col-sm-2 col-form-label">
+                Lama Pengerjaan
+              </CFormLabel>
+              <CCol sm={5}>
+                <CFormInput
+                  type="text"
+                  id="drainingTime"
+                  placeholder="Masukkan Lama Pengerjaan"
+                  {...register('drainingTime')}
+                />
+                <div className="error-form">{errors.drainingTime?.message}</div>
+              </CCol>
+            </CRow>
+          </CCardBody>
+        </CCard>
+        <CCard color="white">
+          <CCardHeader>Parameter</CCardHeader>
+          <CCardBody>
+            {parameter.map((form, index) => {
+              switch (form.inputType) {
+                case 'text':
+                  return (
+                    <CRow className="mb-3" key={index}>
+                      <CFormLabel htmlFor={form.value} className="col-sm-2 col-form-label">
+                        {form.label}
+                      </CFormLabel>
+                      <CCol sm={5}>
+                        <CInputGroup className="mb-3">
+                          <CFormInput
+                            type="text"
+                            id={form.value}
+                            placeholder={form.placeholder}
+                            {...register(`${form.value}`)}
+                          />
+                          {form.unit && (
+                            <CInputGroupText id="basic-addon2">{form.unit}</CInputGroupText>
+                          )}
+                        </CInputGroup>
+                        <div className="error-form">{errors[form.value]?.message}</div>
+                      </CCol>
+                    </CRow>
+                  )
+                case 'info':
+                  return (
+                    <CRow className="mb-3" key={index}>
+                      <CFormLabel htmlFor={form.value} className="col-sm-2 col-form-label">
+                        {form.label}
+                      </CFormLabel>
+                      <CCol sm={5}>
+                        <CInputGroup className="mb-3">
+                          <CFormInput
+                            type="text"
+                            id={form.value}
+                            placeholder={form.placeholder}
+                            disabled
+                          />
+                          {form.unit && (
+                            <CInputGroupText id="basic-addon2">{form.unit}</CInputGroupText>
+                          )}
+                        </CInputGroup>
+                      </CCol>
+                    </CRow>
+                  )
+                case 'options':
+                  return (
+                    <CRow className="mb-3" key={index}>
+                      <CFormLabel htmlFor="typeChemical" className="col-sm-2 col-form-label">
+                        {form.label}
+                      </CFormLabel>
+                      <CCol sm={5}>
+                        <CFormSelect aria-label="Default select example" value={form.value}>
+                          <option selected disabled>
+                            -- select type --
+                          </option>
+                          {form.optionList.map((list, index) => (
+                            <option value={list.id} key={index}>
+                              {list.name}
+                            </option>
+                          ))}
+                        </CFormSelect>
+                      </CCol>
+                    </CRow>
+                  )
+                case 'toogle':
+                  return (
+                    <CRow className="mb-3" key={index}>
+                      <CFormLabel className="col-sm-2 col-form-label">{form.label}</CFormLabel>
+                      <CCol sm={5}>
+                        <CFormSwitch
+                          label={form.value ? form.trueLabel : form.falseLabel}
+                          id="formSwitchCheckChecked"
+                          value={form.value}
+                          onChange={() => handleChangeInputFlavorful(form)}
+                          size="large"
                         />
-                      </label>
-                    </div>
-                    <div
-                      style={{
-                        display: 'flex',
-                        justifyContent: 'center',
-                        flexDirection: 'column',
-                      }}
-                    >
-                      {form.optionList.map((el, index) => (
-                        <CFormCheck
-                          defaultChecked={index === 0}
-                          type="radio"
-                          value={el.name}
-                          name={form.value}
-                          label={el.name}
-                          key={index}
-                          onChange={(e) => handleChangeFileOption(form.value, e.target.value)}
-                        />
-                      ))}
-                    </div>
-                  </div>
-                )
+                      </CCol>
+                    </CRow>
+                  )
+                case 'file':
+                  return (
+                    <div key={index} style={{ display: 'flex', marginTop: '30px' }}>
+                      <CFormLabel htmlFor="lifeTime" className="col-sm-2 col-form-label">
+                        {form.label}
+                      </CFormLabel>
+                      <div>
+                        <CTable>
+                          <CTableHead>
+                            <CTableRow>
+                              <CTableHeaderCell scope="col">Acuan</CTableHeaderCell>
+                            </CTableRow>
+                          </CTableHead>
+                          <CTableBody>
+                            <CTableRow>
+                              <CTableDataCell>
+                                <img
+                                  src={imageDefault(form.label)}
+                                  alt=""
+                                  style={{ height: '200px', width: '200px', marginRight: '30px' }}
+                                />
+                                <input
+                                  type="file"
+                                  id="imageInpt"
+                                  style={{ display: 'none' }}
+                                  onChange={handleOnChangeImage}
+                                />
+                              </CTableDataCell>
+                            </CTableRow>
+                          </CTableBody>
+                        </CTable>
+                      </div>
+                      <div>
+                        <CTable>
+                          <CTableHead>
+                            <CTableRow>
+                              <CTableHeaderCell className="align-midle">Aktual</CTableHeaderCell>
+                            </CTableRow>
+                          </CTableHead>
+                          <CTableBody>
+                            <CTableRow>
+                              <CTableDataCell>
+                                <img
+                                  src={imagePrev}
+                                  alt="uploadedImage"
+                                  id="uploadedImage"
+                                  style={{ height: '200px', width: '200px', marginRight: '30px' }}
+                                />
+                              </CTableDataCell>
+                            </CTableRow>
+                          </CTableBody>
+                        </CTable>
+                      </div>
 
-              default:
-                return null
-            }
-          })}
-          <CRow>
-            <CCol style={{ marginTop: '30px' }}>
-              <CButton color={'primary'} style={{ marginRight: '20px' }}>
-                simpan
-              </CButton>
-              <CButton color={'light'}>batalkan</CButton>
-            </CCol>
-          </CRow>
-        </CCardBody>
-      </CCard>
+                      <div
+                        style={{
+                          display: 'flex',
+                          justifyContent: 'center',
+                          flexDirection: 'column',
+                        }}
+                      >
+                        {form.optionList.map((el, index) => (
+                          <CFormCheck
+                            defaultChecked={index === 0}
+                            type="radio"
+                            value={el.name}
+                            name={form.value}
+                            label={el.name}
+                            key={index}
+                            onChange={(e) => handleChangeFileOption(form.value, e.target.value)}
+                          />
+                        ))}
+                      </div>
+                    </div>
+                  )
+
+                default:
+                  return null
+              }
+            })}
+            <CRow>
+              <CCol style={{ marginTop: '30px' }}>
+                <CButton color={'primary'} type="submit" style={{ marginRight: '20px' }}>
+                  simpan
+                </CButton>
+                <CButton color={'light'}>batalkan</CButton>
+              </CCol>
+            </CRow>
+          </CCardBody>
+        </CCard>
+      </CForm>
     </CCol>
   )
 }

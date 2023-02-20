@@ -5,6 +5,8 @@ import { useNavigate } from 'react-router-dom'
 import { useDispatch } from 'react-redux'
 import { CCard, CCardBody, CBadge, CCardHeader, CCol, CRow, CCardText } from '@coreui/react'
 import { useQuery } from 'react-query'
+import { Chart, ArcElement } from 'chart.js'
+import { Pie } from 'react-chartjs-2'
 
 import { CardCube } from '../../components'
 
@@ -22,6 +24,8 @@ import LineCam from '../../assets/json/line-cam.json'
 import LineCylinder from '../../assets/json/line-cylinder.json'
 // API
 import { getLinesMap, getMachineStatusMap } from 'src/utils/api'
+
+Chart.register(ArcElement)
 
 const Dashboard = () => {
   const navigate = useNavigate()
@@ -70,6 +74,7 @@ const Dashboard = () => {
         },
         refetchOnWindowFocus: false,
         refetchOnMount: false,
+        retry: false,
       },
     )
 
@@ -131,8 +136,19 @@ const Dashboard = () => {
     )
   }
 
-  console.log(recursiveResult?.data?.data)
-  console.log(machineStatusUsed)
+  const pieDataFormater = (item) => {
+    console.log(item, '===')
+    return {
+      labels: ['Red', 'Blue', 'Yellow'],
+      datasets: [
+        {
+          label: 'My First Dataset',
+          data: [300, 50, 100],
+          backgroundColor: ['rgb(255, 99, 132)', 'rgb(54, 162, 235)', 'rgb(255, 205, 86)'],
+        },
+      ],
+    }
+  }
 
   return (
     <>
@@ -147,21 +163,7 @@ const Dashboard = () => {
             >
               <CCardHeader>{item.line_nm}</CCardHeader>
               <CCardBody>
-                <CRow className="align-items-start">
-                  {item.summary.map((el, index) => (
-                    <CCol lg={4} md={4} key={index}>
-                      <CCard className="text-center" textColor="white" color="white">
-                        <CCardBody>
-                          <CCardText className="text-center">
-                            <CBadge className="text-center" color={el.color} shape="rounded-circle">
-                              {el.total}
-                            </CBadge>
-                          </CCardText>
-                        </CCardBody>
-                      </CCard>
-                    </CCol>
-                  ))}
-                </CRow>
+                <Pie data={pieDataFormater(item)} />
               </CCardBody>
             </CCard>
           </CCol>

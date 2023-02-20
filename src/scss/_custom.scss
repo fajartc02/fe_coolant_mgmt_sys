@@ -1,7 +1,12 @@
 // Here you can add other styles
 @import './variables';
 
-
+.error-form {
+  width: 100%;
+    margin-top: 0.25rem;
+    font-size: 0.875em;
+    color: #e55353;
+}
 
 .dark-theme {
   color: #E6E6E7 !important;

@@ -87,10 +87,16 @@ export const FirstCubeSide = styled.span`
   width: 100%;
   height: 100%;
   transform: rotateY(calc(90deg * 4)) translateZ(${cubeSize / 2}px);
-  background: ${(props) =>
-    !props.isChangeCemical ? `linear-gradient(#151515, ${props.color})` : null};
-  background-image: ${(props) => props.isChangeCemical && `url(${ImageClock})`};
-  background-size: ${(props) => props.isChangeCemical && `cover`};
+  background: ${(props) => `linear-gradient(#151515, ${props.color})`};
+  /* background-image: ${(props) =>
+    props.isChangeCemical && `url(${ImageClock}), linear-gradient(#151515, ${props.color})`}; */
+  /* background-image: ${(props) =>
+    props.isChangeCemical &&
+    `url(${ImageClock}), -webkit-gradient(linear, left top, left bottom, from(#151515), to(${props.color}))`}; */
+  /* background-image: ${(props) =>
+    props.isChangeCemical &&
+    `url(${ImageClock}), -moz-linear-gradient(top, #151515, ${props.color})`}; */
+  /* background-size: ${(props) => props.isChangeCemical && `cover`}; */
 `
 export const SecondCubeSide = styled.span`
   position: absolute;
@@ -98,11 +104,17 @@ export const SecondCubeSide = styled.span`
   left: 0;
   width: 100%;
   height: 100%;
-  background: ${(props) =>
-    !props.isChangeCemical ? `linear-gradient(#151515, ${props.color})` : null};
+  background: ${(props) => `linear-gradient(#151515, ${props.color})`};
   transform: rotateY(calc(90deg * 1)) translateZ(${cubeSize / 2}px);
-  background-image: ${(props) => props.isChangeCemical && `url(${ImageClock})`};
-  background-size: ${(props) => props.isChangeCemical && `cover`};
+  /* background-image: ${(props) =>
+    props.isChangeCemical && `url(${ImageClock}), linear-gradient(#151515, ${props.color})`}; */
+  /* background-image: ${(props) =>
+    props.isChangeCemical &&
+    `url(${ImageClock}), -webkit-gradient(linear, left top, left bottom, from(#151515), to(${props.color}))`}; */
+  /* background-image: ${(props) =>
+    props.isChangeCemical &&
+    `url(${ImageClock}), -moz-linear-gradient(top, #151515, ${props.color})`}; */
+  /* background-size: ${(props) => props.isChangeCemical && `cover`}; */
 `
 
 export const ThirdCubeSide = styled.span`
@@ -111,11 +123,17 @@ export const ThirdCubeSide = styled.span`
   left: 0;
   width: 100%;
   height: 100%;
-  background: ${(props) =>
-    !props.isChangeCemical ? `linear-gradient(#151515, ${props.color})` : null};
+  background: ${(props) => `linear-gradient(#151515, ${props.color})`};
   transform: rotateY(calc(90deg * 2)) translateZ(${cubeSize / 2}px);
-  background-image: ${(props) => props.isChangeCemical && `url(${ImageClock})`};
-  background-size: ${(props) => props.isChangeCemical && `cover`};
+  /* background-image: ${(props) =>
+    props.isChangeCemical && `url(${ImageClock}), linear-gradient(#151515, ${props.color})`}; */
+  /* background-image: ${(props) =>
+    props.isChangeCemical &&
+    `url(${ImageClock}), -webkit-gradient(linear, left top, left bottom, from(#151515), to(${props.color}))`}; */
+  /* background-image: ${(props) =>
+    props.isChangeCemical &&
+    `url(${ImageClock}), -moz-linear-gradient(top, #151515, ${props.color})`}; */
+  /* background-size: ${(props) => props.isChangeCemical && `cover`}; */
 `
 export const FourthCubeSide = styled.span`
   position: absolute;
@@ -123,11 +141,17 @@ export const FourthCubeSide = styled.span`
   left: 0;
   width: 100%;
   height: 100%;
-  background: ${(props) =>
-    !props.isChangeCemical ? `linear-gradient(#151515, ${props.color})` : null};
+  background: ${(props) => `linear-gradient(#151515, ${props.color})`};
   transform: rotateY(calc(90deg * 3)) translateZ(${cubeSize / 2}px);
-  background-image: ${(props) => props.isChangeCemical && `url(${ImageClock})`};
-  background-size: ${(props) => props.isChangeCemical && `cover`};
+  /* background-image: ${(props) =>
+    props.isChangeCemical && `url(${ImageClock}), linear-gradient(#151515, ${props.color})`}; */
+  /* background-image: ${(props) =>
+    props.isChangeCemical &&
+    `url(${ImageClock}), -webkit-gradient(linear, left top, left bottom, from(#151515), to(${props.color}))`}; */
+  /* background-image: ${(props) =>
+    props.isChangeCemical &&
+    `url(${ImageClock}), -moz-linear-gradient(top, #151515, ${props.color})`}; */
+  /* background-size: ${(props) => props.isChangeCemical && `cover`}; */
 `
 
 export const MachineName = styled.p`

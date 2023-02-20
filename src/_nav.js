@@ -42,6 +42,16 @@ const _nav = [
     // },
   },
   {
+    component: CNavItem,
+    name: 'Draining Monitor',
+    to: '/drainingQualityMonitor',
+    icon: <CIcon icon={cilBarChart} customClassName="nav-icon" />,
+    // badge: {
+    //   color: 'info',
+    //   text: 'NEW',
+    // },
+  },
+  {
     component: CNavTitle,
     name: 'Master Data',
   },

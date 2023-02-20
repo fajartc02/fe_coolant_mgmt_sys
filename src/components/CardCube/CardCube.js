@@ -1,6 +1,5 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { useSelector } from 'react-redux'
 
 import {
   CTooltip,
@@ -30,7 +29,6 @@ import CIcon from '@coreui/icons-react'
 import { cilColorFill, cilPen } from '@coreui/icons'
 
 const CardCube = ({ value, index, onClick }) => {
-  const { theme } = useSelector((state) => state.uiGeneralReducer)
   return (
     <CTooltip
       content={
@@ -54,18 +52,18 @@ const CardCube = ({ value, index, onClick }) => {
       placement="top"
     >
       <MachineCard
-        bgColor={theme === DARK_THEME ? '#282a33' : '#fff'}
+        bgColor={localStorage.getItem('theme') === DARK_THEME ? '#282a33' : '#fff'}
         onClick={() => onClick(value)}
       >
         <div style={{ position: 'absolute', right: '0', top: '-3px', zIndex: 2 }}>
-          {!value.is_checked_status &&
-          (value.checked_status === 'Warning' || value.checked_status === 'Danger') ? (
-            <CBadge color="secondary" size="sm">
-              <CIcon icon={cilPen} />
-            </CBadge>
-          ) : value.is_changes_checmical_status ? (
+          {value.is_changes_checmical_status ? (
             <CBadge color="secondary" size="sm">
               <CIcon icon={cilColorFill} />
+            </CBadge>
+          ) : !value.is_checked_status &&
+            (value.checked_status === 'Warning' || value.checked_status === 'Danger') ? (
+            <CBadge color="secondary" size="sm">
+              <CIcon icon={cilPen} />
             </CBadge>
           ) : (
             <CBadge color="transparent" size="sm">
