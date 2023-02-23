@@ -59,13 +59,10 @@ const Login = () => {
   }
 
   const handleClickLogin = (e) => {
-    navigate('/dashboard')
-    dispatch(setIsLogin(true))
-    localStorage.setItem('token', '908u7')
-    // mutate({
-    //   noreg,
-    //   password,
-    // })
+    mutate({
+      noreg,
+      password,
+    })
   }
 
   useEffect(() => {

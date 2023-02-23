@@ -7,6 +7,7 @@ import { CCard, CCardBody, CBadge, CCardHeader, CCol, CRow, CCardText } from '@c
 import { useQuery } from 'react-query'
 import { Chart, ArcElement } from 'chart.js'
 import { Pie } from 'react-chartjs-2'
+import { CChartPie } from '@coreui/react-chartjs'
 
 import { CardCube } from '../../components'
 
@@ -23,38 +24,55 @@ import MachineStatusCylinder from '../../assets/json/machine-status-cylinder.jso
 import LineCam from '../../assets/json/line-cam.json'
 import LineCylinder from '../../assets/json/line-cylinder.json'
 // API
-import { getLinesMap, getMachineStatusMap } from 'src/utils/api'
+import { getLinesMap, getMachineStatusMap, getLinesSummaries } from 'src/utils/api'
 
 Chart.register(ArcElement)
 
 const Dashboard = () => {
   const navigate = useNavigate()
   const dispatch = useDispatch()
+  const [queryLinesMapId, setQueryLinesMapId] = useState(1)
   const [machineStatusUsed, setMachineStatusUsed] = useState(MachineStatusCylinder)
   const [dataLineUsed, setDataLineUsed] = useState(LineCylinder)
+  const [lineSummary, setLineSummary] = useState([])
 
-  const { data: recursiveResult } = useQuery(['lines-map', 1], () => getLinesMap(1), {
+  const { data: summaryResult } = useQuery(['lines-summary'], () => getLinesSummaries(), {
     refetchOnWindowFocus: false,
-    refetchOnMount: false,
+    select: ({ data }) => {
+      const newData = data.data.map((el, idx) => ({
+        ...el,
+        isSelected: idx === 0,
+      }))
+      return newData
+    },
+    onSuccess: (data) => {
+      setLineSummary(data)
+    },
   })
 
-  const [machineDataPreview, setMachineDataPreview] = useState(MachineSummary)
+  const { data: recursiveResult, refetch: refetchLineMap } = useQuery(
+    ['lines-map', queryLinesMapId],
+    () => getLinesMap(queryLinesMapId),
+    {
+      refetchOnWindowFocus: false,
+      refetchOnMount: false,
+      enabled: !!summaryResult,
+    },
+  )
 
   const handleClickSummaryCard = (item) => {
-    const newData = [...machineDataPreview]
+    const newData = [...lineSummary]
     const updateData = newData.map((el) => ({
       ...el,
-      isSelected: item.id === el.id,
+      isSelected: item.line_id === el.line_id,
     }))
 
-    var index = machineDataPreview.findIndex((obj) => obj.line_nm === item.line_nm)
-    setDataLineUsed(index < 2 ? LineCylinder : LineCam)
-    setMachineStatusUsed(index < 2 ? MachineStatusCylinder : MachineStatusCam)
-    setMachineDataPreview(updateData)
+    setQueryLinesMapId(item.line_id)
+    refetchLineMap()
+    setLineSummary(updateData)
   }
 
   const handleClickMachine = (machine) => {
-    console.log(machine, '  machine')
     if (machine.is_changes_checmical_status) {
       navigate(`/dashboard/draining/${machine.machine_id}/${machine.machine_nm}`)
       dispatch(setSelectedMachine(machine))
@@ -80,9 +98,9 @@ const Dashboard = () => {
 
     return (
       <>
-        {machineStatusUsed.data &&
-          machineStatusUsed.data.length > 0 &&
-          machineStatusUsed.data?.map((machine, id) => (
+        {machines &&
+          machines.length > 0 &&
+          machines?.map((machine, id) => (
             <React.Fragment key={id}>
               <CardCube key={id} value={machine} index={id} onClick={handleClickMachine} />
             </React.Fragment>
@@ -136,44 +154,53 @@ const Dashboard = () => {
     )
   }
 
-  const pieDataFormater = (item) => {
-    console.log(item, '===')
-    return {
-      labels: ['Red', 'Blue', 'Yellow'],
-      datasets: [
-        {
-          label: 'My First Dataset',
-          data: [300, 50, 100],
-          backgroundColor: ['rgb(255, 99, 132)', 'rgb(54, 162, 235)', 'rgb(255, 205, 86)'],
-        },
-      ],
-    }
+  const pieDatasetsFormater = (item) => {
+    return [
+      {
+        label: 'Line Machine Summary',
+        data: [item.Danger, item.Normal, item.Warning],
+        backgroundColor: ['rgb(255, 99, 132)', '#00ff90', 'rgb(255, 205, 86)'],
+      },
+    ]
   }
 
   return (
     <>
       <CRow>
-        {machineDataPreview.map((item, index) => (
-          <CCol lg={3} md={3} sm={3} key={index}>
-            <CCard
-              color={item.isSelected ? 'info' : 'white'}
-              textColor={item.textColor}
-              className="text-center"
-              onClick={() => handleClickSummaryCard(item)}
-            >
-              <CCardHeader>{item.line_nm}</CCardHeader>
-              <CCardBody>
-                <Pie data={pieDataFormater(item)} />
-              </CCardBody>
-            </CCard>
-          </CCol>
-        ))}
+        {lineSummary &&
+          lineSummary.map((item, index) => (
+            <CCol lg={3} md={3} sm={3} key={index}>
+              <CCard
+                color={item.isSelected ? 'info' : 'white'}
+                textColor={item.textColor}
+                className="text-center"
+                onClick={() => handleClickSummaryCard(item)}
+              >
+                <CCardHeader>{item.line_nm}</CCardHeader>
+                <CCardBody>
+                  <CChartPie
+                    data={{
+                      labels: ['Danger', 'Normal', 'Warning'],
+                      datasets: pieDatasetsFormater(item),
+                    }}
+                  />
+                  {/* <Pie
+                    data={{
+                      labels: ['Danger', 'Normal', 'Warning'],
+                      datasets: pieDatasetsFormater(item),
+                    }}
+                  /> */}
+                </CCardBody>
+              </CCard>
+            </CCol>
+          ))}
       </CRow>
+
       <MachineBlock>
-        {dataLineUsed?.data && (
+        {recursiveResult?.data?.data && (
           <CCard color="white">
-            <CCardHeader>{dataLineUsed?.data?.line_nm}</CCardHeader>
-            <CCardBody>{<ReComp data={dataLineUsed?.data?.children} />}</CCardBody>
+            <CCardHeader>{recursiveResult?.data?.data?.line_nm}</CCardHeader>
+            <CCardBody>{<ReComp data={recursiveResult?.data?.data?.children} />}</CCardBody>
           </CCard>
         )}
       </MachineBlock>

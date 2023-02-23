@@ -38,13 +38,13 @@ const CardCube = ({ value, index, onClick }) => {
               <CTableHeaderCell>Nama Mesin</CTableHeaderCell>
               <CTableDataCell>{value.machine_nm}</CTableDataCell>
             </CTableRow>
-            <CTableRow>
+            {/* <CTableRow>
               <CTableHeaderCell>Status Pengecekan</CTableHeaderCell>
               <CTableDataCell>{value.checked_status}</CTableDataCell>
-            </CTableRow>
+            </CTableRow> */}
             <CTableRow>
               <CTableHeaderCell>Status Penggantian</CTableHeaderCell>
-              <CTableDataCell>{value.changes_checmical_status}</CTableDataCell>
+              <CTableDataCell>{value.chemical_changes_msg}</CTableDataCell>
             </CTableRow>
           </CTableBody>
         </CTable>
@@ -56,7 +56,7 @@ const CardCube = ({ value, index, onClick }) => {
         onClick={() => onClick(value)}
       >
         <div style={{ position: 'absolute', right: '0', top: '-3px', zIndex: 2 }}>
-          {value.is_changes_checmical_status ? (
+          {value.is_chemical_changes ? (
             <CBadge color="secondary" size="sm">
               <CIcon icon={cilColorFill} />
             </CBadge>
@@ -74,22 +74,22 @@ const CardCube = ({ value, index, onClick }) => {
         <div>
           <Cube>
             <TopCube />
-            <BottomCube color={value.color_status} />
+            <BottomCube color={value.checked_color_status} />
             <ContentCube>
               <FirstCubeSide
-                color={value.color_status}
+                color={value.checked_color_status}
                 isChangeCemical={value.is_changes_checmical_status}
               ></FirstCubeSide>
               <SecondCubeSide
-                color={value.color_status}
+                color={value.checked_color_status}
                 isChangeCemical={value.is_changes_checmical_status}
               ></SecondCubeSide>
               <ThirdCubeSide
-                color={value.color_status}
+                color={value.checked_color_status}
                 isChangeCemical={value.is_changes_checmical_status}
               ></ThirdCubeSide>
               <FourthCubeSide
-                color={value.color_status}
+                color={value.checked_color_status}
                 isChangeCemical={value.is_changes_checmical_status}
               ></FourthCubeSide>
             </ContentCube>
