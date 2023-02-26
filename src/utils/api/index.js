@@ -17,3 +17,6 @@ export const getMachineStatusMap = (param) =>
   axios.get(`${apiUrl}/operational/dashboard/machinesStatusMap/${param}`)
 
 export const getLinesSummaries = () => axios.get(`${apiUrl}/operational/dashboard/linesSummaries`)
+
+export const getCheckSheet = (machine_id) =>
+  axios.get(`${apiUrl}/operational/checksheet/check/machine/${machine_id}`)

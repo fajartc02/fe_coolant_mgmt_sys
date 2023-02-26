@@ -60,8 +60,7 @@ const CardCube = ({ value, index, onClick }) => {
             <CBadge color="secondary" size="sm">
               <CIcon icon={cilColorFill} />
             </CBadge>
-          ) : !value.is_checked_status &&
-            (value.checked_status === 'Warning' || value.checked_status === 'Danger') ? (
+          ) : !value.is_checked_status ? (
             <CBadge color="secondary" size="sm">
               <CIcon icon={cilPen} />
             </CBadge>

@@ -1,11 +1,36 @@
 // Here you can add other styles
 @import './variables';
 
+$dark-1: #2A2B36;
+$dark-2: #404048;
+$dark-3: #4B4B53;
+
+
 .error-form {
   width: 100%;
-    margin-top: 0.25rem;
-    font-size: 0.875em;
-    color: #e55353;
+  margin-top: 0.25rem;
+  font-size: 0.875em;
+  color: #e55353 !important;
+}
+
+.note-form {
+  width: 100%;
+  margin-top: 0.25rem;
+  font-size: 0.875em;
+}
+
+.warning-form {
+  width: 100%;
+  margin-top: 0.25rem;
+  font-size: 0.875em;
+  color: #ffff00 !important;
+}
+
+.success-form {
+  width: 100%;
+  margin-top: 0.25rem;
+  font-size: 0.875em;
+  color: #47f213 !important;
 }
 
 .dark-theme {
@@ -18,32 +43,32 @@
   }
 
   .header {
-    background: #2A2B36!important;
+    background: $dark-1!important;
 
   }
 
   .nav-item {
-    background-color: #2A2B36 !important;
+    background-color: $dark-1 !important;
   }
 
   .dropdown-menu {
-    background: #2A2B36!important;
+    background: $dark-1!important;
     .dropdown-item {
       color: #E6E6E7 !important;
       cursor: default !important;
 
       &:hover {
-        background-color: #4B4B53;
+        background-color: $dark-3;
       }
   
       &:active {
-        background-color: #404048 !important;
+        background-color: $dark-2 !important;
       }
     }
   }
 
   .modal-content {
-    background-color: #404048 !important;
+    background-color: $dark-2 !important;
   }
 
   .btn-primary {
@@ -64,7 +89,7 @@
     background-color: #181925 !important;
   }
   .bg-white {
-    background-color: #404048 !important;
+    background-color: $dark-2 !important;
   }
   
   .bg-info {
@@ -89,7 +114,7 @@
   }
   
   .table {
-    background-color: #4B4B53 !important;
+    background-color: $dark-3 !important;
     color: #E6E6E7 !important;
     tr {
       &:hover {
@@ -122,10 +147,10 @@
 
     .sidebar-nav {
       // background-color: #181925 !important;
-      background-color: #2A2B36 !important;
+      background-color: $dark-1 !important;
       .nav-item {
         color: #E6E6E7 !important;
-        background-color: #2A2B36 !important;
+        background-color: $dark-1 !important;
       }
 
       .nav-link {
@@ -138,33 +163,49 @@
    
   }
 
-  .form-switch {
+  // .form-switch {
     .form-check-input {
       &:checked {
         color: #948dd2 !important;
-        background-color: #948dd2 !important;;
+        background-color: #948dd2 !important;
+        border-color: #948dd2 !important;
       }
     }
-  }
+  // }
   
   .footer {
-    background-color: #2a2b36 !important;
+    background-color: $dark-1 !important;
   }
 
   .form-control, 
   .form-select {
     color: #E6E6E7 !important;
-    background-color: #2A2B36 !important;
+    background-color: $dark-1 !important;
     &:disabled {
       background-color: #d8dbe0 !important;
       color: #8A94A2 !important;
     }
-
-    
   }
+
 
   option {
     color: #E6E6E7 !important;
+  }
+
+  .p-multiselect,  
+  .p-multiselect-header,
+  .p-multiselect-panel{
+    background-color: $dark-1 !important;
+
+    .p-multiselect-item {
+
+      &:hover {
+        background-color: $dark-2 !important;
+      }
+    }
+    .p-highlight {
+      background-color: $dark-2 !important;
+    }
   }
 
 }

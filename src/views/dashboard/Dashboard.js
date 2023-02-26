@@ -73,7 +73,7 @@ const Dashboard = () => {
   }
 
   const handleClickMachine = (machine) => {
-    if (machine.is_changes_checmical_status) {
+    if (!machine.is_chemical_changes) {
       navigate(`/dashboard/draining/${machine.machine_id}/${machine.machine_nm}`)
       dispatch(setSelectedMachine(machine))
     } else {
@@ -159,7 +159,7 @@ const Dashboard = () => {
       {
         label: 'Line Machine Summary',
         data: [item.Danger, item.Normal, item.Warning],
-        backgroundColor: ['rgb(255, 99, 132)', '#00ff90', 'rgb(255, 205, 86)'],
+        backgroundColor: ['#ff3f00', '#00ff90', '#ffbb00'],
       },
     ]
   }
