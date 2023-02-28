@@ -9,6 +9,9 @@ import DocsLink from './DocsLink'
 import DocsExample from './DocsExample'
 import CardCube from './CardCube/CardCube'
 import Loader from './Loader'
+import DrainingForm from './DrainingForm/DrainingForm'
+import MainForm from './MainForm/MainForm'
+import CheckingForm from './CheckingForm/CheckingForm'
 
 export {
   AppBreadcrumb,
@@ -22,4 +25,7 @@ export {
   DocsExample,
   CardCube,
   Loader,
+  DrainingForm,
+  MainForm,
+  CheckingForm,
 }
