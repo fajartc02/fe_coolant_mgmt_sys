@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React from 'react'
 import {
   CCol,
   CRow,
@@ -12,7 +12,6 @@ import {
   CTableHead,
   CTableHeaderCell,
 } from '@coreui/react'
-import moment from 'moment'
 import 'react-datepicker/dist/react-datepicker.css'
 
 import { Chart, registerables } from 'chart.js'
@@ -21,11 +20,8 @@ import { Line } from 'react-chartjs-2'
 
 import { DocsCallout } from 'src/components'
 
-import CalculationData from '../../assets/json/cost-calculation.json'
-
 import annotationPlugin from 'chartjs-plugin-annotation'
 Chart.register(...registerables, annotationPlugin)
-moment.locale('id')
 
 const chartData = {
   labels: [
@@ -48,12 +44,6 @@ const chartData = {
 }
 
 const DrainingQualityMonitor = () => {
-  const [calData, setCalData] = useState(CalculationData)
-
-  const [startDate, setStartDate] = useState('')
-  const [endDate, setEndDate] = useState('')
-  const [line, setLine] = useState('')
-
   // console.log(formatDataToArray(calData, 'chemical'))
   // console.log(line, 'line')
   console.log(window.innerWidth, 'window.innerWidth---')
@@ -155,7 +145,6 @@ const DrainingQualityMonitor = () => {
                               ticks: {
                                 callback: function (label) {
                                   const labelValue = this.getLabelForValue(label)
-                                  var month = labelValue.split(';')[0]
                                   var year = labelValue.split(';')[1]
                                   return year
                                 },
@@ -175,7 +164,6 @@ const DrainingQualityMonitor = () => {
                               ticks: {
                                 callback: function (label) {
                                   const labelValue = this.getLabelForValue(label)
-                                  var month = labelValue.split(';')[0]
                                   var year = labelValue.split(';')[2]
 
                                   return year

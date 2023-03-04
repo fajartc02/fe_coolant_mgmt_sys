@@ -23,7 +23,7 @@ $dark-3: #4B4B53;
   width: 100%;
   margin-top: 0.25rem;
   font-size: 0.875em;
-  color: #ffff00 !important;
+  color: #ffbb00 !important;
 }
 
 .success-form {
@@ -31,6 +31,17 @@ $dark-3: #4B4B53;
   margin-top: 0.25rem;
   font-size: 0.875em;
   color: #47f213 !important;
+}
+
+
+.p-dropdown {
+  border: 1px solid #B1B7C1 !important;
+  .p-inputtext {
+    padding-top: 5px;
+    padding-bottom: 6px;
+    padding-left: 0.5rem;
+    padding-right: 0.5rem;
+  }
 }
 
 .dark-theme {

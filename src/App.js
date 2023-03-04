@@ -1,11 +1,11 @@
-import React, { Component, Suspense, useEffect } from 'react'
+import React, { Component, Suspense } from 'react'
 import { Route, Routes, BrowserRouter as Router } from 'react-router-dom'
-import { Loader } from './components'
 
 import ThemeSelector from 'src/layout/ThemeSelector'
 
 import PrivateRoutes from './utils/PrivateRoutes'
 import { DARK_THEME } from './utils/helpers'
+
 // import './scss/style.scss'
 
 const loading = (

@@ -224,7 +224,10 @@ const CheckingForm = ({
                                     key={`${index}-${dynamicElIdPosition}`}
                                     id={`${index}-${dynamicElIdPosition}`}
                                     onChange={(e) =>
-                                      handleOnChangeFormChecking(dynamicElIdPosition, e)
+                                      handleOnChangeFormChecking(dynamicElIdPosition, e, {
+                                        ...el,
+                                        ...param,
+                                      })
                                     }
                                   />
                                 ))}
@@ -310,7 +313,10 @@ const CheckingForm = ({
                                     key={`${index}-${dynamicElIdPosition}`}
                                     id={`${index}-${dynamicElIdPosition}`}
                                     onChange={(e) =>
-                                      handleOnChangeFormChecking(dynamicElIdPosition, e)
+                                      handleOnChangeFormChecking(dynamicElIdPosition, e, {
+                                        ...el,
+                                        ...param,
+                                      })
                                     }
                                   />
                                 ))}
@@ -357,7 +363,7 @@ const CheckingForm = ({
                           name="PH"
                           value={fields[0].PH.value}
                           onChange={(e) => {
-                            handleOnChangeFormChecking(dynamicElIdPosition, e)
+                            handleOnChangeFormChecking(dynamicElIdPosition, e, param)
                             handleOnFocusFormChecking(dynamicElIdPosition, 'PH')
                           }}
                         />
@@ -397,7 +403,7 @@ const CheckingForm = ({
                           name="Konsentrasi"
                           value={fields[0].Konsentrasi.value}
                           onChange={(e) => {
-                            handleOnChangeFormChecking(dynamicElIdPosition, e)
+                            handleOnChangeFormChecking(dynamicElIdPosition, e, param)
                             handleOnFocusFormChecking(dynamicElIdPosition, 'Konsentrasi')
                           }}
                         />

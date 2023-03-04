@@ -18,7 +18,6 @@ import {
 import 'react-datepicker/dist/react-datepicker.css'
 
 const MainForm = ({
-  employees,
   handleSelectEmployee,
   selectedEmployee,
   setStartDate,
@@ -30,8 +29,9 @@ const MainForm = ({
   setEndTime,
   endTime,
   isActive,
+  userGroup,
 }) => {
-  let { machine_name } = useParams()
+  let { machine_id } = useParams()
 
   return (
     <CCard className="mb-4" color="white">
@@ -41,7 +41,7 @@ const MainForm = ({
             Machine Id
           </CFormLabel>
           <CCol sm={5}>
-            <CFormInput type="text" id="machineName" value={machine_name} disabled />
+            <CFormInput type="text" id="machineName" value={machine_id} disabled />
           </CCol>
         </CRow>
         <CRow className="mb-3">
@@ -51,15 +51,15 @@ const MainForm = ({
           <CCol md={5}>
             <CFormSelect
               onChange={(e) => handleSelectEmployee(e)}
-              value={selectedEmployee.employeeId}
+              value={selectedEmployee.user_id}
               disabled={!isActive}
             >
               <option value="select" disabled>
                 Silakan Pilih PIC
               </option>
-              {employees.map((element, index) => (
-                <option value={element.employeeId} key={index}>
-                  {element.name}
+              {userGroup?.map((user, index) => (
+                <option value={user.user_id} key={index}>
+                  {user.name}
                 </option>
               ))}
             </CFormSelect>
@@ -71,10 +71,14 @@ const MainForm = ({
           </CFormLabel>
           <CCol sm={5}>
             <CButton
-              color={selectedEmployee.group === 'red' ? 'danger' : 'white'}
               style={{
                 border: '0.5px solid #c4c9d0',
-                backgroundColor: selectedEmployee.group === 'red' ? 'red' : 'white',
+                backgroundColor:
+                  selectedEmployee.group_id === 1
+                    ? '#ff3f00'
+                    : selectedEmployee.group_id === 2
+                    ? '#ffff'
+                    : '#d8dbe0',
               }}
             >
               &nbsp;&nbsp;&nbsp;&nbsp;
@@ -134,8 +138,8 @@ const MainForm = ({
               timeCaption="Time"
               dateFormat="HH:mm"
               locale={id}
-              minTime={new Date()}
-              maxTime={new Date().setHours(23, 59, 59)}
+              // minTime={new Date()}
+              // maxTime={new Date().setHours(23, 59, 59)}
             />
             {startTime.isError && <div className="error-form">{startTime?.errorMessage}</div>}
           </CCol>
@@ -205,7 +209,7 @@ const MainForm = ({
 }
 
 MainForm.propTypes = {
-  employees: PropTypes.array,
+  userGroup: PropTypes.array,
   isActive: PropTypes.bool,
   startDate: PropTypes.oneOfType([object, instanceOf(Date)]),
   startTime: PropTypes.oneOfType([object, instanceOf(Date)]),

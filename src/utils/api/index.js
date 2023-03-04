@@ -1,4 +1,5 @@
 import axios from 'axios'
+import QS from 'qs'
 
 const apiUrlProduction = ''
 const apiUrlDev = 'http://localhost:3100/api/v1'
@@ -20,3 +21,31 @@ export const getLinesSummaries = () => axios.get(`${apiUrl}/operational/dashboar
 
 export const getCheckSheet = (machine_id) =>
   axios.get(`${apiUrl}/operational/checksheet/check/machine/${machine_id}`)
+
+export const getMaintenanceMachineCheck = (machine_id, startDate, endDate) =>
+  axios.get(`${apiUrl}/operational/maintenance/machine/${machine_id}`, {
+    params: {
+      start_date: startDate,
+      end_date: endDate,
+    },
+    paramsSerializer: {
+      serialize: (params) => QS.stringify(params, { encode: false }),
+    },
+  })
+
+export const getMaintenanceMachineCS = (machine_id, periodic_check_id) =>
+  axios.get(`${apiUrl}/operational/maintenance/machine/checksheet/${periodic_check_id}`, {
+    params: {
+      machine_id: machine_id,
+    },
+  })
+
+export const getUsersGroup = () => axios.get(`${apiUrl}/master/users/group`)
+
+export const getMachineScheduleList = (machine_id, checksheet_id) =>
+  axios.get(`${apiUrl}/master/maintenance/schedules`, {
+    params: {
+      'tmm.machine_id': machine_id,
+      'tmcs.checksheet_id': checksheet_id,
+    },
+  })

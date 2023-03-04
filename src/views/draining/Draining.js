@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import { useQuery } from 'react-query'
+import moment from 'moment'
 import {
   CCol,
   CButton,
@@ -18,9 +19,9 @@ import { DrainingForm, MainForm, CheckingForm } from 'src/components'
 import UploadImagePlaceholder from 'src/assets/images/Placeholder.jpg'
 
 // API
-import { getCheckSheet } from 'src/utils/api'
+import { getMaintenanceMachineCS, getUsersGroup, getMachineScheduleList } from 'src/utils/api'
 
-import EmployeeData from 'src/assets/json/employee.json'
+moment.locale('id')
 
 const parameters = [
   { name: 'Visual', code: 'VS' },
@@ -29,57 +30,31 @@ const parameters = [
   { name: 'PH', code: 'PH' },
 ]
 
-const drainingTypes = [
-  {
-    id: '0',
-    value: 'solar',
-    label: 'Solar',
-    biaya: '7000',
-  },
-  {
-    id: '1',
-    value: 'pertamax',
-    label: 'Pertamax',
-    biaya: '13900',
-  },
-  {
-    id: '2',
-    value: 'pertalite',
-    label: 'Pertalite',
-    biaya: '10000',
-  },
-  {
-    id: '3',
-    value: 'pelumas',
-    label: 'Pelumas',
-    biaya: '45000',
-  },
-]
-
 const Draining = () => {
   const navigate = useNavigate()
-  let { machine_id } = useParams()
+  let { machine_id, periodic_check_id } = useParams()
 
   // ====== USESTATE
 
   const [selectedEmployee, setSelectedEmployee] = useState({})
+  // const [isSubmitCheckingForm, setIsSubmitCheckingForm] = useState(false)
   const [startDate, setStartDate] = useState({
-    value: '',
+    value: new Date(),
     isError: false,
     errorMessage: '',
   })
   const [startTime, setStartTime] = useState({
-    value: '',
+    value: new Date(),
     isError: false,
     errorMessage: '',
   })
   const [endDate, setEndDate] = useState({
-    value: '',
+    value: new Date(),
     isError: false,
     errorMessage: '',
   })
   const [endTime, setEndTime] = useState({
-    value: '',
+    value: new Date().getTime() + 1 * 60 * 1000,
     isError: false,
     errorMessage: '',
   })
@@ -92,6 +67,7 @@ const Draining = () => {
       id: new Date().getTime(),
       type: 'draining',
       isActive: true,
+      reason: '',
       fields: [
         {
           id: new Date().getTime(),
@@ -104,6 +80,9 @@ const Draining = () => {
           },
           isError: false,
           errorMessage: '',
+          isErrorParameter: false,
+          errorMessageParameter: '',
+          reason: '',
         },
       ],
     },
@@ -111,11 +90,21 @@ const Draining = () => {
 
   // ====== END OF USESTATE
 
-  // ====== START CHECKING FORM
+  // START USEQUERY
 
-  const { data: checkSheetData, refetch: refetchChechSheet } = useQuery(
-    ['check-sheet', machine_id],
-    () => getCheckSheet(machine_id),
+  const { data: userGroup } = useQuery(['users-group'], () => getUsersGroup(), {
+    refetchOnWindowFocus: false,
+    select: ({ data }) => {
+      return data.data
+    },
+    onSuccess: (data) => {
+      setSelectedEmployee(data[0])
+    },
+  })
+
+  const { data: machineScheduleList, refetch: refetchMachineScheduleList } = useQuery(
+    ['machine-schedule-list'],
+    () => getMachineScheduleList(machine_id, 'notnull'),
     {
       refetchOnWindowFocus: false,
       enabled: false,
@@ -124,6 +113,28 @@ const Draining = () => {
       },
     },
   )
+
+  const { data: maintenanceData, refetch: refetchChechSheet } = useQuery(
+    ['check-sheet', machine_id, periodic_check_id],
+    () => getMaintenanceMachineCS(machine_id, periodic_check_id),
+    {
+      refetchOnWindowFocus: false,
+      select: ({ data }) => {
+        return data.data
+      },
+    },
+  )
+
+  // END USEQUERY
+
+  // ====== START CHECKING FORM
+
+  // useEffect(() => {
+  //   if (isSubmitCheckingForm) {
+  //     refetchMachineScheduleList()
+  //     setIsSubmitCheckingForm(false)
+  //   }
+  // }, [isSubmitCheckingForm, refetchMachineScheduleList])
 
   const handleSubmitCheckingFormValidation = (indexDynamicFields) => {
     let isPassValidation = true
@@ -277,9 +288,9 @@ const Draining = () => {
   }
 
   const printTipeCairan = (id) => {
-    const filtered = drainingTypes.filter((el) => el.id === id)[0]
+    const filtered = maintenanceData?.chemicals?.filter((el) => el.chemical_id === Number(id))[0]
 
-    return filtered.label
+    return filtered?.chemical_nm
   }
 
   const handleAddingLiquid = (indexDynamicFields, indexFields) => {
@@ -292,12 +303,25 @@ const Draining = () => {
       tipeCairan: duplicate[indexDynamicFields].fields[indexFields].cairan.tipeCairan,
       totalCairan: duplicate[indexDynamicFields].fields[indexFields].cairan.totalCairan,
       biaya: duplicate[indexDynamicFields].fields[indexFields].cairan.biaya,
+      isEdit: false,
     }
 
     duplicate[indexDynamicFields].fields[indexFields].listCairan.push(newData)
     duplicate[indexDynamicFields].fields[indexFields].cairan.tipeCairan = ''
     duplicate[indexDynamicFields].fields[indexFields].cairan.totalCairan = 0
     duplicate[indexDynamicFields].fields[indexFields].cairan.biaya = 0
+    setDynamicFields(duplicate)
+  }
+
+  const handleEditLiquid = (indexDynamicFields, indexFields, indexCairan) => {
+    let duplicate = [...dynamicFields]
+    duplicate[indexDynamicFields].fields[indexFields].listCairan[indexCairan].isEdit = true
+    setDynamicFields(duplicate)
+  }
+
+  const handleEditLiquidDone = (indexDynamicFields, indexFields, indexCairan) => {
+    let duplicate = [...dynamicFields]
+    duplicate[indexDynamicFields].fields[indexFields].listCairan[indexCairan].isEdit = false
     setDynamicFields(duplicate)
   }
 
@@ -308,17 +332,43 @@ const Draining = () => {
         data[indexDynamicFields].fields[indexFields].parameter = event.value
         data[indexDynamicFields].fields[indexFields].isErrorParameter = false
         data[indexDynamicFields].fields[indexFields].errorMessageParameter = ''
+      } else if (event.target.name === 'reason') {
+        data[indexDynamicFields].reason = event.target.value
       } else {
         data[indexDynamicFields].fields[indexFields].cairan[event.target.name] = event.target.value
         if (event.target.name === 'totalCairan') {
-          const filtered = drainingTypes.filter(
-            (el) => el.id === data[indexDynamicFields].fields[indexFields].cairan.tipeCairan,
+          const filtered = maintenanceData?.chemicals?.filter(
+            (el) =>
+              el.chemical_id ===
+              Number(data[indexDynamicFields].fields[indexFields].cairan.tipeCairan),
           )[0]
 
           data[indexDynamicFields].fields[indexFields].cairan.biaya =
-            Number(filtered.biaya) * Number(event.target.value)
+            Number(filtered.price_per_liter) * Number(event.target.value)
         }
       }
+    }
+    setDynamicFields(data)
+  }
+
+  const handleEditFormDraining = (indexDynamicFields, indexFields, indexCairan, event) => {
+    let data = [...dynamicFields]
+
+    data[indexDynamicFields].fields[indexFields].listCairan[indexCairan][event.target.name] =
+      event.target.value
+    const filtered = maintenanceData?.chemicals?.filter(
+      (el) =>
+        el.chemical_id ===
+        Number(data[indexDynamicFields].fields[indexFields].listCairan[indexCairan].tipeCairan),
+    )[0]
+
+    if (event.target.name === 'totalCairan') {
+      data[indexDynamicFields].fields[indexFields].listCairan[indexCairan].biaya =
+        Number(filtered.price_per_liter) * Number(event.target.value)
+    } else {
+      data[indexDynamicFields].fields[indexFields].listCairan[indexCairan].biaya =
+        Number(filtered.price_per_liter) *
+        Number(data[indexDynamicFields].fields[indexFields].listCairan[indexCairan].totalCairan)
     }
     setDynamicFields(data)
   }
@@ -363,14 +413,41 @@ const Draining = () => {
 
   const handleSubmitDrainingForm = (indexDynamicFields) => {
     const isPassValidation = validationDrainingForm(indexDynamicFields)
+    let duplicate = [...dynamicFields]
+    let mainFormReq = {}
+    let drainingRequest = []
+
+    if (indexDynamicFields === 0) {
+      mainFormReq = {
+        user_id: selectedEmployee.user_id,
+        startDate: `${moment(startDate.value).format('YYYY-MM-DD')} ${moment(
+          startTime.value,
+        ).format('HH:mm:00')}`,
+        endDate: `${moment(endDate.value).format('YYYY-MM-DD')} ${moment(endTime.value).format(
+          'HH:mm:00',
+        )}`,
+      }
+    }
+
+    duplicate[indexDynamicFields].fields.forEach((field) => {
+      drainingRequest = field.listCairan.map((cairan) => ({
+        chemical_id: Number(cairan.tipeCairan),
+        vol_changes: Number(cairan.totalCairan),
+        cost_chemical: Number(cairan.biaya),
+        periodic_check_id,
+      }))
+    })
+
     if (isPassValidation) {
-      setOpenModal({
-        show: true,
-        type: 'draining',
-      })
-      let duplicate = [...dynamicFields]
-      duplicate[indexDynamicFields].isActive = false
-      setDynamicFields(duplicate)
+      refetchMachineScheduleList()
+      // setOpenModal({
+      //   show: true,
+      //   type: 'draining',
+      // })
+      // duplicate[indexDynamicFields].isActive = false
+      // setDynamicFields(duplicate)
+      // console.log(drainingRequest, ' drainingRequest drainingRequest')
+      // console.log(mainFormReq)
     }
   }
 
@@ -395,7 +472,7 @@ const Draining = () => {
               previewVisualImg: UploadImagePlaceholder,
             },
             Sludge: {
-              value: 7,
+              value: 9,
               previewSludgeImg: UploadImagePlaceholder,
             },
             isStink: false,
@@ -417,6 +494,7 @@ const Draining = () => {
         id: new Date().getTime(),
         type: 'draining',
         isActive: true,
+        reason: '',
         fields: [
           {
             id: new Date().getTime(),
@@ -445,17 +523,16 @@ const Draining = () => {
   }
 
   const handleSelectEmployee = (e) => {
-    const filterEmployee = EmployeeData.filter((el) => el.employeeId === e.target.value)[0]
+    const filterEmployee = userGroup?.filter((el) => el.user_id === Number(e.target.value))[0]
     setSelectedEmployee(filterEmployee)
   }
 
-  console.log(dynamicFields, ' dynamicFields dynamicFields')
+  console.log(machineScheduleList, 'machineScheduleList ')
 
   return (
     <CCol xs={12}>
       <MainForm
-        employees={EmployeeData}
-        setSelectedEmployee={setSelectedEmployee}
+        userGroup={userGroup}
         handleSelectEmployee={handleSelectEmployee}
         selectedEmployee={selectedEmployee}
         setStartDate={setStartDate}
@@ -474,7 +551,11 @@ const Draining = () => {
             return (
               <React.Fragment key={dynamicEl.id}>
                 <DrainingForm
+                  maintenanceData={maintenanceData}
                   handleAddingLiquid={handleAddingLiquid}
+                  handleEditLiquid={handleEditLiquid}
+                  handleEditLiquidDone={handleEditLiquidDone}
+                  handleEditFormDraining={handleEditFormDraining}
                   dynamicEl={dynamicEl}
                   dynamicElIdPosition={idx}
                   handleChangeFormDraining={handleChangeFormDraining}
@@ -491,7 +572,7 @@ const Draining = () => {
             return (
               <React.Fragment key={dynamicEl.id}>
                 <CheckingForm
-                  parametersForm={checkSheetData}
+                  parametersForm={maintenanceData}
                   handleSubmitCheckingForm={handleSubmitCheckingForm}
                   dynamicEl={dynamicEl}
                   dynamicElIdPosition={idx}

@@ -64,8 +64,12 @@ const Machines = React.lazy(() => import('./views/machines/Machines'))
 const routes = [
   { path: '/', exact: true, name: 'Home' },
   { path: '/dashboard', name: 'Dashboard', element: Dashboard },
-  { path: '/dashboard/report/:machine_id/:machine_name', name: 'Report', element: Report },
-  { path: '/dashboard/draining/:machine_id/:machine_name', name: 'Draining', element: Draining },
+  { path: '/dashboard/report/:machine_id/:periodic_check_id', name: 'Report', element: Report },
+  {
+    path: '/dashboard/draining/:machine_id/:periodic_check_id',
+    name: 'Draining',
+    element: Draining,
+  },
   { path: '/costCalculation', name: 'Cost Calculation', element: CostCalculation },
   {
     path: '/drainingQualityMonitor',

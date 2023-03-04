@@ -17,7 +17,6 @@ import {
 } from '@coreui/react'
 import { CChartBar } from '@coreui/react-chartjs'
 import DatePicker from 'react-datepicker'
-import moment from 'moment'
 import 'react-datepicker/dist/react-datepicker.css'
 
 import { DocsCallout } from 'src/components'
@@ -25,7 +24,6 @@ import { DocsCallout } from 'src/components'
 import CalculationData from '../../assets/json/cost-calculation.json'
 import LineData from '../../assets/json/line.json'
 import { Paragraph } from './StyledComponent'
-moment.locale('id')
 
 const CostCalculation = () => {
   const [calData, setCalData] = useState(CalculationData)

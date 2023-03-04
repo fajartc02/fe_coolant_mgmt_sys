@@ -10,6 +10,7 @@ import {
   CModalTitle,
   CModalFooter,
 } from '@coreui/react'
+import moment from 'moment'
 
 import 'react-datepicker/dist/react-datepicker.css'
 
@@ -18,9 +19,9 @@ import { DrainingForm, MainForm, CheckingForm } from 'src/components'
 import UploadImagePlaceholder from 'src/assets/images/Placeholder.jpg'
 
 // API
-import { getCheckSheet } from 'src/utils/api'
+import { getMaintenanceMachineCS, getUsersGroup, getMachineScheduleList } from 'src/utils/api'
 
-import EmployeeData from 'src/assets/json/employee.json'
+moment.locale('id')
 
 const parameters = [
   { name: 'Visual', code: 'VS' },
@@ -58,28 +59,33 @@ const drainingTypes = [
 
 const Report = () => {
   const navigate = useNavigate()
-  let { machine_id } = useParams()
+  let { machine_id, periodic_check_id } = useParams()
 
   // ====== USESTATE
 
   const [selectedEmployee, setSelectedEmployee] = useState({})
+  // const [isSubmitCheckingForm, setIsSubmitCheckingForm] = useState(false)
+  const [selectedVisualOptions, setSelectedVisualOptions] = useState({})
+  const [selectedSludgeOptions, setSelectedSludgeOptions] = useState({})
+  const [selectedPHOptions, setSelectedPHOptions] = useState({})
+  const [selectedKonsentrasiOptions, setSelectedKonsentrasiOptions] = useState({})
   const [startDate, setStartDate] = useState({
-    value: '',
+    value: new Date(),
     isError: false,
     errorMessage: '',
   })
   const [startTime, setStartTime] = useState({
-    value: '',
+    value: new Date(),
     isError: false,
     errorMessage: '',
   })
   const [endDate, setEndDate] = useState({
-    value: '',
+    value: new Date(),
     isError: false,
     errorMessage: '',
   })
   const [endTime, setEndTime] = useState({
-    value: '',
+    value: new Date().getTime() + 1 * 60 * 1000,
     isError: false,
     errorMessage: '',
   })
@@ -100,7 +106,7 @@ const Report = () => {
             previewVisualImg: UploadImagePlaceholder,
           },
           Sludge: {
-            value: 7,
+            value: 9,
             previewSludgeImg: UploadImagePlaceholder,
           },
           isStink: false,
@@ -121,19 +127,64 @@ const Report = () => {
 
   // ====== END OF USESTATE
 
-  // ====== START CHECKING FORM
+  // START USEQUERY
 
-  const { data: checkSheetData, refetch: refetchChechSheet } = useQuery(
-    ['check-sheet', machine_id],
-    () => getCheckSheet(machine_id),
+  const { data: userGroup } = useQuery(['users-group'], () => getUsersGroup(), {
+    refetchOnWindowFocus: false,
+    select: ({ data }) => {
+      return data.data
+    },
+    onSuccess: (data) => {
+      setSelectedEmployee(data[0])
+    },
+  })
+
+  const { data: machineScheduleList, refetch: refetchMachineScheduleList } = useQuery(
+    ['machine-schedule-list'],
+    () => getMachineScheduleList(machine_id, 'null'),
     {
       refetchOnWindowFocus: false,
+      enabled: false,
       select: ({ data }) => {
         return data.data
       },
     },
   )
 
+  const { data: maintenanceData, refetch: refetchChechSheet } = useQuery(
+    ['check-sheet', machine_id, periodic_check_id],
+    () => getMaintenanceMachineCS(machine_id, periodic_check_id),
+    {
+      refetchOnWindowFocus: false,
+      select: ({ data }) => {
+        return data.data
+      },
+      onSuccess: (data) => {
+        console.log(data)
+
+        data[0].parameters?.forEach((param) => {
+          if (param.param_nm === 'Visual') {
+            let temp = param.options.filter((el) => el.selected_opt)
+            if (temp.length === 0) {
+              setSelectedVisualOptions({ ...param.options[0], ...param })
+            } else {
+              setSelectedVisualOptions({ ...temp[0], ...param })
+            }
+          }
+          if (param.param_nm === 'Sludge') {
+            let temp = param.options.filter((el) => el.selected_opt)
+            if (temp.length === 0) {
+              setSelectedSludgeOptions({ ...param.options[0], ...param })
+            } else {
+              setSelectedSludgeOptions({ ...temp[0], ...param })
+            }
+          }
+        })
+      },
+    },
+  )
+
+  // ====== START CHECKING FORM
   const handleSubmitCheckingFormValidation = (indexDynamicFields) => {
     let isPassValidation = true
 
@@ -197,17 +248,86 @@ const Report = () => {
     return isPassValidation
   }
 
+  // useEffect(() => {
+  //   if (isSubmitCheckingForm) {
+  //     refetchMachineScheduleList()
+  //     setIsSubmitCheckingForm(false)
+  //   }
+  // }, [isSubmitCheckingForm, refetchMachineScheduleList])
+
   const handleSubmitCheckingForm = (indexDynamicFields) => {
     const isPassValidation = handleSubmitCheckingFormValidation(indexDynamicFields)
 
+    let duplicate = [...dynamicFields]
+    let mainFormReq = {}
+    let checkingReq = {}
+
+    if (indexDynamicFields === 0) {
+      mainFormReq = {
+        user_id: selectedEmployee.user_id,
+        startDate: `${moment(startDate.value).format('YYYY-MM-DD')} ${moment(
+          startTime.value,
+        ).format('HH:mm:00')}`,
+        endDate: `${moment(endDate.value).format('YYYY-MM-DD')} ${moment(endTime.value).format(
+          'HH:mm:00',
+        )}`,
+      }
+    }
+
+    const phValue = duplicate[indexDynamicFields].fields[0].PH.value
+    const konsentrasi = duplicate[indexDynamicFields].fields[0].Konsentrasi.value
+
+    checkingReq = [
+      {
+        periodic_check_id: periodic_check_id,
+        param_id: selectedVisualOptions.param_id,
+        option_id: selectedVisualOptions.option_id,
+        rule_id: selectedVisualOptions.rule_id,
+      },
+      {
+        periodic_check_id: periodic_check_id,
+        param_id: selectedSludgeOptions.param_id,
+        option_id: selectedSludgeOptions.option_id,
+        rule_id: selectedSludgeOptions.rule_id,
+      },
+      {
+        periodic_check_id: periodic_check_id,
+        param_id: selectedPHOptions?.param_id,
+        option_id: selectedPHOptions?.options?.[0]?.option_id,
+        rule_id: selectedPHOptions?.options?.[0]?.rule_id,
+        task_value: phValue,
+        task_status:
+          phValue > selectedPHOptions?.options?.[0]?.min_value &&
+          phValue < selectedPHOptions?.options?.[0]?.max_value
+            ? 'ok'
+            : 'ng',
+      },
+      {
+        periodic_check_id: periodic_check_id,
+        param_id: selectedKonsentrasiOptions?.param_id,
+        option_id: selectedKonsentrasiOptions?.options?.[0]?.option_id,
+        rule_id: selectedKonsentrasiOptions?.options?.[0]?.rule_id,
+        task_value: konsentrasi,
+        task_status:
+          konsentrasi > selectedKonsentrasiOptions?.options?.[0]?.min_value &&
+          konsentrasi < selectedKonsentrasiOptions?.options?.[0]?.max_value
+            ? 'ok'
+            : 'ng',
+      },
+    ]
+
+    console.log(checkingReq, ' checkingReq checkingReq')
+
     if (isPassValidation) {
-      setOpenModal({
-        show: true,
-        type: 'checking',
-      })
-      let duplicate = [...dynamicFields]
-      duplicate[indexDynamicFields].isActive = false
-      setDynamicFields(duplicate)
+      console.log(mainFormReq)
+      // setIsSubmitCheckingForm(true)
+      refetchMachineScheduleList()
+      // setOpenModal({
+      //   show: true,
+      //   type: 'checking',
+      // })
+      // duplicate[indexDynamicFields].isActive = false
+      // setDynamicFields(duplicate)
     }
   }
 
@@ -219,18 +339,20 @@ const Report = () => {
     setDynamicFields(duplicate)
   }
 
-  const handleOnChangeFormChecking = (indexDynamicFields, e) => {
+  const handleOnChangeFormChecking = (indexDynamicFields, e, param) => {
     let duplicate = [...dynamicFields]
     if (e.target.name === 'previewVisualImg') {
       const file = e.target.files[0]
       duplicate[indexDynamicFields].fields[0].Visual[e.target.name] = URL.createObjectURL(file)
     } else if (e.target.name === 'Visual') {
       duplicate[indexDynamicFields].fields[0].Visual.value = Number(e.target.value)
+      setSelectedVisualOptions(param)
     } else if (e.target.name === 'previewSludgeImg') {
       const file = e.target.files[0]
       duplicate[indexDynamicFields].fields[0].Sludge[e.target.name] = URL.createObjectURL(file)
     } else if (e.target.name === 'Sludge') {
       duplicate[indexDynamicFields].fields[0].Sludge.value = Number(e.target.value)
+      setSelectedSludgeOptions(param)
     } else if (e.target.name === 'isStink') {
       duplicate[indexDynamicFields].fields[0][e.target.name] = e.target.checked
     } else {
@@ -238,6 +360,11 @@ const Report = () => {
         /[^0-9.]/g,
         '',
       )
+      if (e.target.name === 'PH') {
+        setSelectedPHOptions(param)
+      } else {
+        setSelectedKonsentrasiOptions(param)
+      }
     }
 
     setDynamicFields(duplicate)
@@ -313,8 +440,6 @@ const Report = () => {
 
   const handleChangeFormDraining = (indexDynamicFields, indexFields, event, additionalName) => {
     let data = [...dynamicFields]
-    console.log(event.target.value)
-    console.log(event.target.checked)
     if (data[indexDynamicFields].type === 'draining') {
       if (additionalName === 'parameter') {
         data[indexDynamicFields].fields[indexFields].parameter = event.value
@@ -407,7 +532,7 @@ const Report = () => {
               previewVisualImg: UploadImagePlaceholder,
             },
             Sludge: {
-              value: 7,
+              value: 9,
               previewSludgeImg: UploadImagePlaceholder,
             },
             isStink: false,
@@ -457,17 +582,19 @@ const Report = () => {
   }
 
   const handleSelectEmployee = (e) => {
-    const filterEmployee = EmployeeData.filter((el) => el.employeeId === e.target.value)[0]
+    const filterEmployee = userGroup?.filter((el) => el.user_id === Number(e.target.value))[0]
     setSelectedEmployee(filterEmployee)
   }
 
-  console.log(dynamicFields, ' dynamicFields dynamicFields')
+  // console.log(dynamicFields, ' dynamicFields dynamicFields')
+  // console.log(maintenanceData, ' maintenanceData maintenanceData')
+  // console.log(selectedVisualOptions, ' temp')
+  console.log(machineScheduleList, ' machineScheduleList')
 
   return (
     <CCol xs={12}>
       <MainForm
-        employees={EmployeeData}
-        setSelectedEmployee={setSelectedEmployee}
+        userGroup={userGroup}
         handleSelectEmployee={handleSelectEmployee}
         selectedEmployee={selectedEmployee}
         setStartDate={setStartDate}
@@ -503,7 +630,7 @@ const Report = () => {
             return (
               <React.Fragment key={dynamicEl.id}>
                 <CheckingForm
-                  parametersForm={checkSheetData}
+                  parametersForm={maintenanceData}
                   handleSubmitCheckingForm={handleSubmitCheckingForm}
                   dynamicEl={dynamicEl}
                   dynamicElIdPosition={idx}

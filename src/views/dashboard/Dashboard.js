@@ -1,40 +1,59 @@
-/* eslint-disable no-unused-vars */
 /* eslint-disable react/prop-types */
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { useDispatch } from 'react-redux'
-import { CCard, CCardBody, CBadge, CCardHeader, CCol, CRow, CCardText } from '@coreui/react'
+import { CCard, CCardBody, CCardHeader, CCol, CRow } from '@coreui/react'
 import { useQuery } from 'react-query'
 import { Chart, ArcElement } from 'chart.js'
-import { Pie } from 'react-chartjs-2'
 import { CChartPie } from '@coreui/react-chartjs'
+import CIcon from '@coreui/icons-react'
+import moment from 'moment'
 
-import { CardCube } from '../../components'
+import { cilCheckCircle, cilXCircle } from '@coreui/icons'
 
-// REDUX
-import { setSelectedMachine } from '../../stores/actions'
+import {
+  CModal,
+  CModalHeader,
+  CModalBody,
+  CModalTitle,
+  CModalFooter,
+  CButton,
+  CTable,
+  CTableBody,
+  CTableDataCell,
+  CTableHead,
+  CTableHeaderCell,
+  CTableRow,
+} from '@coreui/react'
+
+import { CardCube } from 'src/components'
+
+// post repair pengecekan untuk penambahan chemical=> chemical_id, vol_changes, periodic_check_id, cost_chemical, task_id
+// post repair pengecekan untuk pengecekan evaluasi=>
+// => option [{periodic_check_id, param_id, option_id, rule_id, notes}]
+// => range [{ task_value: inputan user, task_status: ok/ng, periodic_check_id, param_id, option_id, rule_id, notes }]
 
 // STYLING
 import { MachineLine, MachineBlock } from './StyledComponent'
 
-// ASSETS / JSON
-import MachineSummary from '../../assets/json/machine-block-summary.json'
-import MachineStatusCam from '../../assets/json/machine-status-cam.json'
-import MachineStatusCylinder from '../../assets/json/machine-status-cylinder.json'
-import LineCam from '../../assets/json/line-cam.json'
-import LineCylinder from '../../assets/json/line-cylinder.json'
 // API
-import { getLinesMap, getMachineStatusMap, getLinesSummaries } from 'src/utils/api'
+import {
+  getLinesMap,
+  getMachineStatusMap,
+  getLinesSummaries,
+  getMaintenanceMachineCheck,
+} from 'src/utils/api'
+moment.locale('id')
 
 Chart.register(ArcElement)
 
 const Dashboard = () => {
   const navigate = useNavigate()
-  const dispatch = useDispatch()
   const [queryLinesMapId, setQueryLinesMapId] = useState(1)
-  const [machineStatusUsed, setMachineStatusUsed] = useState(MachineStatusCylinder)
-  const [dataLineUsed, setDataLineUsed] = useState(LineCylinder)
+  const [selectedMachine, setSelectedMachine] = useState({})
+  const [endMaintenanceDate, setEndMaintenanceDate] = useState('')
+  const [startMaintenanceDate, setStartMaintenanceDate] = useState('')
   const [lineSummary, setLineSummary] = useState([])
+  const [openModal, setOpenModal] = useState(false)
 
   const { data: summaryResult } = useQuery(['lines-summary'], () => getLinesSummaries(), {
     refetchOnWindowFocus: false,
@@ -60,6 +79,35 @@ const Dashboard = () => {
     },
   )
 
+  // start_date=2023-02-28 07:00:00&end_date=2023-03-01 06:00:00
+
+  const { data: maintenanceCheckResult, refetch: refetchMaitenanceCheck } = useQuery(
+    ['maintenance-check', selectedMachine.machine_id],
+    () =>
+      getMaintenanceMachineCheck(
+        selectedMachine.machine_id,
+        startMaintenanceDate,
+        endMaintenanceDate,
+      ),
+    {
+      refetchOnWindowFocus: false,
+      refetchOnMount: false,
+      enabled: false,
+      select: ({ data }) => {
+        return data
+      },
+      onSuccess: ({ data }) => {
+        setOpenModal(true)
+      },
+    },
+  )
+
+  useEffect(() => {
+    if (selectedMachine.machine_id) {
+      refetchMaitenanceCheck()
+    }
+  }, [selectedMachine, refetchMaitenanceCheck])
+
   const handleClickSummaryCard = (item) => {
     const newData = [...lineSummary]
     const updateData = newData.map((el) => ({
@@ -73,12 +121,87 @@ const Dashboard = () => {
   }
 
   const handleClickMachine = (machine) => {
-    if (!machine.is_chemical_changes) {
-      navigate(`/dashboard/draining/${machine.machine_id}/${machine.machine_nm}`)
-      dispatch(setSelectedMachine(machine))
+    var format = 'HH:mm:ss'
+    let startLimitTime = moment('00:00:01', format)
+    let endLimitTime = moment('06:59:59', format)
+
+    if (moment().isBetween(startLimitTime, endLimitTime, undefined, '[]')) {
+      setStartMaintenanceDate(`${moment().add(-1, 'days').format('YYYY-MM-DD')} 07:00:00`)
+      setEndMaintenanceDate(`${moment().format('YYYY-MM-DD')} 06:59:59`)
     } else {
-      navigate(`/dashboard/report/${machine.machine_id}/${machine.machine_nm}`)
-      dispatch(setSelectedMachine(machine))
+      setStartMaintenanceDate(`${moment().format('YYYY-MM-DD')} 07:00:00`)
+      setEndMaintenanceDate(`${moment().add(1, 'days').format('YYYY-MM-DD')} 06:59:59`)
+    }
+
+    setSelectedMachine(machine)
+    if (machine.machine_id === selectedMachine.machine_id) {
+      refetchMaitenanceCheck()
+    }
+  }
+
+  const modalDescriptionFormater = () => {
+    if (maintenanceCheckResult?.data?.length === 0) {
+      return (
+        <p>
+          Mesin <strong>{selectedMachine.machine_nm}</strong> belum memiliki jadwal maintenance
+        </p>
+      )
+    } else {
+      return (
+        <>
+          <p>
+            Mesin <strong>{selectedMachine.machine_nm}</strong> memiliki jadwal maintenance sebagai
+            berikut:
+          </p>
+          <div className="table-responsive">
+            <CTable>
+              <CTableHead>
+                <CTableRow>
+                  <CTableHeaderCell scope="col">No</CTableHeaderCell>
+                  <CTableHeaderCell scope="col">Nama Mesin</CTableHeaderCell>
+                  <CTableHeaderCell scope="col">Status</CTableHeaderCell>
+                  <CTableHeaderCell scope="col"></CTableHeaderCell>
+                </CTableRow>
+              </CTableHead>
+              <CTableBody>
+                {maintenanceCheckResult?.data.map((maintenance, idListCairan) => (
+                  <CTableRow key={idListCairan}>
+                    <CTableHeaderCell className="text-center">{idListCairan + 1}</CTableHeaderCell>
+                    <CTableDataCell>{maintenance.maintenance_nm}</CTableDataCell>
+                    <CTableDataCell className="text-center">
+                      {maintenance.start_date ? (
+                        <CIcon icon={cilCheckCircle} style={{ color: '#47f213' }} size="xl" />
+                      ) : (
+                        <CIcon icon={cilXCircle} style={{ color: '#e55353' }} size={'xl'} />
+                      )}
+                    </CTableDataCell>
+                    <CTableDataCell>
+                      <CButton
+                        size="sm"
+                        color="primary"
+                        onClick={() => {
+                          setOpenModal(false)
+                          if (maintenance.maintenance_id === 1) {
+                            navigate(
+                              `/dashboard/report/${selectedMachine.machine_id}/${maintenance.periodic_check_id}`,
+                            )
+                          } else {
+                            navigate(
+                              `/dashboard/draining/${selectedMachine.machine_id}/${maintenance.periodic_check_id}`,
+                            )
+                          }
+                        }}
+                      >
+                        Mulai Sekarang
+                      </CButton>
+                    </CTableDataCell>
+                  </CTableRow>
+                ))}
+              </CTableBody>
+            </CTable>
+          </div>
+        </>
+      )
     }
   }
 
@@ -184,12 +307,6 @@ const Dashboard = () => {
                       datasets: pieDatasetsFormater(item),
                     }}
                   />
-                  {/* <Pie
-                    data={{
-                      labels: ['Danger', 'Normal', 'Warning'],
-                      datasets: pieDatasetsFormater(item),
-                    }}
-                  /> */}
                 </CCardBody>
               </CCard>
             </CCol>
@@ -204,6 +321,24 @@ const Dashboard = () => {
           </CCard>
         )}
       </MachineBlock>
+
+      <CModal visible={openModal} onClose={() => setOpenModal(false)}>
+        <CModalHeader>
+          <CModalTitle>Informasi</CModalTitle>
+        </CModalHeader>
+        <CModalBody>{modalDescriptionFormater()}</CModalBody>
+
+        <CModalFooter>
+          <CButton
+            color="primary"
+            onClick={() => {
+              setOpenModal(false)
+            }}
+          >
+            Oke
+          </CButton>
+        </CModalFooter>
+      </CModal>
     </>
   )
 }

@@ -21,39 +21,21 @@ import {
   CTableRow,
   CFormLabel,
   CCardFooter,
+  CFormTextarea,
 } from '@coreui/react'
 
 import 'react-datepicker/dist/react-datepicker.css'
 
 import CIcon from '@coreui/icons-react'
-import { cilPlus, cilTrash } from '@coreui/icons'
-
-const drainingTypes = [
-  {
-    id: '0',
-    value: 'solar',
-    label: 'Solar',
-  },
-  {
-    id: '1',
-    value: 'pertamax',
-    label: 'Pertamax',
-  },
-  {
-    id: '2',
-    value: 'pertalite',
-    label: 'Pertalite',
-  },
-  {
-    id: '3',
-    value: 'pelumas',
-    label: 'Pelumas',
-  },
-]
+import { cilCheckCircle, cilPen, cilPlus, cilTrash } from '@coreui/icons'
 
 const DrainingForm = ({
   handleDelete,
   handleAddingLiquid,
+  handleEditLiquid,
+  handleEditLiquidDone,
+  handleEditFormDraining,
+  maintenanceData,
   // drainingFields,
   dynamicElIdPosition,
   handleChangeFormDraining,
@@ -68,6 +50,7 @@ const DrainingForm = ({
   const navigate = useNavigate()
   const { fields, isActive } = dynamicEl
   const isDrainingPage = location.pathname.indexOf('/draining/') !== -1
+
   return (
     <>
       <CCard color="white" className="mb-4">
@@ -174,9 +157,9 @@ const DrainingForm = ({
                           <option defaultValue="select" value="select">
                             --- Pilih Tipe ---
                           </option>
-                          {drainingTypes.map((element, index) => (
-                            <option value={element.id} key={index}>
-                              {element.label}
+                          {maintenanceData?.chemicals?.map((element, index) => (
+                            <option value={element.chemical_id} key={index}>
+                              {element.chemical_nm}
                             </option>
                           ))}
                         </CFormSelect>
@@ -192,16 +175,18 @@ const DrainingForm = ({
                             handleChangeFormDraining(dynamicElIdPosition, idField, e)
                           }
                           min="0"
-                          step={0.5}
                         />
                       </CTableDataCell>
                       <CTableDataCell>
                         <CFormInput
                           disabled
                           name="biaya"
-                          type="number"
+                          type="text"
                           id="type"
-                          value={drainingField.cairan.biaya}
+                          value={new Intl.NumberFormat('id-ID', {
+                            style: 'currency',
+                            currency: 'IDR',
+                          }).format(Number(drainingField.cairan.biaya))}
                         />
                       </CTableDataCell>
                       <CTableDataCell>
@@ -219,25 +204,115 @@ const DrainingForm = ({
                       </CTableDataCell>
                       {/* </CForm> */}
                     </CTableRow>
-                    {drainingField.listCairan.map((cairan, idListCairan) => (
-                      <CTableRow key={idListCairan}>
-                        <CTableHeaderCell>{idListCairan + 1}</CTableHeaderCell>
-                        <CTableDataCell>{printTipeCairan(cairan.tipeCairan)}</CTableDataCell>
-                        <CTableDataCell>{cairan.totalCairan}</CTableDataCell>
-                        <CTableDataCell>
-                          {new Intl.NumberFormat('en-US').format(Number(cairan.biaya))}
-                        </CTableDataCell>
-                        <CTableDataCell>
-                          <CButton
-                            disabled={!isActive}
-                            color="danger"
-                            onClick={() => handleDelete(dynamicElIdPosition, idField, cairan.id)}
-                          >
-                            <CIcon icon={cilTrash} style={{ color: 'white' }} />
-                          </CButton>
-                        </CTableDataCell>
-                      </CTableRow>
-                    ))}
+                    {drainingField.listCairan.map((cairan, idListCairan) => {
+                      if (cairan.isEdit) {
+                        return (
+                          <CTableRow key={idListCairan}>
+                            <CTableHeaderCell>{idListCairan + 1}</CTableHeaderCell>
+                            <CTableDataCell>
+                              <CFormSelect
+                                disabled={!isActive}
+                                name="tipeCairan"
+                                onChange={(e) => {
+                                  handleEditFormDraining(
+                                    dynamicElIdPosition,
+                                    idField,
+                                    idListCairan,
+                                    e,
+                                  )
+                                }}
+                                value={cairan.tipeCairan}
+                              >
+                                <option defaultValue="select" value="select">
+                                  --- Pilih Tipe ---
+                                </option>
+                                {maintenanceData?.chemicals?.map((element, index) => (
+                                  <option value={element.chemical_id} key={index}>
+                                    {element.chemical_nm}
+                                  </option>
+                                ))}
+                              </CFormSelect>
+                            </CTableDataCell>
+                            <CTableDataCell>
+                              <CFormInput
+                                disabled={!isActive}
+                                name="totalCairan"
+                                type="number"
+                                id="type"
+                                value={cairan.totalCairan}
+                                onChange={(e) =>
+                                  handleEditFormDraining(
+                                    dynamicElIdPosition,
+                                    idField,
+                                    idListCairan,
+                                    e,
+                                  )
+                                }
+                                min="0"
+                              />
+                            </CTableDataCell>
+                            <CTableDataCell>
+                              <CFormInput
+                                disabled
+                                name="biaya"
+                                type="text"
+                                id="type"
+                                value={new Intl.NumberFormat('id-ID', {
+                                  style: 'currency',
+                                  currency: 'IDR',
+                                }).format(Number(cairan.biaya))}
+                              />
+                            </CTableDataCell>
+                            <CTableDataCell>
+                              <CButton
+                                disabled={!isActive}
+                                color="success"
+                                onClick={() =>
+                                  handleEditLiquidDone(dynamicElIdPosition, idField, idListCairan)
+                                }
+                              >
+                                <CIcon icon={cilCheckCircle} style={{ color: 'white' }} />
+                              </CButton>
+                            </CTableDataCell>
+                          </CTableRow>
+                        )
+                      } else {
+                        return (
+                          <CTableRow key={idListCairan}>
+                            <CTableHeaderCell>{idListCairan + 1}</CTableHeaderCell>
+                            <CTableDataCell>{printTipeCairan(cairan.tipeCairan)}</CTableDataCell>
+                            <CTableDataCell>{cairan.totalCairan}</CTableDataCell>
+                            <CTableDataCell>
+                              {new Intl.NumberFormat('id-ID', {
+                                style: 'currency',
+                                currency: 'IDR',
+                              }).format(Number(cairan.biaya))}
+                            </CTableDataCell>
+                            <CTableDataCell>
+                              <CButton
+                                disabled={!isActive}
+                                color="warning"
+                                onClick={() =>
+                                  handleEditLiquid(dynamicElIdPosition, idField, idListCairan)
+                                }
+                              >
+                                <CIcon icon={cilPen} style={{ color: 'white' }} />
+                              </CButton>
+                              <span style={{ marginRight: '3px' }} />
+                              <CButton
+                                disabled={!isActive}
+                                color="danger"
+                                onClick={() =>
+                                  handleDelete(dynamicElIdPosition, idField, cairan.id)
+                                }
+                              >
+                                <CIcon icon={cilTrash} style={{ color: 'white' }} />
+                              </CButton>
+                            </CTableDataCell>
+                          </CTableRow>
+                        )
+                      }
+                    })}
                   </CTableBody>
                 </CTable>
               </div>
@@ -266,6 +341,16 @@ const DrainingForm = ({
             </CCardBody>
           </CCard>
         ))}
+        <CCard>
+          <CCardBody>
+            <CFormTextarea
+              id="reason"
+              label="Reason"
+              name="reason"
+              onChange={(e) => handleChangeFormDraining(dynamicElIdPosition, null, e)}
+            ></CFormTextarea>
+          </CCardBody>
+        </CCard>
         <CCardFooter>
           <CRow className="mb-4">
             <CCol style={{ marginTop: '10px' }}>
@@ -291,12 +376,16 @@ const DrainingForm = ({
 DrainingForm.propTypes = {
   dynamicElIdPosition: PropTypes.number,
   dynamicEl: PropTypes.object,
+  maintenanceData: PropTypes.object,
   // drainingFields: PropTypes.array,
   parameters: PropTypes.array,
   handleDelete: PropTypes.func,
   printTipeCairan: PropTypes.func,
   handleAddingLiquid: PropTypes.func,
+  handleEditLiquid: PropTypes.func,
+  handleEditLiquidDone: PropTypes.func,
   handleChangeFormDraining: PropTypes.func,
+  handleEditFormDraining: PropTypes.func,
   handleDeleteDrainingField: PropTypes.func,
   addDrainingFields: PropTypes.func,
   handleSubmitDrainingForm: PropTypes.func,
