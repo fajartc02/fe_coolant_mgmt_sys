@@ -56,7 +56,7 @@ const EvaluationForm = ({
   parameters,
   handleDeleteDrainingField,
   addFormEvalField,
-  handleSubmitDrainingForm,
+  handleSubmitFormEvaluation,
   dynamicEl,
 }) => {
   const location = useLocation()
@@ -100,6 +100,8 @@ const EvaluationForm = ({
   }
 
   const formOptionsNote = (options, value, paramName) => {
+    if (!value) return
+
     const filtered = options.filter((el) => el.option_id === value)[0]
     if (filtered?.rule_lvl === 1) {
       return (
@@ -174,7 +176,8 @@ const EvaluationForm = ({
   }
 
   const filterParamRender = (paramMaster, selectedParam) => {
-    const filtered = paramMaster.filter((el) => {
+    console.log(selectedParam, ' selectedParam')
+    const filtered = paramMaster?.filter((el) => {
       return selectedParam.some((f) => {
         return f.param_id === el.param_id
       })
@@ -182,12 +185,10 @@ const EvaluationForm = ({
     return filtered
   }
 
-  console.log(dynamicEl, 'dynamicEl dynamicEl')
-
   return (
     <>
       <CCard color="white" className="mb-4">
-        <CCardHeader>Draining Indikator</CCardHeader>
+        <CCardHeader>Draining Indikator Evaluasi</CCardHeader>
         {fields.map((drainingField, idField) => (
           <CCard color="white" key={idField}>
             <CCardBody>
@@ -199,15 +200,17 @@ const EvaluationForm = ({
                     </CFormLabel>
                     <CCol md={5}>
                       <MultiSelect
-                        disabled={!isActive}
-                        value={drainingField.parameter.value}
+                        // disabled={!isActive}
+                        // value={drainingField.parameter.value}
+                        disabled={true}
+                        value={drainingField.oosParam}
                         onChange={(e) => {
                           handleChangeFormEvaluation(dynamicElIdPosition, idField, e, 'parameter')
                         }}
                         options={drainingField.oosParam}
                         optionLabel="name"
                         placeholder="Silakan Pilih"
-                        maxSelectedLabels={3}
+                        maxSelectedLabels={6}
                       />
                       {drainingField?.isErrorParameter && (
                         <div className="error-form">{drainingField?.errorMessageParameter}</div>
@@ -226,6 +229,7 @@ const EvaluationForm = ({
                       </div>
                     </CCol>
                   </CRow>
+                  <CCardHeader>Tambahkan Cairan Untuk Perbaikan</CCardHeader>
                   <div className="table-responsive">
                     <CTable>
                       <CTableHead>
@@ -430,18 +434,21 @@ const EvaluationForm = ({
                       </CTableBody>
                     </CTable>
                   </div>
-                  {drainingField.isError && (
-                    <div className="error-form mb-4">{drainingField?.errorMessage}</div>
+                  {drainingField?.listCairan?.isError && (
+                    <div className="error-form mb-4">{drainingField?.listCairan?.errorMessage}</div>
                   )}
                 </CCardBody>
               </CCard>
 
-              {drainingField.parameter.value.length > 0 && (
+              {/* drainingField.parameter.value, => kalo mau baseon pilih */}
+              {drainingField.oosParam.length > 0 && (
                 <CCard className="mb-4" color="white">
+                  <CCardHeader>Recek Parameter</CCardHeader>
                   <CCardBody>
                     {filterParamRender(
                       paramRender?.[0]?.parameters,
-                      drainingField.parameter.value,
+                      // drainingField.parameter.value,
+                      drainingField.oosParam,
                     ).map((param, id) => {
                       switch (param.param_nm) {
                         case 'Sludge':
@@ -492,7 +499,6 @@ const EvaluationForm = ({
                                           {param.options.map((el, index) => (
                                             <CFormCheck
                                               disabled={!isActive}
-                                              defaultChecked={index === 0}
                                               type="radio"
                                               value={el.option_id}
                                               name={param.param_nm}
@@ -520,7 +526,22 @@ const EvaluationForm = ({
                                 </div>
                               </div>
                               <CRow>
-                                {formOptionsNote(param.options, fields[0].Sludge.value, 'Sludge')}
+                                {fields[0].Sludge.isError ? (
+                                  <CCol
+                                    md={{ offset: 2 }}
+                                    style={{
+                                      marginTop: '-10px',
+                                      display: 'flex',
+                                      alignItems: 'center',
+                                    }}
+                                  >
+                                    <div className="error-form">
+                                      {fields[0].Sludge.errorMessage}
+                                    </div>
+                                  </CCol>
+                                ) : (
+                                  formOptionsNote(param.options, fields[0].Sludge.value, 'Sludge')
+                                )}
                               </CRow>
                             </div>
                           )
@@ -570,7 +591,6 @@ const EvaluationForm = ({
                                           {param.options.map((el, index) => (
                                             <CFormCheck
                                               disabled={!isActive}
-                                              defaultChecked={index === 0}
                                               type="radio"
                                               value={el.option_id}
                                               name={param.param_nm}
@@ -598,7 +618,22 @@ const EvaluationForm = ({
                                 </div>
                               </div>
                               <CRow>
-                                {formOptionsNote(param.options, fields[0].Visual.value, 'Visual')}
+                                {fields[0].Visual.isError ? (
+                                  <CCol
+                                    md={{ offset: 2 }}
+                                    style={{
+                                      marginTop: '-10px',
+                                      display: 'flex',
+                                      alignItems: 'center',
+                                    }}
+                                  >
+                                    <div className="error-form">
+                                      {fields[0].Visual.errorMessage}
+                                    </div>
+                                  </CCol>
+                                ) : (
+                                  formOptionsNote(param.options, fields[0].Visual.value, 'Visual')
+                                )}
                               </CRow>
                             </div>
                           )
@@ -748,7 +783,7 @@ const EvaluationForm = ({
                 </CCard>
               )}
 
-              {idField === fields.length - 1 && (
+              {/* {idField === fields.length - 1 && (
                 <CButton
                   disabled={!isActive}
                   color={'primary'}
@@ -756,7 +791,7 @@ const EvaluationForm = ({
                 >
                   Tambah Indikator
                 </CButton>
-              )}
+              )} */}
             </CCardBody>
           </CCard>
         ))}
@@ -780,7 +815,7 @@ const EvaluationForm = ({
                 disabled={!isActive}
                 color={'primary'}
                 style={{ marginRight: '20px' }}
-                onClick={() => handleSubmitDrainingForm(dynamicElIdPosition)}
+                onClick={() => handleSubmitFormEvaluation(dynamicElIdPosition)}
               >
                 simpan
               </CButton>
@@ -798,7 +833,7 @@ const EvaluationForm = ({
 EvaluationForm.propTypes = {
   dynamicElIdPosition: PropTypes.number,
   dynamicEl: PropTypes.object,
-  maintenanceData: PropTypes.object,
+  maintenanceData: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
   // drainingFields: PropTypes.array,
   parameters: PropTypes.array,
   handleDeleteRowFormEval: PropTypes.func,
@@ -811,7 +846,7 @@ EvaluationForm.propTypes = {
   handleEditDrainingFormEvaluation: PropTypes.func,
   handleDeleteDrainingField: PropTypes.func,
   addFormEvalField: PropTypes.func,
-  handleSubmitDrainingForm: PropTypes.func,
+  handleSubmitFormEvaluation: PropTypes.func,
 }
 
 export default EvaluationForm

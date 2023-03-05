@@ -87,7 +87,9 @@ const CheckingForm = ({
   }
 
   const formOptionsNote = (options, value, paramName) => {
-    const filtered = options.filter((el) => el.option_id === value)[0]
+    if (!value) return
+
+    const filtered = options.filter((el) => el.option_id === Number(value))[0]
     if (filtered?.rule_lvl === 1) {
       return (
         <CCol
@@ -170,7 +172,11 @@ const CheckingForm = ({
           </CFormLabel>
           <CCol sm={5}>
             <CFormSelect
-              disabled={dynamicEl?.checkingMaintenanceList?.length === 0 || !isActive}
+              disabled={
+                dynamicEl?.checkingMaintenanceList?.length === 0 ||
+                !isActive ||
+                dynamicEl?.selectedCheckMaintenance
+              }
               name="checkingMaintenanceList"
               onChange={(e) => {
                 handleOnChangeFormChecking(dynamicElIdPosition, e)
@@ -223,7 +229,7 @@ const CheckingForm = ({
                               {param.options.map((el, index) => (
                                 <CFormCheck
                                   disabled={!isActive}
-                                  defaultChecked={index === 0}
+                                  // defaultChecked={index === 0}
                                   type="radio"
                                   value={el.option_id}
                                   name={param.param_nm}
@@ -244,7 +250,22 @@ const CheckingForm = ({
                       </CTable>
                     </div>
                   </div>
-                  <CRow>{formOptionsNote(param.options, fields[0].Sludge.value, 'Sludge')}</CRow>
+                  <CRow>
+                    {fields[0].Sludge.isError ? (
+                      <CCol
+                        md={{ offset: 2 }}
+                        style={{
+                          marginTop: '-10px',
+                          display: 'flex',
+                          alignItems: 'center',
+                        }}
+                      >
+                        <div className="error-form">{fields[0].Sludge.errorMessage}</div>
+                      </CCol>
+                    ) : (
+                      formOptionsNote(param.options, fields[0].Sludge.value, 'Sludge')
+                    )}
+                  </CRow>
                 </div>
               )
             case 'Visual':
@@ -285,7 +306,6 @@ const CheckingForm = ({
                               {param.options.map((el, index) => (
                                 <CFormCheck
                                   disabled={!isActive}
-                                  defaultChecked={index === 0}
                                   type="radio"
                                   value={el.option_id}
                                   name={param.param_nm}
@@ -306,7 +326,22 @@ const CheckingForm = ({
                       </CTable>
                     </div>
                   </div>
-                  <CRow>{formOptionsNote(param.options, fields[0].Visual.value, 'Visual')}</CRow>
+                  <CRow>
+                    {fields[0].Visual.isError ? (
+                      <CCol
+                        md={{ offset: 2 }}
+                        style={{
+                          marginTop: '-10px',
+                          display: 'flex',
+                          alignItems: 'center',
+                        }}
+                      >
+                        <div className="error-form">{fields[0].Visual.errorMessage}</div>
+                      </CCol>
+                    ) : (
+                      formOptionsNote(param.options, fields[0].Visual.value, 'Visual')
+                    )}
+                  </CRow>
                 </div>
               )
             case 'Aroma':

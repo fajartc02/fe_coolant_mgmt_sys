@@ -25,6 +25,7 @@ import {
   getCheckSheetAfterChanges,
   postChemicalChanges,
   postChemicalChangesCheck,
+  postChemicalChangesEvalParam,
 } from 'src/utils/api'
 
 moment.locale('id')
@@ -36,15 +37,88 @@ const parameters = [
   { name: 'PH', code: 'PH' },
 ]
 
+const afterCheck = [
+  {
+    task_id: 110,
+    task_value: null,
+    task_status: null,
+    periodic_check_id: 425,
+    created_by: '1629083',
+    created_dt: '2023-03-05T09:15:04.000Z',
+    changed_by: '1629083',
+    changed_dt: '2023-03-05T09:15:04.000Z',
+    option_id: 4,
+    param_id: 4,
+    rule_id: 4,
+    img: null,
+  },
+  {
+    task_id: 111,
+    task_value: null,
+    task_status: null,
+    periodic_check_id: 425,
+    created_by: '1629083',
+    created_dt: '2023-03-05T09:15:04.000Z',
+    changed_by: '1629083',
+    changed_dt: '2023-03-05T09:15:04.000Z',
+    option_id: 7,
+    param_id: 8,
+    rule_id: 4,
+    img: null,
+  },
+  {
+    task_id: 112,
+    task_value: null,
+    task_status: null,
+    periodic_check_id: 425,
+    created_by: '1629083',
+    created_dt: '2023-03-05T09:15:04.000Z',
+    changed_by: '1629083',
+    changed_dt: '2023-03-05T09:15:04.000Z',
+    option_id: 6,
+    param_id: 5,
+    rule_id: 2,
+    img: null,
+  },
+  {
+    task_id: 113,
+    task_value: 1,
+    task_status: 'NG',
+    periodic_check_id: 425,
+    created_by: '1629083',
+    created_dt: '2023-03-05T09:15:04.000Z',
+    changed_by: '1629083',
+    changed_dt: '2023-03-05T09:15:04.000Z',
+    option_id: 11,
+    param_id: 7,
+    rule_id: 2,
+    img: null,
+  },
+  {
+    task_id: 114,
+    task_value: 1,
+    task_status: 'NG',
+    periodic_check_id: 425,
+    created_by: '1629083',
+    created_dt: '2023-03-05T09:15:04.000Z',
+    changed_by: '1629083',
+    changed_dt: '2023-03-05T09:15:04.000Z',
+    option_id: 10,
+    param_id: 6,
+    rule_id: 2,
+    img: null,
+  },
+]
+
 const generateDefaultFilledCheckSheet = (parameters, param_id) => {
   let final = ''
   parameters.forEach((element) => {
     if (element.param_id === param_id) {
       if (param_id === 4 || param_id === 8) {
         const result = element.options.filter((el) => el.selected_opt)
-        final = result[0].option_id
+        final = result?.[0]?.option_id
       } else if (param_id === 6 || param_id === 7) {
-        final = element.options[0].task_value
+        final = element?.options?.[0]?.task_value
       } else if (param_id === 5) {
         const result = element.options.filter((el) => el.selected_opt)[0]
         if (result.option_id === 6) {
@@ -67,6 +141,7 @@ const Draining = () => {
 
   const [selectedEmployee, setSelectedEmployee] = useState({})
   const [parameterMaster, setParameterMaster] = useState([])
+  const [parameterTaskId, setParameterTaskId] = useState([])
   const [selectedChecksitId, setSelectedChecksitId] = useState('')
   const [selectedIndexDynamicField, setSelectedIndexDynamicField] = useState(0)
   const [outOfStandardParam, setOutOfStandardParam] = useState([])
@@ -126,7 +201,6 @@ const Draining = () => {
         return data.data
       },
       onSuccess: (data) => {
-        console.log('result refetchMachineScheduleList', data)
         let duplicate = [...dynamicFields]
         const newDynamicField = {
           id: new Date().getTime(),
@@ -136,11 +210,11 @@ const Draining = () => {
             {
               // id: new Date().getTime(),
               Visual: {
-                value: 1,
+                value: '',
                 param: {},
               },
               Sludge: {
-                value: 9,
+                value: '',
                 param: {},
               },
               isStink: {
@@ -298,38 +372,24 @@ const Draining = () => {
       },
       onSuccess: (data) => {
         let duplicate = [...dynamicFields]
-        console.log('refetchCheckSheetAfterChanges refetchCheckSheetAfterChanges', data)
         data?.[0]?.parameters?.forEach((param) => {
           if (param.param_nm === 'Visual') {
             duplicate[selectedIndexDynamicField].fields[0].Visual.param = {
               ...param.options[0],
               ...param,
             }
-            // if (temp.length === 0) {
-            //   setSelectedVisualOptions({ ...param.options[0], ...param })
-            // } else {
-            //   setSelectedVisualOptions({ ...temp[0], ...param })
-            // }
           }
           if (param.param_nm === 'Sludge') {
             duplicate[selectedIndexDynamicField].fields[0].Sludge.param = {
               ...param.options[0],
               ...param,
             }
-            // let temp = param.options.filter((el) => el.selected_opt)
-            // if (temp.length === 0) {
-            //   setSelectedSludgeOptions({ ...param.options[0], ...param })
-            // } else {
-            //   setSelectedSludgeOptions({ ...temp[0], ...param })
-            // }
           }
           if (param.param_nm === 'Aroma') {
             let temp = param.options.filter((el) => el.option_id === 6)[0]
             duplicate[selectedIndexDynamicField].fields[0].isStink.param = { ...temp, ...param }
           }
         })
-
-        // let duplicate = [...dynamicFields]
 
         const newDynamicField = {
           ...dynamicFields[selectedIndexDynamicField],
@@ -365,7 +425,10 @@ const Draining = () => {
         JSON.stringify(data.data.rows, null, '\t'),
         'ini sukses data mutateChemicalChangesCheck',
       )
+      setParameterTaskId(data.data.rows)
       let duplicate = [...dynamicFields]
+
+      // after check dapet disin
       setOpenModal({
         show: true,
         type: 'checking',
@@ -377,17 +440,26 @@ const Draining = () => {
       toast.error(response.data.message)
     },
   })
+  const { mutate: mutateChemicalChangesEvalParam } = useMutation(postChemicalChangesEvalParam, {
+    onSuccess: ({ data }) => {
+      console.log(data, '===== ini dia reulsttt')
+      let duplicate = [...dynamicFields]
+
+      duplicate[selectedIndexDynamicField].isActive = false
+      setDynamicFields(duplicate)
+      setOpenModal({
+        show: true,
+        type: 'finish',
+      })
+    },
+    onError: ({ response }) => {
+      toast.error(response.data.message)
+    },
+  })
 
   // END USEQUERY
 
   // ====== START CHECKING FORM
-
-  // useEffect(() => {
-  //   if (isSubmitCheckingForm) {
-  //     refetchMachineScheduleList()
-  //     setIsSubmitCheckingForm(false)
-  //   }
-  // }, [isSubmitCheckingForm, refetchMachineScheduleList])
 
   const handleSubmitCheckingFormValidation = (indexDynamicFields) => {
     let isPassValidation = true
@@ -395,6 +467,16 @@ const Draining = () => {
     if (!duplicate[indexDynamicFields].fields[0].PH.value) {
       duplicate[indexDynamicFields].fields[0].PH.isError = true
       duplicate[indexDynamicFields].fields[0].PH.errorMessage = 'PH harus diisi'
+      isPassValidation = false
+    }
+    if (!duplicate[indexDynamicFields].fields[0].Sludge.value) {
+      duplicate[indexDynamicFields].fields[0].Sludge.isError = true
+      duplicate[indexDynamicFields].fields[0].Sludge.errorMessage = 'Sludge harus diisi'
+      isPassValidation = false
+    }
+    if (!duplicate[indexDynamicFields].fields[0].Visual.value) {
+      duplicate[indexDynamicFields].fields[0].Visual.isError = true
+      duplicate[indexDynamicFields].fields[0].Visual.errorMessage = 'Visual harus diisi'
       isPassValidation = false
     }
 
@@ -480,7 +562,6 @@ const Draining = () => {
       let temp = duplicate[indexDynamicFields].fields[0]
       const oosParam = []
       arrayHead.forEach((key) => {
-        console.log(Number(temp[key].value) > temp[key].param.max_value)
         if (
           (temp[key].param.param_id === 4 && temp[key].param.rule_lvl > 1) ||
           (temp[key].param.param_id === 8 && temp[key].param.rule_lvl > 1)
@@ -508,74 +589,74 @@ const Draining = () => {
         }
       })
 
-      console.log(payload, '===')
       setOutOfStandardParam(oosParam)
 
       // let duplicate = [...dynamicFields]
 
-      let newDynamicFields = {
-        id: new Date().getTime(),
-        type: 'evaluation',
-        isActive: true,
-        reason: '',
-        fields: [
-          {
-            id: new Date().getTime(),
-            oosParam: [...oosParam],
-            parameter: {
-              value: [],
-              isErrorParameter: false,
-              errorMessageParameter: '',
-            },
-            listCairan: {
-              value: [],
-              isError: false,
-              errorMessage: '',
-            },
-            cairan: {
-              tipeCairan: '',
-              totalCairan: 0,
-              biaya: 0,
-            },
-            Visual: {
-              value: 1,
-              param: {},
-            },
-            Sludge: {
-              value: 9,
-              param: {},
-            },
-            isStink: {
-              value: false,
-              param: {},
-            },
-            PH: {
-              value: '',
-              isError: false,
-              errorMessage: '',
-              param: {},
-            },
-            Konsentrasi: {
-              value: '',
-              isError: false,
-              errorMessage: '',
-              param: {},
-            },
-          },
-        ],
-        paramRender: [...parameterMaster],
-      }
-      duplicate.push(newDynamicFields)
-      setDynamicFields(duplicate)
-
-      // mutateChemicalChangesCheck(payload)
-      // setOpenModal({
-      //   show: true,
-      //   type: 'checking',
-      // })
-      // let duplicate = [...dynamicFields]
-      // duplicate[indexDynamicFields].isActive = false
+      // let newDynamicFields = {
+      //   id: new Date().getTime(),
+      //   type: 'evaluation',
+      //   isActive: true,
+      //   reason: '',
+      //   fields: [
+      //     {
+      //       id: new Date().getTime(),
+      //       oosParam: [...oosParam],
+      //       parameter: {
+      //         value: [],
+      //         isErrorParameter: false,
+      //         errorMessageParameter: '',
+      //       },
+      //       listCairan: {
+      //         value: [],
+      //         isError: false,
+      //         errorMessage: '',
+      //       },
+      //       cairan: {
+      //         tipeCairan: '',
+      //         totalCairan: 0,
+      //         biaya: 0,
+      //       },
+      //       Visual: {
+      //         value: '',
+      //         param: {},
+      //         isError: false,
+      //         errorMessage: '',
+      //       },
+      //       Sludge: {
+      //         value: '',
+      //         param: {},
+      //         isError: false,
+      //         errorMessage: '',
+      //       },
+      //       isStink: {
+      //         value: false,
+      //         param: {},
+      //         isError: false,
+      //         errorMessage: '',
+      //       },
+      //       PH: {
+      //         value: '',
+      //         isError: false,
+      //         errorMessage: '',
+      //         param: {},
+      //       },
+      //       Konsentrasi: {
+      //         value: '',
+      //         isError: false,
+      //         errorMessage: '',
+      //         param: {},
+      //       },
+      //     },
+      //   ],
+      //   paramRender: [...parameterMaster],
+      // }
+      // duplicate.push(newDynamicFields)
       // setDynamicFields(duplicate)
+
+      mutateChemicalChangesCheck(payload)
+      duplicate[indexDynamicFields].isActive = false
+      setDynamicFields(duplicate)
     }
   }
 
@@ -589,15 +670,19 @@ const Draining = () => {
 
   const handleOnChangeFormChecking = (indexDynamicFields, e, param) => {
     let duplicate = [...dynamicFields]
+
     setSelectedIndexDynamicField(indexDynamicFields)
     if (e.target.name === 'checkingMaintenanceList') {
       duplicate[indexDynamicFields].selectedCheckMaintenance = e.target.value
       setSelectedChecksitId(e.target.value)
     } else if (e.target.name === 'Visual') {
+      duplicate[indexDynamicFields].fields[0][e.target.name].isError = false
+      duplicate[indexDynamicFields].fields[0][e.target.name].errorMessage = ''
       duplicate[indexDynamicFields].fields[0].Visual.value = Number(e.target.value)
       duplicate[indexDynamicFields].fields[0].Visual.param = param
-      console.log(param, 'param')
     } else if (e.target.name === 'Sludge') {
+      duplicate[indexDynamicFields].fields[0][e.target.name].isError = false
+      duplicate[indexDynamicFields].fields[0][e.target.name].errorMessage = ''
       duplicate[indexDynamicFields].fields[0].Sludge.value = Number(e.target.value)
       duplicate[indexDynamicFields].fields[0].Sludge.param = param
     } else if (e.target.name === 'isStink') {
@@ -917,6 +1002,7 @@ const Draining = () => {
             },
           },
         ],
+        paramRender: [...parameterMaster],
       }
       duplicate.push(newDynamicFields)
       setDynamicFields(duplicate)
@@ -947,16 +1033,35 @@ const Draining = () => {
       duplicate[indexDynamicFields].fields[indexFields].parameter.value = e.value
       duplicate[indexDynamicFields].fields[indexFields].parameter.isErrorParameter = false
       duplicate[indexDynamicFields].fields[indexFields].parameter.errorMessageParameter = ''
-    } else if (
-      e.target.name === 'PH' ||
-      e.target.name === 'Konsentrasi' ||
-      e.target.name === 'Sludge' ||
-      e.target.name === 'Visual'
-    ) {
-      duplicate[indexDynamicFields].fields[0][e.target.name].value = Number(
-        e.target.value.replace(/[^0-9.]/g, ''),
+    } else if (e.target.name === 'PH' || e.target.name === 'Konsentrasi') {
+      duplicate[indexDynamicFields].fields[0][e.target.name].isError = false
+      duplicate[indexDynamicFields].fields[0][e.target.name].errorMessage = ''
+      duplicate[indexDynamicFields].fields[0][e.target.name].value = e.target.value.replace(
+        /[^0-9.]/g,
+        '',
       )
-      duplicate[indexDynamicFields].fields[0][e.target.name].param = param
+
+      const paramWithTaskId = parameterTaskId.filter(
+        (e) => Number(e.param_id) === Number(param.param_id),
+      )[0]
+      duplicate[indexDynamicFields].fields[0][e.target.name].param = {
+        ...param,
+        task_id: paramWithTaskId?.task_id,
+      }
+    } else if (e.target.name === 'Sludge' || e.target.name === 'Visual') {
+      duplicate[indexDynamicFields].fields[0][e.target.name].isError = false
+      duplicate[indexDynamicFields].fields[0][e.target.name].errorMessage = ''
+      duplicate[indexDynamicFields].fields[0][e.target.name].value = Number(e.target.value)
+
+      const paramWithTaskId = parameterTaskId.filter(
+        (e) => Number(e.param_id) === Number(param.param_id),
+      )[0]
+      duplicate[indexDynamicFields].fields[0][e.target.name].param = {
+        ...param,
+        task_id: paramWithTaskId?.task_id,
+      }
+    } else if (e.target.name === 'reason') {
+      duplicate[indexDynamicFields].reason = e.target.value
     } else {
       duplicate[indexDynamicFields].fields[indexFields].cairan[e.target.name] = e.target.value
       if (e.target.name === 'totalCairan') {
@@ -1097,6 +1202,159 @@ const Draining = () => {
     setDynamicFields(duplicate)
   }
 
+  const generateParamCheck = (filterParameter, fields) => {
+    let array = []
+    filterParameter.forEach((param) => {
+      if (param.param_id === 4) {
+        const visualData = fields.Visual
+        array.push({
+          periodic_check_id: Number(periodic_check_id),
+          param_id: visualData.param.param_id,
+          option_id: visualData.param.option_id,
+          rule_id: visualData.param.rule_id,
+          parent_task_id: visualData.param?.task_id,
+          task_status: null,
+          task_value: null,
+          is_evaluate: true,
+        })
+      } else if (param.param_id === 8) {
+        const sludgeData = fields.Sludge
+        array.push({
+          periodic_check_id: Number(periodic_check_id),
+          param_id: sludgeData.param.param_id,
+          option_id: sludgeData.param.option_id,
+          rule_id: sludgeData.param.rule_id,
+          parent_task_id: sludgeData.param?.task_id,
+          task_status: null,
+          task_value: null,
+          is_evaluate: true,
+        })
+      } else if (param.param_id === 7) {
+        const phData = fields.PH
+        array.push({
+          periodic_check_id: Number(periodic_check_id),
+          param_id: phData?.param?.param_id,
+          option_id: phData?.param?.option_id,
+          rule_id: phData?.param?.rule_id,
+          parent_task_id: phData.param?.task_id,
+          task_status:
+            Number(phData.value) >= Number(phData?.param?.min_value) &&
+            Number(phData.value) <= Number(phData?.param?.max_value)
+              ? 'OK'
+              : 'NG',
+          task_value: Number(phData.value),
+          is_evaluate: true,
+        })
+      } else if (param.param_id === 6) {
+        const konsentrasiData = fields.Konsentrasi
+        array.push({
+          periodic_check_id: Number(periodic_check_id),
+          param_id: konsentrasiData?.param?.param_id,
+          option_id: konsentrasiData?.param?.option_id,
+          rule_id: konsentrasiData?.param?.rule_id,
+          parent_task_id: konsentrasiData.param?.task_id,
+          task_status:
+            Number(konsentrasiData.value) >= Number(konsentrasiData?.param?.min_value) &&
+            Number(konsentrasiData.value) <= Number(konsentrasiData?.param?.max_value)
+              ? 'OK'
+              : 'NG',
+          task_value: Number(konsentrasiData.value),
+          is_evaluate: true,
+        })
+      }
+    })
+
+    return array
+  }
+
+  const validationFormEval = (indexDynamicFields) => {
+    let isPassValidation = true
+    const emptyLiquidIndex = dynamicFields[indexDynamicFields].fields.findIndex(
+      (el) => el.listCairan.value.length === 0,
+    )
+    let duplicate = [...dynamicFields]
+
+    if (emptyLiquidIndex !== -1) {
+      dynamicFields[indexDynamicFields].fields.forEach((element, idx) => {
+        if (element.listCairan.value.length === 0) {
+          duplicate[indexDynamicFields].fields[idx].listCairan.isError = true
+          duplicate[indexDynamicFields].fields[idx].listCairan.errorMessage =
+            'Penambahan cairan kosong'
+        }
+      })
+
+      isPassValidation = false
+    }
+
+    if (!duplicate[indexDynamicFields].fields[0].PH.value) {
+      duplicate[indexDynamicFields].fields[0].PH.isError = true
+      duplicate[indexDynamicFields].fields[0].PH.errorMessage = 'PH harus diisi'
+      isPassValidation = false
+    }
+    if (!duplicate[indexDynamicFields].fields[0].Sludge.value) {
+      duplicate[indexDynamicFields].fields[0].Sludge.isError = true
+      duplicate[indexDynamicFields].fields[0].Sludge.errorMessage = 'Sludge harus diisi'
+      isPassValidation = false
+    }
+    if (!duplicate[indexDynamicFields].fields[0].Visual.value) {
+      duplicate[indexDynamicFields].fields[0].Visual.isError = true
+      duplicate[indexDynamicFields].fields[0].Visual.errorMessage = 'Visual harus diisi'
+      isPassValidation = false
+    }
+
+    if (!duplicate[indexDynamicFields].fields[0].Konsentrasi.value) {
+      duplicate[indexDynamicFields].fields[0].Konsentrasi.isError = true
+      duplicate[indexDynamicFields].fields[0].Konsentrasi.errorMessage = 'Konsentrasi harus diisi'
+      isPassValidation = false
+    }
+
+    setDynamicFields(duplicate)
+
+    return isPassValidation
+  }
+
+  const handleSubmitFormEvaluation = (indexDynamicFields) => {
+    let duplicate = [...dynamicFields]
+    console.log(duplicate[indexDynamicFields], '===999')
+
+    const isPassValidation = validationFormEval(indexDynamicFields)
+
+    const filterParameter =
+      duplicate[indexDynamicFields].fields[0].parameter.value.length > 0
+        ? duplicate[indexDynamicFields].fields[0].parameter.value
+        : duplicate[indexDynamicFields].fields[0].oosParam
+
+    const myArrayFiltered = parameterTaskId.filter((el) => {
+      return filterParameter.some((f) => {
+        return f.param_id === el.param_id
+      })
+    })
+
+    const tasks_id = []
+    myArrayFiltered.forEach((el) => tasks_id.push(el.task_id))
+
+    let drainingRequest = []
+    duplicate[indexDynamicFields].fields.forEach((field) => {
+      drainingRequest = field.listCairan.value.map((cairan) => ({
+        chemical_id: Number(cairan.tipeCairan),
+        vol_changes: Number(cairan.totalCairan),
+        cost_chemical: Number(cairan.biaya),
+        periodic_check_id: Number(periodic_check_id),
+        tasks_id: tasks_id,
+      }))
+    })
+
+    const payload = {
+      periodic_check_id: periodic_check_id,
+      chemical_changes: drainingRequest,
+      param_check: generateParamCheck(filterParameter, duplicate[indexDynamicFields].fields[0]),
+    }
+
+    console.log(payload, 'ini rquest akhir====')
+
+    mutateChemicalChangesEvalParam(payload)
+  }
+
   // ====== ====== LIST MAITENANCE ====== ======
 
   useEffect(() => {
@@ -1161,7 +1419,7 @@ const Draining = () => {
                 />
               </React.Fragment>
             )
-          } else {
+          } else if (dynamicEl.type === 'evaluation') {
             return (
               <React.Fragment key={dynamicEl.id}>
                 <EvaluationForm
@@ -1177,9 +1435,12 @@ const Draining = () => {
                   handleEditLiquidDoneFormEval={handleEditLiquidDoneFormEval}
                   handleDeleteRowFormEval={handleDeleteRowFormEval}
                   addFormEvalField={addFormEvalField}
+                  handleSubmitFormEvaluation={handleSubmitFormEvaluation}
                 />
               </React.Fragment>
             )
+          } else {
+            return <React.Fragment key={dynamicEl.id}></React.Fragment>
           }
         })}
       <CModal
@@ -1195,33 +1456,54 @@ const Draining = () => {
           <CModalTitle>Sukses</CModalTitle>
         </CModalHeader>
         <CModalBody>
-          {`${
-            openModal.type === 'checking' ? 'Pengecekan Parameter' : 'Penambahan Cairan'
-          } Berhasil, Apakah anda mau melanjutkan ke proses ${
-            openModal.type === 'checking' ? 'Penambahan Cairan' : 'Pengecekan Parameter'
-          }?`}
+          {openModal.type === 'finish' && 'Evaluas Selesai'}
+
+          {openModal.type !== 'finish' &&
+            `${
+              openModal.type === 'checking' ? 'Pengecekan Parameter' : 'Penambahan Cairan'
+            } Berhasil, Apakah anda mau melanjutkan ke proses ${
+              openModal.type === 'checking' ? 'Penambahan Cairan' : 'Pengecekan Parameter'
+            }?`}
         </CModalBody>
         <CModalFooter>
-          <CButton
-            color="primary"
-            onClick={() => {
-              handleOnConfirmModal()
-            }}
-          >
-            Ya
-          </CButton>
-          <CButton
-            color="primary"
-            onClick={() => {
-              setOpenModal({
-                show: false,
-                type: '',
-              })
-              navigate(-1)
-            }}
-          >
-            Tidak
-          </CButton>
+          {openModal.type === 'finish' && (
+            <CButton
+              color="primary"
+              onClick={() => {
+                setOpenModal({
+                  show: false,
+                  type: '',
+                })
+                navigate(-1)
+              }}
+            >
+              Oke
+            </CButton>
+          )}
+          {openModal.type !== 'finish' && (
+            <>
+              <CButton
+                color="primary"
+                onClick={() => {
+                  handleOnConfirmModal()
+                }}
+              >
+                Ya
+              </CButton>
+              <CButton
+                color="primary"
+                onClick={() => {
+                  setOpenModal({
+                    show: false,
+                    type: '',
+                  })
+                  navigate(-1)
+                }}
+              >
+                Tidak
+              </CButton>
+            </>
+          )}
         </CModalFooter>
       </CModal>
     </CCol>

@@ -86,8 +86,8 @@ const Dashboard = () => {
     () =>
       getMaintenanceMachineCheck(
         selectedMachine.machine_id,
-        // '2023-02-28 07:00:00',
-        // '2023-03-01 06:59:59',
+        // '2023-03-04 07:00:00',
+        // '2023-03-05 06:00:00',
         startMaintenanceDate,
         endMaintenanceDate,
       ),
