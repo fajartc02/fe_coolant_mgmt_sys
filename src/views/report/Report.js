@@ -19,7 +19,12 @@ import { DrainingForm, MainForm, CheckingForm } from 'src/components'
 import UploadImagePlaceholder from 'src/assets/images/Placeholder.jpg'
 
 // API
-import { getMaintenanceMachineCS, getUsersGroup, getMachineScheduleList } from 'src/utils/api'
+import {
+  getMaintenanceMachineCS,
+  getUsersGroup,
+  getMachineScheduleList,
+  getCheckSheetAfterChanges,
+} from 'src/utils/api'
 
 moment.locale('id')
 
@@ -64,6 +69,7 @@ const Report = () => {
   // ====== USESTATE
 
   const [selectedEmployee, setSelectedEmployee] = useState({})
+  const [selectedChecksitId, setSelectedChecksitId] = useState('')
   // const [isSubmitCheckingForm, setIsSubmitCheckingForm] = useState(false)
   const [selectedVisualOptions, setSelectedVisualOptions] = useState({})
   const [selectedSludgeOptions, setSelectedSludgeOptions] = useState({})
@@ -148,10 +154,46 @@ const Report = () => {
       select: ({ data }) => {
         return data.data
       },
+      onSuccess: (data) => {
+        console.log(data, ' data')
+      },
     },
   )
 
-  const { data: maintenanceData, refetch: refetchChechSheet } = useQuery(
+  const { data: checkSheetAfterChanges, refetch: refetchCheckSheetAfterChanges } = useQuery(
+    ['check-sheet', machine_id, periodic_check_id],
+    () => getCheckSheetAfterChanges(machine_id, periodic_check_id, selectedChecksitId),
+    {
+      refetchOnWindowFocus: false,
+      select: ({ data }) => {
+        return data.data
+      },
+      onSuccess: (data) => {
+        console.log('sukse getCheckSheetAfterChanges \n', data)
+
+        // data[0].parameters?.forEach((param) => {
+        //   if (param.param_nm === 'Visual') {
+        //     let temp = param.options.filter((el) => el.selected_opt)
+        //     if (temp.length === 0) {
+        //       setSelectedVisualOptions({ ...param.options[0], ...param })
+        //     } else {
+        //       setSelectedVisualOptions({ ...temp[0], ...param })
+        //     }
+        //   }
+        //   if (param.param_nm === 'Sludge') {
+        //     let temp = param.options.filter((el) => el.selected_opt)
+        //     if (temp.length === 0) {
+        //       setSelectedSludgeOptions({ ...param.options[0], ...param })
+        //     } else {
+        //       setSelectedSludgeOptions({ ...temp[0], ...param })
+        //     }
+        //   }
+        // })
+      },
+    },
+  )
+
+  const { data: maintenanceData, refetch: refetchMaintenanceMachine } = useQuery(
     ['check-sheet', machine_id, periodic_check_id],
     () => getMaintenanceMachineCS(machine_id, periodic_check_id),
     {
@@ -317,6 +359,7 @@ const Report = () => {
     ]
 
     console.log(checkingReq, ' checkingReq checkingReq')
+    console.log(mainFormReq, 'mainForm')
 
     if (isPassValidation) {
       console.log(mainFormReq)
@@ -519,36 +562,36 @@ const Report = () => {
     let newDynamicFields = {}
     let duplicate = [...dynamicFields]
     if (openModal.type === 'draining') {
-      refetchChechSheet()
-      newDynamicFields = {
-        id: new Date().getTime(),
-        type: 'checking',
-        isActive: true,
-        fields: [
-          {
-            id: new Date().getTime(),
-            Visual: {
-              value: 1,
-              previewVisualImg: UploadImagePlaceholder,
-            },
-            Sludge: {
-              value: 9,
-              previewSludgeImg: UploadImagePlaceholder,
-            },
-            isStink: false,
-            PH: {
-              value: '',
-              isError: false,
-              errorMessage: '',
-            },
-            Konsentrasi: {
-              value: '',
-              isError: false,
-              errorMessage: '',
-            },
-          },
-        ],
-      }
+      refetchMaintenanceMachine()
+      // newDynamicFields = {
+      //   id: new Date().getTime(),
+      //   type: 'checking',
+      //   isActive: true,
+      //   fields: [
+      //     {
+      //       id: new Date().getTime(),
+      //       Visual: {
+      //         value: 1,
+      //         previewVisualImg: UploadImagePlaceholder,
+      //       },
+      //       Sludge: {
+      //         value: 9,
+      //         previewSludgeImg: UploadImagePlaceholder,
+      //       },
+      //       isStink: false,
+      //       PH: {
+      //         value: '',
+      //         isError: false,
+      //         errorMessage: '',
+      //       },
+      //       Konsentrasi: {
+      //         value: '',
+      //         isError: false,
+      //         errorMessage: '',
+      //       },
+      //     },
+      //   ],
+      // }
     } else {
       newDynamicFields = {
         id: new Date().getTime(),

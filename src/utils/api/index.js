@@ -49,3 +49,20 @@ export const getMachineScheduleList = (machine_id, checksheet_id) =>
       'tmcs.checksheet_id': checksheet_id,
     },
   })
+
+export const getLinesMaster = () => axios.get(`${apiUrl}/master/lines`)
+
+export const getCheckSheetAfterChanges = (machine_id, periodic_check_id, checksheet_id) =>
+  axios.get(`${apiUrl}/operational/maintenance/machine/task`, {
+    params: {
+      machine_id,
+      periodic_check_id,
+      checksheet_id,
+    },
+  })
+
+export const postChemicalChanges = (payload) =>
+  axios.post(`${apiUrl}/operational/maintenance/machine/chemicals`, payload)
+
+export const postChemicalChangesCheck = (payload) =>
+  axios.post(`${apiUrl}/operational/maintenance/machine/chemicals/check`, payload)

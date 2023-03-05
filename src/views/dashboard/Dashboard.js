@@ -74,7 +74,7 @@ const Dashboard = () => {
     () => getLinesMap(queryLinesMapId),
     {
       refetchOnWindowFocus: false,
-      refetchOnMount: false,
+      refetchOnMount: true,
       enabled: !!summaryResult,
     },
   )
@@ -86,6 +86,8 @@ const Dashboard = () => {
     () =>
       getMaintenanceMachineCheck(
         selectedMachine.machine_id,
+        // '2023-02-28 07:00:00',
+        // '2023-03-01 06:59:59',
         startMaintenanceDate,
         endMaintenanceDate,
       ),
@@ -214,7 +216,7 @@ const Dashboard = () => {
           return data.data
         },
         refetchOnWindowFocus: false,
-        refetchOnMount: false,
+        refetchOnMount: true,
         retry: false,
       },
     )
