@@ -12,6 +12,7 @@ import Loader from './Loader'
 import DrainingForm from './DrainingForm/DrainingForm'
 import MainForm from './MainForm/MainForm'
 import CheckingForm from './CheckingForm/CheckingForm'
+import EvaluationForm from './EvaluationForm/EvaluationForm'
 
 export {
   AppBreadcrumb,
@@ -28,4 +29,5 @@ export {
   DrainingForm,
   MainForm,
   CheckingForm,
+  EvaluationForm,
 }

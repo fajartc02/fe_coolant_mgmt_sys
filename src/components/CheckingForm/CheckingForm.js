@@ -5,6 +5,7 @@ import { useNavigate } from 'react-router-dom'
 import {
   CCol,
   CFormInput,
+  CFormSelect,
   CFormLabel,
   CRow,
   CCard,
@@ -86,7 +87,9 @@ const CheckingForm = ({
   }
 
   const formOptionsNote = (options, value, paramName) => {
-    const filtered = options.filter((el) => el.option_id === value)[0]
+    if (!value) return
+
+    const filtered = options.filter((el) => el.option_id === Number(value))[0]
     if (filtered?.rule_lvl === 1) {
       return (
         <CCol
@@ -148,289 +151,315 @@ const CheckingForm = ({
     return false
   }
 
+  const handleLabelAroma = (value, param) => {
+    let result = ''
+    if (value) {
+      result = param.filter((e) => e.option_id === 5)[0]
+    } else {
+      result = param.filter((e) => e.option_id === 6)[0]
+    }
+
+    return result.opt_nm
+  }
+
   return (
     <CCard color="white" className="mb-4">
       <CCardHeader>Parameter</CCardHeader>
       <CCardBody>
-        {parametersForm &&
-          parametersForm[0].parameters?.map((param, id) => {
-            switch (param.param_nm) {
-              case 'Sludge':
-                return (
-                  <div key={id}>
-                    <div
-                      style={{ display: screenSize <= 768 ? 'block' : 'flex', marginTop: '30px' }}
-                    >
-                      <CFormLabel className="col-sm-2 col-form-label">{param.param_nm}</CFormLabel>
-                      <div className="table-responsive">
-                        <CTable className="mx-auto w-auto">
-                          <CTableHead>
-                            <CTableRow>
-                              <CTableHeaderCell scope="col" className="align-midle text-center">
-                                Acuan
-                              </CTableHeaderCell>
-                              <CTableHeaderCell align="middle" className="align-midle text-center">
-                                Aktual
-                              </CTableHeaderCell>
-                              <CTableHeaderCell className="align-midle">&nbsp;</CTableHeaderCell>
-                            </CTableRow>
-                          </CTableHead>
-                          <CTableBody>
-                            <CTableRow>
-                              <CTableDataCell>
-                                <img
-                                  src={imageDefault(param.param_nm, fields[0].Sludge.value)}
-                                  alt=""
-                                  style={{
-                                    height: '200px',
-                                    width: '200px',
-                                    margin: 'auto',
-                                  }}
-                                />
-                              </CTableDataCell>
-                              <CTableDataCell>
-                                <label htmlFor={`previewSludgeImg-${dynamicElIdPosition}`}>
-                                  <img
-                                    src={fields[0].Sludge.previewSludgeImg}
-                                    alt="uploadedImage"
-                                    id="uploadedImage"
-                                    style={{
-                                      height: '200px',
-                                      width: '200px',
-                                      margin: 'auto',
-                                    }}
-                                  />
-                                </label>
-                                <input
-                                  name="previewSludgeImg"
-                                  type="file"
-                                  disabled={!isActive}
-                                  id={`previewSludgeImg-${dynamicElIdPosition}`}
-                                  style={{ display: 'none' }}
-                                  onChange={(e) =>
-                                    handleOnChangeFormChecking(dynamicElIdPosition, e)
-                                  }
-                                />
-                              </CTableDataCell>
-                              <CTableDataCell className="align-middle">
-                                {param.options.map((el, index) => (
-                                  <CFormCheck
-                                    disabled={!isActive}
-                                    defaultChecked={index === 0}
-                                    type="radio"
-                                    value={el.option_id}
-                                    name={param.param_nm}
-                                    label={el.opt_nm}
-                                    key={`${index}-${dynamicElIdPosition}`}
-                                    id={`${index}-${dynamicElIdPosition}`}
-                                    onChange={(e) =>
-                                      handleOnChangeFormChecking(dynamicElIdPosition, e, {
-                                        ...el,
-                                        ...param,
-                                      })
-                                    }
-                                  />
-                                ))}
-                              </CTableDataCell>
-                            </CTableRow>
-                          </CTableBody>
-                        </CTable>
-                      </div>
-                    </div>
-                    <CRow>{formOptionsNote(param.options, fields[0].Sludge.value, 'Sludge')}</CRow>
-                  </div>
-                )
-              case 'Visual':
-                return (
-                  <div key={id}>
-                    <div
-                      style={{ display: screenSize <= 768 ? 'block' : 'flex', marginTop: '30px' }}
-                    >
-                      <CFormLabel htmlFor="lifeTime" className="col-sm-2 col-form-label">
-                        {param.param_nm}
-                      </CFormLabel>
-                      <div className="table-responsive">
-                        <CTable className="mx-auto w-auto">
-                          <CTableHead>
-                            <CTableRow>
-                              <CTableHeaderCell scope="col" className="text-center">
-                                Acuan
-                              </CTableHeaderCell>
-                              <CTableHeaderCell className="align-midle text-center">
-                                Aktual
-                              </CTableHeaderCell>
-                              <CTableHeaderCell className="align-midle text-center">
-                                &nbsp;
-                              </CTableHeaderCell>
-                            </CTableRow>
-                          </CTableHead>
-                          <CTableBody>
-                            <CTableRow>
-                              <CTableDataCell>
-                                <img
-                                  src={imageDefault(param.param_nm, fields[0].Visual.value)}
-                                  alt=""
-                                  style={{
-                                    height: '200px',
-                                    width: '200px',
-                                    margin: 'auto',
-                                  }}
-                                />
-                              </CTableDataCell>
-                              <CTableDataCell>
-                                <label htmlFor={`previewVisualImg-${dynamicElIdPosition}`}>
-                                  <img
-                                    src={fields[0].Visual.previewVisualImg}
-                                    alt="uploadedImage"
-                                    id="uploadedImage"
-                                    style={{
-                                      height: '200px',
-                                      width: '200px',
-                                      margin: 'auto',
-                                    }}
-                                  />
-                                </label>
-                                <input
-                                  disabled={!isActive}
-                                  name="previewVisualImg"
-                                  type="file"
-                                  id={`previewVisualImg-${dynamicElIdPosition}`}
-                                  style={{ display: 'none' }}
-                                  onChange={(e) =>
-                                    handleOnChangeFormChecking(dynamicElIdPosition, e)
-                                  }
-                                />
-                              </CTableDataCell>
-                              <CTableDataCell className="align-middle">
-                                {param.options.map((el, index) => (
-                                  <CFormCheck
-                                    disabled={!isActive}
-                                    defaultChecked={index === 0}
-                                    type="radio"
-                                    value={el.option_id}
-                                    name={param.param_nm}
-                                    label={el.opt_nm}
-                                    key={`${index}-${dynamicElIdPosition}`}
-                                    id={`${index}-${dynamicElIdPosition}`}
-                                    onChange={(e) =>
-                                      handleOnChangeFormChecking(dynamicElIdPosition, e, {
-                                        ...el,
-                                        ...param,
-                                      })
-                                    }
-                                  />
-                                ))}
-                              </CTableDataCell>
-                            </CTableRow>
-                          </CTableBody>
-                        </CTable>
-                      </div>
-                    </div>
-                    <CRow>{formOptionsNote(param.options, fields[0].Visual.value, 'Visual')}</CRow>
-                  </div>
-                )
-              case 'Aroma':
-                return (
-                  <CRow className="mb-3" key={id}>
+        <CRow className="mb-3">
+          <CFormLabel htmlFor="PH" className="col-sm-2 col-form-label">
+            Checkseet List
+          </CFormLabel>
+          <CCol sm={5}>
+            <CFormSelect
+              disabled={
+                dynamicEl?.checkingMaintenanceList?.length === 0 ||
+                !isActive ||
+                dynamicEl?.selectedCheckMaintenance
+              }
+              name="checkingMaintenanceList"
+              onChange={(e) => {
+                handleOnChangeFormChecking(dynamicElIdPosition, e)
+              }}
+              value={dynamicEl?.selectedCheckMaintenance}
+            >
+              <option defaultValue="select" value="select">
+                --- Pilih Checkseet ---
+              </option>
+              {dynamicEl?.checkingMaintenanceList?.map((element, index) => (
+                <option value={element.checksheet_id} key={index}>
+                  {element.maintenance_nm}
+                </option>
+              ))}
+            </CFormSelect>
+          </CCol>
+        </CRow>
+        {dynamicEl?.paramRender?.[0]?.parameters?.map((param, id) => {
+          switch (param.param_nm) {
+            case 'Sludge':
+              return (
+                <div key={id}>
+                  <div style={{ display: screenSize <= 768 ? 'block' : 'flex', marginTop: '30px' }}>
                     <CFormLabel className="col-sm-2 col-form-label">{param.param_nm}</CFormLabel>
-                    <CCol sm={5} style={{ paddingTop: '7px' }}>
-                      <CFormSwitch
+                    <div className="table-responsive">
+                      <CTable className="mx-auto w-auto">
+                        <CTableHead>
+                          <CTableRow>
+                            <CTableHeaderCell scope="col" className="align-midle text-center">
+                              Acuan
+                            </CTableHeaderCell>
+
+                            <CTableHeaderCell className="align-midle">&nbsp;</CTableHeaderCell>
+                          </CTableRow>
+                        </CTableHead>
+                        <CTableBody>
+                          <CTableRow>
+                            <CTableDataCell>
+                              <img
+                                src={imageDefault(param.param_nm, fields[0].Sludge.value)}
+                                alt=""
+                                style={{
+                                  height: '200px',
+                                  width: '200px',
+                                  margin: 'auto',
+                                }}
+                              />
+                            </CTableDataCell>
+                            <CTableDataCell className="align-middle">
+                              {param.options.map((el, index) => (
+                                <CFormCheck
+                                  disabled={!isActive}
+                                  // defaultChecked={index === 0}
+                                  type="radio"
+                                  value={el.option_id}
+                                  name={param.param_nm}
+                                  label={el.opt_nm}
+                                  key={`${index}-${dynamicElIdPosition}`}
+                                  id={`${index}-${dynamicElIdPosition}`}
+                                  onChange={(e) =>
+                                    handleOnChangeFormChecking(dynamicElIdPosition, e, {
+                                      ...el,
+                                      ...param,
+                                    })
+                                  }
+                                />
+                              ))}
+                            </CTableDataCell>
+                          </CTableRow>
+                        </CTableBody>
+                      </CTable>
+                    </div>
+                  </div>
+                  <CRow>
+                    {fields[0].Sludge.isError ? (
+                      <CCol
+                        md={{ offset: 2 }}
+                        style={{
+                          marginTop: '-10px',
+                          display: 'flex',
+                          alignItems: 'center',
+                        }}
+                      >
+                        <div className="error-form">{fields[0].Sludge.errorMessage}</div>
+                      </CCol>
+                    ) : (
+                      formOptionsNote(param.options, fields[0].Sludge.value, 'Sludge')
+                    )}
+                  </CRow>
+                </div>
+              )
+            case 'Visual':
+              return (
+                <div key={id}>
+                  <div style={{ display: screenSize <= 768 ? 'block' : 'flex', marginTop: '30px' }}>
+                    <CFormLabel htmlFor="lifeTime" className="col-sm-2 col-form-label">
+                      {param.param_nm}
+                    </CFormLabel>
+                    <div className="table-responsive">
+                      <CTable className="mx-auto w-auto">
+                        <CTableHead>
+                          <CTableRow>
+                            <CTableHeaderCell scope="col" className="text-center">
+                              Acuan
+                            </CTableHeaderCell>
+
+                            <CTableHeaderCell className="align-midle text-center">
+                              &nbsp;
+                            </CTableHeaderCell>
+                          </CTableRow>
+                        </CTableHead>
+                        <CTableBody>
+                          <CTableRow>
+                            <CTableDataCell>
+                              <img
+                                src={imageDefault(param.param_nm, fields[0].Visual.value)}
+                                alt=""
+                                style={{
+                                  height: '200px',
+                                  width: '200px',
+                                  margin: 'auto',
+                                }}
+                              />
+                            </CTableDataCell>
+
+                            <CTableDataCell className="align-middle">
+                              {param.options.map((el, index) => (
+                                <CFormCheck
+                                  disabled={!isActive}
+                                  type="radio"
+                                  value={el.option_id}
+                                  name={param.param_nm}
+                                  label={el.opt_nm}
+                                  key={`${index}-${dynamicElIdPosition}`}
+                                  id={`${index}-${dynamicElIdPosition}`}
+                                  onChange={(e) =>
+                                    handleOnChangeFormChecking(dynamicElIdPosition, e, {
+                                      ...el,
+                                      ...param,
+                                    })
+                                  }
+                                />
+                              ))}
+                            </CTableDataCell>
+                          </CTableRow>
+                        </CTableBody>
+                      </CTable>
+                    </div>
+                  </div>
+                  <CRow>
+                    {fields[0].Visual.isError ? (
+                      <CCol
+                        md={{ offset: 2 }}
+                        style={{
+                          marginTop: '-10px',
+                          display: 'flex',
+                          alignItems: 'center',
+                        }}
+                      >
+                        <div className="error-form">{fields[0].Visual.errorMessage}</div>
+                      </CCol>
+                    ) : (
+                      formOptionsNote(param.options, fields[0].Visual.value, 'Visual')
+                    )}
+                  </CRow>
+                </div>
+              )
+            case 'Aroma':
+              return (
+                <CRow className="mb-3" key={id}>
+                  <CFormLabel className="col-sm-2 col-form-label">{param.param_nm}</CFormLabel>
+                  <CCol sm={5} style={{ paddingTop: '7px' }}>
+                    <CFormSwitch
+                      disabled={!isActive}
+                      defaultChecked={fields[0].isStink.value}
+                      name="isStink"
+                      label={handleLabelAroma(fields[0].isStink.value, param.options)}
+                      id="formSwitchCheckChecked"
+                      value={fields[0].isStink.value}
+                      onChange={(e) =>
+                        handleOnChangeFormChecking(dynamicElIdPosition, e, {
+                          ...param,
+                          ...(fields[0].isStink.value ? param.options[0] : param.options[1]),
+                        })
+                      }
+                    />
+                  </CCol>
+                </CRow>
+              )
+            case 'PH':
+              return (
+                <CRow className="mb-3" key={id}>
+                  <CFormLabel htmlFor="PH" className="col-sm-2 col-form-label">
+                    {param.param_nm}
+                  </CFormLabel>
+                  <CCol sm={5}>
+                    <CInputGroup className="mb-3">
+                      <CFormInput
                         disabled={!isActive}
-                        name="isStink"
-                        label={
-                          fields[0].isStink ? param.options[0].opt_nm : param.options[1].opt_nm
+                        type="text"
+                        id="PH"
+                        placeholder={param.param_nm}
+                        name="PH"
+                        value={
+                          dynamicEl.isFilled ? param.options[0].task_value : fields[0].PH.value
                         }
-                        id="formSwitchCheckChecked"
-                        value={fields[0].isStink}
-                        onChange={(e) => handleOnChangeFormChecking(dynamicElIdPosition, e)}
+                        onChange={(e) => {
+                          handleOnChangeFormChecking(dynamicElIdPosition, e, {
+                            ...param,
+                            ...param.options[0],
+                          })
+                          handleOnFocusFormChecking(dynamicElIdPosition, 'PH')
+                        }}
                       />
-                    </CCol>
-                  </CRow>
-                )
-              case 'PH':
-                return (
-                  <CRow className="mb-3" key={id}>
-                    <CFormLabel htmlFor="PH" className="col-sm-2 col-form-label">
-                      {param.param_nm}
-                    </CFormLabel>
-                    <CCol sm={5}>
-                      <CInputGroup className="mb-3">
-                        <CFormInput
-                          disabled={!isActive}
-                          type="text"
-                          id="PH"
-                          placeholder={param.param_nm}
-                          name="PH"
-                          value={fields[0].PH.value}
-                          onChange={(e) => {
-                            handleOnChangeFormChecking(dynamicElIdPosition, e, param)
-                            handleOnFocusFormChecking(dynamicElIdPosition, 'PH')
-                          }}
-                        />
-                        <CInputGroupText id="basic-addon2">
-                          {param.options[0].units}
-                        </CInputGroupText>
-                        {fields[0].PH.isError ? (
-                          <div className="error-form">{fields[0].PH.errorMessage}</div>
-                        ) : handleInputValueStatus(
-                            param.options[0].min_value,
-                            param.options[0].max_value,
-                            fields[0].PH.value,
-                          ) ? (
-                          <div className="error-form">{`Nilai PH diluar standar`}</div>
-                        ) : (
-                          <div className="note-form">
-                            {`Standar PH ada didalam range antara ${param.options[0].min_value} -${param.options[0].max_value}`}
-                          </div>
-                        )}
-                      </CInputGroup>
-                    </CCol>
-                  </CRow>
-                )
-              case 'Konsentrasi':
-                return (
-                  <CRow className="mb-3" key={id}>
-                    <CFormLabel htmlFor="Konsentrasi" className="col-sm-2 col-form-label">
-                      {param.param_nm}
-                    </CFormLabel>
-                    <CCol sm={5}>
-                      <CInputGroup className="mb-3">
-                        <CFormInput
-                          disabled={!isActive}
-                          type="text"
-                          id="Konsentrasi"
-                          placeholder={param.param_nm}
-                          name="Konsentrasi"
-                          value={fields[0].Konsentrasi.value}
-                          onChange={(e) => {
-                            handleOnChangeFormChecking(dynamicElIdPosition, e, param)
-                            handleOnFocusFormChecking(dynamicElIdPosition, 'Konsentrasi')
-                          }}
-                        />
-                        <CInputGroupText id="basic-addon2">
-                          {param.options[0].units}
-                        </CInputGroupText>
-                        {fields[0].Konsentrasi.isError ? (
-                          <div className="error-form">{fields[0].Konsentrasi.errorMessage}</div>
-                        ) : handleInputValueStatus(
-                            param.options[0].min_value,
-                            param.options[0].max_value,
-                            fields[0].Konsentrasi.value,
-                          ) ? (
-                          <div className="error-form">{`Nilai Konsentrasi diluar standar`}</div>
-                        ) : (
-                          <div className="note-form">
-                            {`Standar Konsentrasi ada didalam range antara ${param.options[0].min_value} -${param.options[0].max_value}`}
-                          </div>
-                        )}
-                      </CInputGroup>
-                    </CCol>
-                  </CRow>
-                )
-              default:
-                return <div key={id} />
-            }
-          })}
+                      <CInputGroupText id="basic-addon2">{param.options[0].units}</CInputGroupText>
+                      {fields[0].PH.isError ? (
+                        <div className="error-form">{fields[0].PH.errorMessage}</div>
+                      ) : handleInputValueStatus(
+                          param.options[0].min_value,
+                          param.options[0].max_value,
+                          dynamicEl.isFilled ? param.options[0].task_value : fields[0].PH.value,
+                        ) ? (
+                        <div className="error-form">{`Nilai PH diluar standar`}</div>
+                      ) : (
+                        <div className="note-form">
+                          {`Standar PH ada didalam range antara ${param.options[0].min_value} -${param.options[0].max_value}`}
+                        </div>
+                      )}
+                    </CInputGroup>
+                  </CCol>
+                </CRow>
+              )
+            case 'Konsentrasi':
+              return (
+                <CRow className="mb-3" key={id}>
+                  <CFormLabel htmlFor="Konsentrasi" className="col-sm-2 col-form-label">
+                    {param.param_nm}
+                  </CFormLabel>
+                  <CCol sm={5}>
+                    <CInputGroup className="mb-3">
+                      <CFormInput
+                        disabled={!isActive}
+                        type="text"
+                        id="Konsentrasi"
+                        placeholder={param.param_nm}
+                        name="Konsentrasi"
+                        value={
+                          dynamicEl.isFilled
+                            ? param.options[0].task_value
+                            : fields[0].Konsentrasi.value
+                        }
+                        onChange={(e) => {
+                          handleOnChangeFormChecking(dynamicElIdPosition, e, {
+                            ...param,
+                            ...param.options[0],
+                          })
+                          handleOnFocusFormChecking(dynamicElIdPosition, 'Konsentrasi')
+                        }}
+                      />
+                      <CInputGroupText id="basic-addon2">{param.options[0].units}</CInputGroupText>
+                      {fields[0].Konsentrasi.isError ? (
+                        <div className="error-form">{fields[0].Konsentrasi.errorMessage}</div>
+                      ) : handleInputValueStatus(
+                          param.options[0].min_value,
+                          param.options[0].max_value,
+                          dynamicEl.isFilled
+                            ? param.options[0].task_value
+                            : fields[0].Konsentrasi.value,
+                        ) ? (
+                        <div className="error-form">{`Nilai Konsentrasi diluar standar`}</div>
+                      ) : (
+                        <div className="note-form">
+                          {`Standar Konsentrasi ada didalam range antara ${param.options[0].min_value} -${param.options[0].max_value}`}
+                        </div>
+                      )}
+                    </CInputGroup>
+                  </CCol>
+                </CRow>
+              )
+            default:
+              return <div key={id} />
+          }
+        })}
       </CCardBody>
       <CCardFooter>
         <CRow className="mb-4">

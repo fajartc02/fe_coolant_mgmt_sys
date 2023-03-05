@@ -280,13 +280,17 @@ const DrainingForm = ({
                         return (
                           <CTableRow key={idListCairan}>
                             <CTableHeaderCell>{idListCairan + 1}</CTableHeaderCell>
-                            <CTableDataCell>{printTipeCairan(cairan.tipeCairan)}</CTableDataCell>
-                            <CTableDataCell>{cairan.totalCairan}</CTableDataCell>
+                            <CTableDataCell>
+                              {printTipeCairan(cairan.tipeCairan) || cairan.chemical_nm}
+                            </CTableDataCell>
+                            <CTableDataCell>
+                              {cairan.totalCairan || cairan.vol_changes}
+                            </CTableDataCell>
                             <CTableDataCell>
                               {new Intl.NumberFormat('id-ID', {
                                 style: 'currency',
                                 currency: 'IDR',
-                              }).format(Number(cairan.biaya))}
+                              }).format(Number(cairan.biaya || cairan.cost_chemical))}
                             </CTableDataCell>
                             <CTableDataCell>
                               <CButton
@@ -341,16 +345,19 @@ const DrainingForm = ({
             </CCardBody>
           </CCard>
         ))}
-        <CCard>
-          <CCardBody>
-            <CFormTextarea
-              id="reason"
-              label="Reason"
-              name="reason"
-              onChange={(e) => handleChangeFormDraining(dynamicElIdPosition, null, e)}
-            ></CFormTextarea>
-          </CCardBody>
-        </CCard>
+        {dynamicElIdPosition !== 0 && (
+          <CCard>
+            <CCardBody>
+              <CFormTextarea
+                id="reason"
+                label="Reason"
+                name="reason"
+                onChange={(e) => handleChangeFormDraining(dynamicElIdPosition, null, e)}
+              ></CFormTextarea>
+            </CCardBody>
+          </CCard>
+        )}
+
         <CCardFooter>
           <CRow className="mb-4">
             <CCol style={{ marginTop: '10px' }}>

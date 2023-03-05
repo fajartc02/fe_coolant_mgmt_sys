@@ -15,14 +15,16 @@ import {
   CFormLabel,
   CButton,
 } from '@coreui/react'
+import { useQuery } from 'react-query'
 import { CChartBar } from '@coreui/react-chartjs'
 import DatePicker from 'react-datepicker'
 import 'react-datepicker/dist/react-datepicker.css'
 
+import { getLinesMaster } from 'src/utils/api'
+
 import { DocsCallout } from 'src/components'
 
 import CalculationData from '../../assets/json/cost-calculation.json'
-import LineData from '../../assets/json/line.json'
 import { Paragraph } from './StyledComponent'
 
 const CostCalculation = () => {
@@ -31,6 +33,16 @@ const CostCalculation = () => {
   const [startDate, setStartDate] = useState('')
   const [endDate, setEndDate] = useState('')
   const [line, setLine] = useState('')
+
+  const { data: lineMaster } = useQuery(['lines-master'], () => getLinesMaster(), {
+    refetchOnWindowFocus: false,
+    select: ({ data }) => {
+      return data.data
+    },
+    onSuccess: (data) => {
+      // setSelectedEmployee(data[0])
+    },
+  })
 
   const handleApply = () => {
     var calDataWithDate = CalculationData.map((el) => {
@@ -46,7 +58,7 @@ const CostCalculation = () => {
     var filterFunc = {
       moreThanStartDate: (item) => item.dateObject > startDate,
       lessThanEndDate: (item) => item.dateObject < endDate,
-      equalToLine: (item) => item.line === line,
+      equalToLine: (item) => item.line.toLowerCase() === line.toLocaleLowerCase(),
     }
 
     var selectedFunc = []
@@ -117,19 +129,17 @@ const CostCalculation = () => {
   // console.log(formatDataToArray(calData, 'chemical'))
   // console.log(line, 'line')
   console.log(window.innerWidth, 'window.innerWidth---')
+  console.log(lineMaster, ' lineMaster lineMaster')
+  console.log(line, '===')
   return (
     <CRow>
       <CCol xs={12}>
-        <DocsCallout
-          name="Chart"
-          href="components/chart"
-          content="React wrapper component for Chart.js 3.0, the most popular charting library."
-        />
+        <DocsCallout content="Cost Calculation adalah ..." />
       </CCol>
       <CCol>
         <CCard className="mb-4" color="white">
           <CCardHeader>
-            Bar Chart
+            <strong>Cost Calculation Chart</strong>
             <CRow className="g-3">
               <CCol md={6} lg={6} sm={6} />
 
@@ -167,9 +177,9 @@ const CostCalculation = () => {
                   <option selected value="placeholder">
                     select
                   </option>
-                  {LineData.map((el) => (
-                    <option key={el.id} value={el.name}>
-                      {el.name}
+                  {lineMaster?.map((el) => (
+                    <option key={el.line_id} value={el.name}>
+                      {el.line_nm}
                     </option>
                   ))}
                 </CFormSelect>
@@ -207,13 +217,9 @@ const CostCalculation = () => {
       <CCol xs={12}>
         <CCard className="mb-4" color="white">
           <CCardHeader>
-            <strong>React Table</strong> <small>Striped rows</small>
+            <strong>Cost Calculation Detail</strong>
           </CCardHeader>
           <CCardBody>
-            <p className="text-medium-emphasis small">
-              Use <code>striped</code> property to add zebra-striping to any table row within the{' '}
-              <code>&lt;CTableBody&gt;</code>.
-            </p>
             {/* <DocsExample href="components/table#striped-rows"> */}
             <div className="table-responsive">
               <CTable hover>
