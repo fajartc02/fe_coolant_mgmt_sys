@@ -55,21 +55,43 @@ const CardCube = ({ value, index, onClick }) => {
         bgColor={localStorage.getItem('theme') === DARK_THEME ? '#282a33' : '#fff'}
         onClick={() => onClick(value)}
       >
-        <div style={{ position: 'absolute', right: '0', top: '-3px', zIndex: 2 }}>
-          {value.is_chemical_changes ? (
+        {value.is_chemical_changes && value.is_checked_status === false && (
+          <>
+            <div style={{ position: 'absolute', right: '8px', top: '-3px', zIndex: 2 }}>
+              <CBadge color="secondary" size="sm">
+                <CIcon icon={cilColorFill} />
+              </CBadge>
+            </div>
+            <div style={{ position: 'absolute', right: '0', top: '10px', zIndex: 2 }}>
+              <CBadge color="secondary" size="sm">
+                <CIcon icon={cilPen} />
+              </CBadge>
+            </div>
+          </>
+        )}
+        {value.is_chemical_changes && value.is_checked_status === true && (
+          <div style={{ position: 'absolute', right: '0', top: '-3px', zIndex: 2 }}>
             <CBadge color="secondary" size="sm">
               <CIcon icon={cilColorFill} />
             </CBadge>
-          ) : !value.is_checked_status ? (
+          </div>
+        )}
+        {value.is_checked_status === false && !value.is_chemical_changes && (
+          <div style={{ position: 'absolute', right: '0', top: '-3px', zIndex: 2 }}>
             <CBadge color="secondary" size="sm">
               <CIcon icon={cilPen} />
             </CBadge>
-          ) : (
+          </div>
+        )}
+        {(value.is_checked_status === true ||
+          value.is_checked_status === null ||
+          value.is_chemical_changes) && (
+          <div style={{ position: 'absolute', right: '0', top: '-3px', zIndex: 2 }}>
             <CBadge color="transparent" size="sm">
               &nbsp;
             </CBadge>
-          )}
-        </div>
+          </div>
+        )}
         <div>
           <Cube>
             <TopCube />

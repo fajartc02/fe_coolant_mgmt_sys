@@ -228,13 +228,15 @@ const CheckingForm = ({
                               {param.options.map((el, index) => (
                                 <CFormCheck
                                   disabled={!isActive}
-                                  // defaultChecked={index === 0}
+                                  defaultChecked={
+                                    dynamicEl.isFilled && el.option_id === fields[0].Sludge.value
+                                  }
                                   type="radio"
                                   value={el.option_id}
                                   name={param.param_nm}
                                   label={el.opt_nm}
-                                  key={`${index}-${dynamicElIdPosition}`}
-                                  id={`${index}-${dynamicElIdPosition}`}
+                                  key={`${index}-${dynamicElIdPosition}cek`}
+                                  id={`${index}-${dynamicElIdPosition}cek`}
                                   onChange={(e) =>
                                     handleOnChangeFormChecking(dynamicElIdPosition, e, {
                                       ...el,
@@ -304,6 +306,9 @@ const CheckingForm = ({
                             <CTableDataCell className="align-middle">
                               {param.options.map((el, index) => (
                                 <CFormCheck
+                                  defaultChecked={
+                                    dynamicEl.isFilled && el.option_id === fields[0].Visual.value
+                                  }
                                   disabled={!isActive}
                                   type="radio"
                                   value={el.option_id}

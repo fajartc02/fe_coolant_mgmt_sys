@@ -132,6 +132,43 @@ const generateDefaultFilledCheckSheet = (parameters, param_id) => {
 
   return final
 }
+const generateDefaultFilledEvaluateSheet = (parameters, param_id) => {
+  let value = ''
+  parameters.forEach((element) => {
+    if (element.param_id === param_id) {
+      if (param_id === 4 || param_id === 8) {
+        value = element.children[0].option_id
+      } else if (param_id === 6 || param_id === 7) {
+        value = element.children[0].task_value
+      } else if (param_id === 5) {
+        return false
+        // const result = element.options.filter((el) => el.selected_opt)[0]
+        // if (result.option_id === 6) {
+        //   value = false
+        // } else {
+        //   value = true
+        // }
+      }
+    }
+  })
+
+  return value
+}
+
+const generateOOSParam = (payload) => {
+  const array = []
+
+  payload.forEach((el) =>
+    array.push({
+      code: el.param_id,
+      param_id: el.param_id,
+      param_nm: el.param_nm,
+      name: el.param_nm,
+    }),
+  )
+
+  return array
+}
 
 const Draining = () => {
   const navigate = useNavigate()
@@ -321,6 +358,78 @@ const Draining = () => {
               ],
               checkingMaintenanceList: [],
               selectedCheckMaintenance: '',
+              paramRender: [
+                {
+                  parameters: data.chemical_check[0].parameters,
+                },
+              ],
+            },
+            {
+              id: new Date().getTime(),
+              type: 'evaluation',
+              isActive: false,
+              isFilled: true,
+              reason: '',
+              fields: [
+                {
+                  id: new Date().getTime(),
+                  oosParam: generateOOSParam(data.parameter_evaluate.param_check),
+                  parameter: {
+                    value: [],
+                    isErrorParameter: false,
+                    errorMessageParameter: '',
+                  },
+                  listCairan: {
+                    value: [...data.parameter_evaluate.chemical_changes],
+                    isError: false,
+                    errorMessage: '',
+                  },
+                  cairan: {
+                    tipeCairan: '',
+                    totalCairan: 0,
+                    biaya: 0,
+                  },
+                  Visual: {
+                    value: generateDefaultFilledEvaluateSheet(
+                      data.parameter_evaluate.param_check,
+                      4,
+                    ),
+                    param: {},
+                  },
+                  Sludge: {
+                    value: generateDefaultFilledEvaluateSheet(
+                      data.parameter_evaluate.param_check,
+                      8,
+                    ),
+                    param: {},
+                  },
+                  isStink: {
+                    value: generateDefaultFilledEvaluateSheet(
+                      data.parameter_evaluate.param_check,
+                      5,
+                    ),
+                    param: {},
+                  },
+                  PH: {
+                    value: generateDefaultFilledEvaluateSheet(
+                      data.parameter_evaluate.param_check,
+                      7,
+                    ),
+                    isError: false,
+                    errorMessage: '',
+                    param: {},
+                  },
+                  Konsentrasi: {
+                    value: generateDefaultFilledEvaluateSheet(
+                      data.parameter_evaluate.param_check,
+                      6,
+                    ),
+                    isError: false,
+                    errorMessage: '',
+                    param: {},
+                  },
+                },
+              ],
               paramRender: [
                 {
                   parameters: data.chemical_check[0].parameters,
@@ -1036,6 +1145,9 @@ const Draining = () => {
       duplicate[indexDynamicFields].fields[indexFields].parameter.isErrorParameter = false
       duplicate[indexDynamicFields].fields[indexFields].parameter.errorMessageParameter = ''
     } else if (e.target.name === 'PH' || e.target.name === 'Konsentrasi') {
+      console.log('masmasma')
+      console.log(e.target.name)
+      console.log(e.target.value)
       duplicate[indexDynamicFields].fields[0][e.target.name].isError = false
       duplicate[indexDynamicFields].fields[0][e.target.name].errorMessage = ''
       duplicate[indexDynamicFields].fields[0][e.target.name].value = e.target.value.replace(
@@ -1276,6 +1388,8 @@ const Draining = () => {
     )
     let duplicate = [...dynamicFields]
 
+    let indexZeroField = duplicate[indexDynamicFields].fields[0]
+
     if (emptyLiquidIndex !== -1) {
       dynamicFields[indexDynamicFields].fields.forEach((element, idx) => {
         if (element.listCairan.value.length === 0) {
@@ -1288,23 +1402,35 @@ const Draining = () => {
       isPassValidation = false
     }
 
-    if (!duplicate[indexDynamicFields].fields[0].PH.value) {
+    if (
+      !duplicate[indexDynamicFields].fields[0].PH.value &&
+      indexZeroField.oosParam.findIndex((el) => el.param_id === 7) !== -1
+    ) {
       duplicate[indexDynamicFields].fields[0].PH.isError = true
       duplicate[indexDynamicFields].fields[0].PH.errorMessage = 'PH harus diisi'
       isPassValidation = false
     }
-    if (!duplicate[indexDynamicFields].fields[0].Sludge.value) {
+    if (
+      !duplicate[indexDynamicFields].fields[0].Sludge.value &&
+      indexZeroField.oosParam.findIndex((el) => el.param_id === 8) !== -1
+    ) {
       duplicate[indexDynamicFields].fields[0].Sludge.isError = true
       duplicate[indexDynamicFields].fields[0].Sludge.errorMessage = 'Sludge harus diisi'
       isPassValidation = false
     }
-    if (!duplicate[indexDynamicFields].fields[0].Visual.value) {
+    if (
+      !duplicate[indexDynamicFields].fields[0].Visual.value &&
+      indexZeroField.oosParam.findIndex((el) => el.param_id === 4) !== -1
+    ) {
       duplicate[indexDynamicFields].fields[0].Visual.isError = true
       duplicate[indexDynamicFields].fields[0].Visual.errorMessage = 'Visual harus diisi'
       isPassValidation = false
     }
 
-    if (!duplicate[indexDynamicFields].fields[0].Konsentrasi.value) {
+    if (
+      !duplicate[indexDynamicFields].fields[0].Konsentrasi.value &&
+      indexZeroField.oosParam.findIndex((el) => el.param_id === 6) !== -1
+    ) {
       duplicate[indexDynamicFields].fields[0].Konsentrasi.isError = true
       duplicate[indexDynamicFields].fields[0].Konsentrasi.errorMessage = 'Konsentrasi harus diisi'
       isPassValidation = false
@@ -1320,6 +1446,7 @@ const Draining = () => {
     console.log(duplicate[indexDynamicFields], '===999')
 
     const isPassValidation = validationFormEval(indexDynamicFields)
+    console.log(isPassValidation, ' isPassValidation isPassValidation')
 
     if (isPassValidation) {
       const filterParameter =
@@ -1369,7 +1496,8 @@ const Draining = () => {
 
   // ====== ====== END LIST MAITENANCE ====== ======
 
-  console.log(dynamicFields, 'dynamicFields dynamicFields')
+  // console.log(dynamicFields, 'dynamicFields dynamicFields')
+  console.log(openModal, 'openModal')
 
   return (
     <CCol xs={12}>
@@ -1462,12 +1590,16 @@ const Draining = () => {
         <CModalBody>
           {openModal.type === 'finish' && 'Evaluas Selesai'}
 
-          {openModal.type !== 'finish' &&
-            `${
-              openModal.type === 'checking' ? 'Pengecekan Parameter' : 'Penambahan Cairan'
-            } Berhasil, Apakah anda mau melanjutkan ke proses ${
-              openModal.type === 'checking' ? 'Penambahan Cairan' : 'Pengecekan Parameter'
-            }?`}
+          {openModal.type === 'checking' &&
+            outOfStandardParam.length === 0 &&
+            `Pengecekan Parameter Berhasil dan tidak ada parameter diluar standar, Apakah anda mau melanjutkan ke proses Evaluasi?`}
+
+          {openModal.type === 'checking' &&
+            outOfStandardParam.length !== 0 &&
+            `Pengecekan Parameter Berhasil dengan ${outOfStandardParam.length} parameter diluar standar, Apakah anda mau melanjutkan ke proses Evaluasi?`}
+
+          {openModal.type === 'draining' &&
+            `Penambahan Cairan Berhasil, Apakah anda mau melanjutkan ke proses Pengecekan?`}
         </CModalBody>
         <CModalFooter>
           {openModal.type === 'finish' && (

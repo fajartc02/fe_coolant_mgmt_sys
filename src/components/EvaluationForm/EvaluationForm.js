@@ -111,6 +111,7 @@ const EvaluationForm = ({
             marginTop: '-10px',
             display: 'flex',
             alignItems: 'center',
+            marginBottom: '10px',
           }}
         >
           <CIcon
@@ -128,6 +129,7 @@ const EvaluationForm = ({
             marginTop: '-10px',
             display: 'flex',
             alignItems: 'center',
+            marginBottom: '5px',
           }}
         >
           <CIcon
@@ -145,6 +147,7 @@ const EvaluationForm = ({
             marginTop: '-10px',
             display: 'flex',
             alignItems: 'center',
+            marginBottom: '5px',
           }}
         >
           <CIcon
@@ -453,7 +456,7 @@ const EvaluationForm = ({
                       switch (param.param_nm) {
                         case 'Sludge':
                           return (
-                            <div key={id}>
+                            <div key={`${id}${param.param_nm}`}>
                               <div
                                 style={{
                                   display: screenSize <= 768 ? 'block' : 'flex',
@@ -499,12 +502,16 @@ const EvaluationForm = ({
                                           {param.options.map((el, index) => (
                                             <CFormCheck
                                               disabled={!isActive}
+                                              defaultChecked={
+                                                dynamicEl.isFilled &&
+                                                el.option_id === fields[0].Sludge.value
+                                              }
                                               type="radio"
                                               value={el.option_id}
                                               name={param.param_nm}
                                               label={el.opt_nm}
-                                              key={`${index}-${dynamicElIdPosition}`}
-                                              id={`${index}-${dynamicElIdPosition}`}
+                                              key={`${index}-${dynamicElIdPosition}evaluation`}
+                                              id={`${index}-${dynamicElIdPosition}evaluation`}
                                               onChange={(e) =>
                                                 handleChangeFormEvaluation(
                                                   dynamicElIdPosition,
@@ -547,7 +554,7 @@ const EvaluationForm = ({
                           )
                         case 'Visual':
                           return (
-                            <div key={id}>
+                            <div key={`${id}${param.param_nm}`}>
                               <div
                                 style={{
                                   display: screenSize <= 768 ? 'block' : 'flex',
@@ -591,6 +598,10 @@ const EvaluationForm = ({
                                           {param.options.map((el, index) => (
                                             <CFormCheck
                                               disabled={!isActive}
+                                              defaultChecked={
+                                                dynamicEl.isFilled &&
+                                                el.option_id === fields[0].Visual.value
+                                              }
                                               type="radio"
                                               value={el.option_id}
                                               name={param.param_nm}
@@ -639,7 +650,7 @@ const EvaluationForm = ({
                           )
                         case 'Aroma':
                           return (
-                            <CRow className="mb-3" key={id}>
+                            <CRow className="mb-3" key={`${id}${param.param_nm}`}>
                               <CFormLabel className="col-sm-2 col-form-label">
                                 {param.param_nm}
                               </CFormLabel>
@@ -665,7 +676,7 @@ const EvaluationForm = ({
                           )
                         case 'PH':
                           return (
-                            <CRow className="mb-3" key={id}>
+                            <CRow className="mb-3" key={`${id}${param.param_nm}`}>
                               <CFormLabel htmlFor="PH" className="col-sm-2 col-form-label">
                                 {param.param_nm}
                               </CFormLabel>
@@ -677,11 +688,7 @@ const EvaluationForm = ({
                                     id="PH"
                                     placeholder={param.param_nm}
                                     name="PH"
-                                    value={
-                                      dynamicEl.isFilled
-                                        ? param.options[0].task_value
-                                        : fields[0].PH.value
-                                    }
+                                    value={fields[0].PH.value}
                                     onChange={(e) => {
                                       handleChangeFormEvaluation(
                                         dynamicElIdPosition,
@@ -704,9 +711,7 @@ const EvaluationForm = ({
                                   ) : handleInputValueStatus(
                                       param.options[0].min_value,
                                       param.options[0].max_value,
-                                      dynamicEl.isFilled
-                                        ? param.options[0].task_value
-                                        : fields[0].PH.value,
+                                      fields[0].PH.value,
                                     ) ? (
                                     <div className="error-form">{`Nilai PH diluar standar`}</div>
                                   ) : (
@@ -720,7 +725,7 @@ const EvaluationForm = ({
                           )
                         case 'Konsentrasi':
                           return (
-                            <CRow className="mb-3" key={id}>
+                            <CRow className="mb-3" key={`${id}${param.param_nm}`}>
                               <CFormLabel htmlFor="Konsentrasi" className="col-sm-2 col-form-label">
                                 {param.param_nm}
                               </CFormLabel>
@@ -732,11 +737,7 @@ const EvaluationForm = ({
                                     id="Konsentrasi"
                                     placeholder={param.param_nm}
                                     name="Konsentrasi"
-                                    value={
-                                      dynamicEl.isFilled
-                                        ? param.options[0].task_value
-                                        : fields[0].Konsentrasi.value
-                                    }
+                                    value={fields[0].Konsentrasi.value}
                                     onChange={(e) => {
                                       handleChangeFormEvaluation(
                                         dynamicElIdPosition,
@@ -761,9 +762,7 @@ const EvaluationForm = ({
                                   ) : handleInputValueStatus(
                                       param.options[0].min_value,
                                       param.options[0].max_value,
-                                      dynamicEl.isFilled
-                                        ? param.options[0].task_value
-                                        : fields[0].Konsentrasi.value,
+                                      fields[0].Konsentrasi.value,
                                     ) ? (
                                     <div className="error-form">{`Nilai Konsentrasi diluar standar`}</div>
                                   ) : (
@@ -799,6 +798,7 @@ const EvaluationForm = ({
           <CCard color="white">
             <CCardBody>
               <CFormTextarea
+                disabled={dynamicEl.isFilled}
                 id="reason"
                 label="Reason"
                 name="reason"

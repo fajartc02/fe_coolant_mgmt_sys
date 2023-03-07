@@ -85,6 +85,24 @@ const generateDefaultFilledCheckSheet = (parameters, param_id) => {
 
   return final
 }
+
+const generateDefaultFilledEvaluateSheet = (parameters, param_id) => {
+  let value = ''
+  parameters.forEach((element) => {
+    if (element.param_id === param_id) {
+      if (param_id === 4 || param_id === 8) {
+        value = element.children[0].option_id
+      } else if (param_id === 6 || param_id === 7) {
+        value = element.children[0].task_value
+      } else if (param_id === 5) {
+        return false
+      }
+    }
+  })
+
+  return value
+}
+
 const generateDefaultParamAroma = (parameters, param_id) => {
   let final = ''
   parameters.forEach((element) => {
@@ -97,6 +115,21 @@ const generateDefaultParamAroma = (parameters, param_id) => {
   })
 
   return final
+}
+
+const generateOOSParam = (payload) => {
+  const array = []
+
+  payload.forEach((el) =>
+    array.push({
+      code: el.param_id,
+      param_id: el.param_id,
+      param_nm: el.param_nm,
+      name: el.param_nm,
+    }),
+  )
+
+  return array
 }
 
 const Report = () => {
@@ -114,11 +147,7 @@ const Report = () => {
   const [parameterMaster, setParameterMaster] = useState([])
 
   const [selectedIndexDynamicField, setSelectedIndexDynamicField] = useState(0)
-  // const [isSubmitCheckingForm, setIsSubmitCheckingForm] = useState(false)
-  const [selectedVisualOptions, setSelectedVisualOptions] = useState({})
-  const [selectedSludgeOptions, setSelectedSludgeOptions] = useState({})
-  const [selectedPHOptions, setSelectedPHOptions] = useState({})
-  const [selectedKonsentrasiOptions, setSelectedKonsentrasiOptions] = useState({})
+
   const [startDate, setStartDate] = useState({
     value: new Date(),
     isError: false,
@@ -233,81 +262,198 @@ const Report = () => {
         console.log('========')
         console.log(JSON.stringify(data, null, '\t'))
         let duplicate = [...dynamicFields]
-        data.parameters?.forEach((param) => {
-          if (param.param_nm === 'Visual') {
-            let temp = param.options.filter((el) => el.selected_opt)
-            if (temp.length === 0) {
-              setSelectedVisualOptions({ ...param.options[0], ...param })
-            } else {
-              setSelectedVisualOptions({ ...temp[0], ...param })
-            }
-          }
-          if (param.param_nm === 'Sludge') {
-            let temp = param.options.filter((el) => el.selected_opt)
-            if (temp.length === 0) {
-              setSelectedSludgeOptions({ ...param.options[0], ...param })
-            } else {
-              setSelectedSludgeOptions({ ...temp[0], ...param })
-            }
-          }
-        })
 
-        const newDynamicField = {
-          id: new Date().getTime(),
-          type: 'checking',
-          isActive: true,
-          fields: [
+        if (
+          data.chemical_check.length !== 0 &&
+          data.parameter_evaluate.chemical_changes.length !== 0
+        ) {
+          const newDynamicField = [
             {
-              // id: new Date().getTime(),
-              Visual: {
-                value: '',
-                isError: false,
-                errorMessage: '',
-                param: {},
-              },
-              Sludge: {
-                value: '',
-                isError: false,
-                errorMessage: '',
-                param: {},
-              },
-              isStink: {
-                value: generateDefaultFilledCheckSheet(data.chemical_check, 5),
-                param: generateDefaultParamAroma(data.chemical_check, 5),
-              },
-              PH: {
-                value: '',
-                isError: false,
-                errorMessage: '',
-                param: {},
-              },
-              Konsentrasi: {
-                value: '',
-                isError: false,
-                errorMessage: '',
-                param: {},
-              },
+              id: new Date().getTime(),
+              type: 'checking',
+              isActive: false,
+              isFilled: true,
+              fields: [
+                {
+                  // id: new Date().getTime(),
+                  Visual: {
+                    value: generateDefaultFilledCheckSheet(data.chemical_check, 4),
+                    isError: false,
+                    errorMessage: '',
+                    param: {},
+                  },
+                  Sludge: {
+                    value: generateDefaultFilledCheckSheet(data.chemical_check, 8),
+                    isError: false,
+                    errorMessage: '',
+                    param: {},
+                  },
+                  isStink: {
+                    value: generateDefaultFilledCheckSheet(data.chemical_check, 5),
+                    param: generateDefaultParamAroma(data.chemical_check, 5),
+                  },
+                  PH: {
+                    value: generateDefaultFilledCheckSheet(data.chemical_check, 7),
+                    isError: false,
+                    errorMessage: '',
+                    param: {},
+                  },
+                  Konsentrasi: {
+                    value: generateDefaultFilledCheckSheet(data.chemical_check, 6),
+                    isError: false,
+                    errorMessage: '',
+                    param: {},
+                  },
+                },
+              ],
+              checkingMaintenanceList: [],
+              selectedCheckMaintenance: '',
+              paramRender: [
+                {
+                  parameters: data.chemical_check,
+                },
+              ],
             },
-          ],
-          checkingMaintenanceList: [],
-          selectedCheckMaintenance: '',
-          paramRender: [
             {
-              parameters: data.chemical_check,
+              id: new Date().getTime(),
+              type: 'evaluation',
+              isActive: false,
+              isFilled: true,
+              reason: '',
+              fields: [
+                {
+                  id: new Date().getTime(),
+                  oosParam: generateOOSParam(data.parameter_evaluate.param_check),
+                  parameter: {
+                    value: [],
+                    isErrorParameter: false,
+                    errorMessageParameter: '',
+                  },
+                  listCairan: {
+                    value: [...data.parameter_evaluate.chemical_changes],
+                    isError: false,
+                    errorMessage: '',
+                  },
+                  cairan: {
+                    tipeCairan: '',
+                    totalCairan: 0,
+                    biaya: 0,
+                  },
+                  Visual: {
+                    value: generateDefaultFilledEvaluateSheet(
+                      data.parameter_evaluate.param_check,
+                      4,
+                    ),
+                    param: {},
+                  },
+                  Sludge: {
+                    value: generateDefaultFilledEvaluateSheet(
+                      data.parameter_evaluate.param_check,
+                      8,
+                    ),
+                    param: {},
+                  },
+                  isStink: {
+                    value: generateDefaultFilledEvaluateSheet(
+                      data.parameter_evaluate.param_check,
+                      5,
+                    ),
+                    param: {},
+                  },
+                  PH: {
+                    value: generateDefaultFilledEvaluateSheet(
+                      data.parameter_evaluate.param_check,
+                      7,
+                    ),
+                    isError: false,
+                    errorMessage: '',
+                    param: {},
+                  },
+                  Konsentrasi: {
+                    value: generateDefaultFilledEvaluateSheet(
+                      data.parameter_evaluate.param_check,
+                      6,
+                    ),
+                    isError: false,
+                    errorMessage: '',
+                    param: {},
+                  },
+                },
+              ],
+              paramRender: [
+                {
+                  parameters: data.chemical_check,
+                },
+              ],
             },
-          ],
+          ]
+
+          setParameterMaster(data.chemical_check)
+
+          setDynamicFields([...duplicate, ...newDynamicField])
+        } else {
+          const newDynamicField = {
+            id: new Date().getTime(),
+            type: 'checking',
+            isActive: true,
+            fields: [
+              {
+                // id: new Date().getTime(),
+                Visual: {
+                  value: '',
+                  isError: false,
+                  errorMessage: '',
+                  param: {},
+                },
+                Sludge: {
+                  value: '',
+                  isError: false,
+                  errorMessage: '',
+                  param: {},
+                },
+                isStink: {
+                  value: generateDefaultFilledCheckSheet(data.chemical_check, 5),
+                  param: generateDefaultParamAroma(data.chemical_check, 5),
+                },
+                PH: {
+                  value: '',
+                  isError: false,
+                  errorMessage: '',
+                  param: {},
+                },
+                Konsentrasi: {
+                  value: '',
+                  isError: false,
+                  errorMessage: '',
+                  param: {},
+                },
+              },
+            ],
+            checkingMaintenanceList: [],
+            selectedCheckMaintenance: '',
+            paramRender: [
+              {
+                parameters: data.chemical_check,
+              },
+            ],
+          }
+
+          setParameterMaster(data.chemical_check)
+
+          duplicate.push(newDynamicField)
+          setDynamicFields(duplicate)
         }
-
-        setParameterMaster(data.chemical_check)
-
-        duplicate.push(newDynamicField)
-        setDynamicFields(duplicate)
       },
     },
   )
 
   const { mutate } = useMutation(postCheckSheet, {
     onSuccess: ({ data }) => {
+      console.log('===== nu ges dibenerkeun')
+      console.log(JSON.stringify(data, null, '\t'))
+
+      setParameterTaskId(data.data)
+
       let duplicate = [...dynamicFields]
       setOpenModal({
         show: true,
@@ -469,10 +615,11 @@ const Report = () => {
       },
     ]
 
-    let arrayHead = Object.keys(duplicate[indexDynamicFields].fields[0])
+    let paramToArray = Object.keys(duplicate[indexDynamicFields].fields[0])
     let temp = duplicate[indexDynamicFields].fields[0]
     const oosParam = []
-    arrayHead.forEach((key) => {
+    const arrayParam = []
+    paramToArray.forEach((key) => {
       if (
         (temp[key].param.param_id === 4 && temp[key].param.rule_lvl > 1) ||
         (temp[key].param.param_id === 8 && temp[key].param.rule_lvl > 1)
@@ -498,20 +645,18 @@ const Report = () => {
           name: temp[key].param.param_nm,
         })
       }
+
+      arrayParam.push({
+        rule_lvl: temp[key].param.rule_lvl,
+        rule_id: temp[key].param.rule_id,
+        param_id: temp[key].param.param_id,
+      })
     })
 
     console.log(oosParam, '-------')
 
     setOutOfStandardParam(oosParam)
-
-    const allRuleLevel = [
-      visualData.param.rule_lvl,
-      sludgeData.param.rule_lvl,
-      isStinkData.param.rule_lvl,
-      phData.param.rule_lvl,
-      konsentrasiData.param.rule_lvl,
-    ]
-    console.log(allRuleLevel, 'allRuleLevel')
+    let sortedPeaks = arrayParam.sort((a, b) => b.rule_lvl - a.rule_lvl)
 
     console.log(checkingReq, ' checkingReq checkingReq')
     console.log(mainFormReq, 'mainForm')
@@ -524,7 +669,7 @@ const Report = () => {
         pic: selectedEmployee.user_id,
         group_id: selectedEmployee.group_id,
         checksheet_id: Number(maintenanceData.checksheet_id),
-        rule_id: Math.max(...allRuleLevel),
+        rule_id: sortedPeaks[0].rule_id,
         parameters_check: checkingReq,
       }
       mutate(payload)
@@ -617,9 +762,9 @@ const Report = () => {
   }
 
   const printTipeCairan = (id) => {
-    const filtered = drainingTypes.filter((el) => el.id === id)[0]
+    const filtered = maintenanceData?.chemicals?.filter((el) => el.chemical_id === Number(id))[0]
 
-    return filtered.label
+    return filtered?.chemical_nm
   }
 
   const handleAddingLiquid = (indexDynamicFields, indexFields) => {
@@ -774,7 +919,11 @@ const Report = () => {
             },
           },
         ],
-        paramRender: [...parameterMaster],
+        paramRender: [
+          {
+            parameters: parameterMaster,
+          },
+        ],
       }
       // duplicate.push(newDynamicFields)
       // setDynamicFields(duplicate)
@@ -822,15 +971,22 @@ const Report = () => {
       duplicate[indexDynamicFields].fields[indexFields].parameter.value = e.value
       duplicate[indexDynamicFields].fields[indexFields].parameter.isErrorParameter = false
       duplicate[indexDynamicFields].fields[indexFields].parameter.errorMessageParameter = ''
-    } else if (
-      e.target.name === 'PH' ||
-      e.target.name === 'Konsentrasi' ||
-      e.target.name === 'Sludge' ||
-      e.target.name === 'Visual'
-    ) {
-      duplicate[indexDynamicFields].fields[0][e.target.name].value = Number(
-        e.target.value.replace(/[^0-9.]/g, ''),
+    } else if (e.target.name === 'PH' || e.target.name === 'Konsentrasi') {
+      duplicate[indexDynamicFields].fields[0][e.target.name].value = e.target.value.replace(
+        /[^0-9.]/g,
+        '',
       )
+
+      const paramWithTaskId = parameterTaskId.filter(
+        (e) => Number(e.param_id) === Number(param.param_id),
+      )[0]
+      console.log('filterdtaskid')
+      duplicate[indexDynamicFields].fields[0][e.target.name].param = {
+        ...param,
+        task_id: paramWithTaskId.task_id,
+      }
+    } else if (e.target.name === 'Sludge' || e.target.name === 'Visual') {
+      duplicate[indexDynamicFields].fields[0][e.target.name].value = Number(e.target.value)
 
       const paramWithTaskId = parameterTaskId.filter(
         (e) => Number(e.param_id) === Number(param.param_id),
@@ -1141,30 +1297,29 @@ const Report = () => {
                 />
               </React.Fragment>
             )
+          } else if (dynamicEl.type === 'evaluation') {
+            return (
+              <React.Fragment key={dynamicEl.id}>
+                <EvaluationForm
+                  printTipeCairan={printTipeCairan}
+                  handleAddingLiquidFormEvaluation={handleAddingLiquidFormEvaluation}
+                  dynamicEl={dynamicEl}
+                  dynamicElIdPosition={idx}
+                  maintenanceData={maintenanceData}
+                  handleChangeFormEvaluation={handleChangeFormEvaluation}
+                  handleOnFocusFormChecking={handleOnFocusFormChecking}
+                  handleEditLiquidFormEval={handleEditLiquidFormEval}
+                  handleEditDrainingFormEvaluation={handleEditDrainingFormEvaluation}
+                  handleEditLiquidDoneFormEval={handleEditLiquidDoneFormEval}
+                  handleDeleteRowFormEval={handleDeleteRowFormEval}
+                  addFormEvalField={addFormEvalField}
+                  handleSubmitFormEvaluation={handleSubmitFormEvaluation}
+                />
+              </React.Fragment>
+            )
           } else {
             return <React.Fragment key={dynamicEl.id}></React.Fragment>
           }
-          // else if (dynamicEl.type === 'evaluation') {
-          //   return (
-          //     <React.Fragment key={dynamicEl.id}>
-          //       <EvaluationForm
-          //         printTipeCairan={printTipeCairan}
-          //         handleAddingLiquidFormEvaluation={handleAddingLiquidFormEvaluation}
-          //         dynamicEl={dynamicEl}
-          //         dynamicElIdPosition={idx}
-          //         maintenanceData={maintenanceData}
-          //         handleChangeFormEvaluation={handleChangeFormEvaluation}
-          //         handleOnFocusFormChecking={handleOnFocusFormChecking}
-          //         handleEditLiquidFormEval={handleEditLiquidFormEval}
-          //         handleEditDrainingFormEvaluation={handleEditDrainingFormEvaluation}
-          //         handleEditLiquidDoneFormEval={handleEditLiquidDoneFormEval}
-          //         handleDeleteRowFormEval={handleDeleteRowFormEval}
-          //         addFormEvalField={addFormEvalField}
-          //         handleSubmitFormEvaluation={handleSubmitFormEvaluation}
-          //       />
-          //     </React.Fragment>
-          //   )
-          // }
         })}
       <CModal
         visible={openModal.show}
@@ -1179,33 +1334,58 @@ const Report = () => {
           <CModalTitle>Sukses</CModalTitle>
         </CModalHeader>
         <CModalBody>
-          {`${
-            openModal.type === 'checking' ? 'Pengecekan Parameter' : 'Penambahan Cairan'
-          } Berhasil, Apakah anda mau melanjutkan ke proses ${
-            openModal.type === 'checking' ? 'Penambahan Cairan' : 'Pengecekan Parameter'
-          }?`}
+          {openModal.type === 'finish' && 'Evaluas Selesai'}
+
+          {openModal.type === 'checking' &&
+            outOfStandardParam.length === 0 &&
+            `Pengecekan Parameter Berhasil dan tidak ada parameter diluar standar, Apakah anda mau melanjutkan ke proses Evaluasi?`}
+
+          {openModal.type === 'checking' &&
+            outOfStandardParam.length !== 0 &&
+            `Pengecekan Parameter Berhasil dengan ${outOfStandardParam.length} parameter diluar standar, Apakah anda mau melanjutkan ke proses Evaluasi?`}
+
+          {openModal.type === 'draining' &&
+            `Penambahan Cairan Berhasil, Apakah anda mau melanjutkan ke proses Pengecekan?`}
         </CModalBody>
         <CModalFooter>
-          <CButton
-            color="primary"
-            onClick={() => {
-              handleOnConfirmModal()
-            }}
-          >
-            Ya
-          </CButton>
-          <CButton
-            color="primary"
-            onClick={() => {
-              setOpenModal({
-                show: false,
-                type: '',
-              })
-              navigate(-1)
-            }}
-          >
-            Tidak
-          </CButton>
+          {openModal.type === 'finish' && (
+            <CButton
+              color="primary"
+              onClick={() => {
+                setOpenModal({
+                  show: false,
+                  type: '',
+                })
+                navigate(-1)
+              }}
+            >
+              Oke
+            </CButton>
+          )}
+          {openModal.type !== 'finish' && openModal.type !== '' && (
+            <>
+              <CButton
+                color="primary"
+                onClick={() => {
+                  handleOnConfirmModal()
+                }}
+              >
+                Ya
+              </CButton>
+              <CButton
+                color="primary"
+                onClick={() => {
+                  setOpenModal({
+                    show: false,
+                    type: '',
+                  })
+                  navigate(-1)
+                }}
+              >
+                Tidak
+              </CButton>
+            </>
+          )}
         </CModalFooter>
       </CModal>
     </CCol>
