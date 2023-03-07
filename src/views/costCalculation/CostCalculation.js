@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import {
   CCol,
   CRow,
@@ -20,12 +20,15 @@ import { CChartBar } from '@coreui/react-chartjs'
 import DatePicker from 'react-datepicker'
 import 'react-datepicker/dist/react-datepicker.css'
 
-import { getLinesMaster } from 'src/utils/api'
+import { getLinesMaster, getCostGraph } from 'src/utils/api'
 
 import { DocsCallout } from 'src/components'
 
 import CalculationData from '../../assets/json/cost-calculation.json'
 import { Paragraph } from './StyledComponent'
+import moment from 'moment'
+
+moment.locale('id')
 
 const CostCalculation = () => {
   const [calData, setCalData] = useState(CalculationData)
@@ -43,6 +46,30 @@ const CostCalculation = () => {
       // setSelectedEmployee(data[0])
     },
   })
+
+  useEffect(() => {
+    // setStart(moment().format('YYYY-MM-DD'))
+    // setEnd(moment().format('YYYY-MM-DD'))
+  }, [])
+
+  const { data: costGraph } = useQuery(
+    ['cost-graph'],
+    () => getCostGraph('2023-03-04', '2023-03-06'),
+    {
+      refetchOnWindowFocus: false,
+
+      select: ({ data }) => {
+        return data.data
+      },
+      onSuccess: (data) => {
+        console.log(data, '===')
+
+        // setSelectedEmployee(data[0])
+      },
+    },
+  )
+
+  console.log(costGraph, 'costGraph costGraph')
 
   const handleApply = () => {
     var calDataWithDate = CalculationData.map((el) => {
@@ -101,8 +128,9 @@ const CostCalculation = () => {
 
   const formatDataToArray = (data, name) => {
     let temp = []
+    console.log(data)
     data.forEach((el) => {
-      temp.push(name === 'machineName' ? el[name] : Number(el[name].replace(/[^0-9-]+/g, '')))
+      temp.push(el[name])
     })
 
     return temp
@@ -115,22 +143,17 @@ const CostCalculation = () => {
     {
       label: 'Chemical',
       backgroundColor: '#e55353',
-      data: formatDataToArray(data, 'chemical'),
+      data: formatDataToArray(data, 'cost_chemical'),
       stack: 0,
     },
     {
       label: 'Man Hour',
       backgroundColor: '#3399ff',
-      data: formatDataToArray(data, 'manHour'),
+      data: formatDataToArray(data, 'cost_mh'),
       stack: 0,
     },
   ]
 
-  // console.log(formatDataToArray(calData, 'chemical'))
-  // console.log(line, 'line')
-  console.log(window.innerWidth, 'window.innerWidth---')
-  console.log(lineMaster, ' lineMaster lineMaster')
-  console.log(line, '===')
   return (
     <CRow>
       <CCol xs={12}>
@@ -204,13 +227,15 @@ const CostCalculation = () => {
             </CRow>
           </CCardHeader>
           <CCardBody>
-            <CChartBar
-              data={{
-                labels: formatDataToArray(calData, 'machineName'),
-                datasets: formatDataSets(calData),
-                options: {},
-              }}
-            />
+            {costGraph && (
+              <CChartBar
+                data={{
+                  labels: formatDataToArray(costGraph.graphData[0].machines, 'machine_nm'),
+                  datasets: formatDataSets(costGraph.graphData[0].machines),
+                  options: {},
+                }}
+              />
+            )}
           </CCardBody>
         </CCard>
       </CCol>
@@ -226,45 +251,50 @@ const CostCalculation = () => {
                 <CTableHead>
                   <CTableRow>
                     <CTableHeaderCell scope="col">id</CTableHeaderCell>
-                    <CTableHeaderCell scope="col">Date</CTableHeaderCell>
+                    <CTableHeaderCell scope="col">Maintenance Start</CTableHeaderCell>
+                    <CTableHeaderCell scope="col">Maintenance Finish</CTableHeaderCell>
                     <CTableHeaderCell scope="col">Machine</CTableHeaderCell>
                     <CTableHeaderCell scope="col">Line</CTableHeaderCell>
-                    <CTableHeaderCell scope="col">PIC</CTableHeaderCell>
                     <CTableHeaderCell scope="col">Chemical</CTableHeaderCell>
                     <CTableHeaderCell scope="col">Man Hour</CTableHeaderCell>
                     <CTableHeaderCell scope="col">Total</CTableHeaderCell>
                   </CTableRow>
                 </CTableHead>
                 <CTableBody>
-                  {calData.map((element, index) => (
+                  {costGraph?.detailData?.map((element, index) => (
                     <CTableRow key={index}>
-                      <CTableHeaderCell>{element.id}</CTableHeaderCell>
-                      <CTableHeaderCell>{element.date}</CTableHeaderCell>
-                      <CTableDataCell>{element.machineName}</CTableDataCell>
-                      <CTableDataCell>{element.line}</CTableDataCell>
-                      <CTableDataCell>{element.pic}</CTableDataCell>
+                      <CTableHeaderCell>{index + 1}</CTableHeaderCell>
                       <CTableDataCell>
-                        <Paragraph
-                          color={element.chemical.indexOf('-') === -1 ? `#2eb85c` : `#e55353`}
-                          id="chemical"
-                        >
-                          {element.chemical}
+                        {moment(element.start_date).format('YYYY-MM-DD HH:mm:ss')}
+                      </CTableDataCell>
+                      <CTableDataCell>
+                        {moment(element.finish_date).format('YYYY-MM-DD HH:mm:ss')}
+                      </CTableDataCell>
+                      <CTableDataCell>{element.machine_nm}</CTableDataCell>
+                      <CTableDataCell>{element.line_nm}</CTableDataCell>
+                      {/* <CTableDataCell>{element.pic}</CTableDataCell> */}
+                      <CTableDataCell>
+                        <Paragraph color={`#2eb85c`} id="chemical">
+                          {new Intl.NumberFormat('id-ID', {
+                            style: 'currency',
+                            currency: 'IDR',
+                          }).format(Number(element.cost_chemical))}
                         </Paragraph>
                       </CTableDataCell>
                       <CTableDataCell>
-                        <Paragraph
-                          color={element.manHour.indexOf('-') === -1 ? `#2eb85c` : `#e55353`}
-                          id="chemical"
-                        >
-                          {element.manHour}
+                        <Paragraph color={`#2eb85c`} id="chemical">
+                          {new Intl.NumberFormat('id-ID', {
+                            style: 'currency',
+                            currency: 'IDR',
+                          }).format(Number(element.cost_mh))}
                         </Paragraph>
                       </CTableDataCell>
                       <CTableDataCell>
-                        <Paragraph
-                          color={element.total.indexOf('-') === -1 ? `#2eb85c` : `#e55353`}
-                          id="chemical"
-                        >
-                          {element.total}
+                        <Paragraph color={`#2eb85c`} id="chemical">
+                          {new Intl.NumberFormat('id-ID', {
+                            style: 'currency',
+                            currency: 'IDR',
+                          }).format(Number(element.cost_chemical + element.cost_mh))}
                         </Paragraph>
                       </CTableDataCell>
                     </CTableRow>

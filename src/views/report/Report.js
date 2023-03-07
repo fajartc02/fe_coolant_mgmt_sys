@@ -227,11 +227,13 @@ const Report = () => {
     {
       refetchOnWindowFocus: false,
       select: ({ data }) => {
-        return data.data
+        return data.data[0]
       },
       onSuccess: (data) => {
+        console.log('========')
+        console.log(JSON.stringify(data, null, '\t'))
         let duplicate = [...dynamicFields]
-        data[0].parameters?.forEach((param) => {
+        data.parameters?.forEach((param) => {
           if (param.param_nm === 'Visual') {
             let temp = param.options.filter((el) => el.selected_opt)
             if (temp.length === 0) {
@@ -270,8 +272,8 @@ const Report = () => {
                 param: {},
               },
               isStink: {
-                value: generateDefaultFilledCheckSheet(data[0].chemical_check, 5),
-                param: generateDefaultParamAroma(data[0].chemical_check, 5),
+                value: generateDefaultFilledCheckSheet(data.chemical_check, 5),
+                param: generateDefaultParamAroma(data.chemical_check, 5),
               },
               PH: {
                 value: '',
@@ -291,12 +293,12 @@ const Report = () => {
           selectedCheckMaintenance: '',
           paramRender: [
             {
-              parameters: data[0].chemical_check,
+              parameters: data.chemical_check,
             },
           ],
         }
 
-        setParameterMaster(data[0].chemical_check)
+        setParameterMaster(data.chemical_check)
 
         duplicate.push(newDynamicField)
         setDynamicFields(duplicate)
@@ -521,7 +523,7 @@ const Report = () => {
         finish_date: mainFormReq.endDate,
         pic: selectedEmployee.user_id,
         group_id: selectedEmployee.group_id,
-        checksheet_id: Number(maintenanceData[0].checksheet_id),
+        checksheet_id: Number(maintenanceData.checksheet_id),
         rule_id: Math.max(...allRuleLevel),
         parameters_check: checkingReq,
       }
@@ -793,7 +795,7 @@ const Report = () => {
 
   const { mutate: mutateChemicalChangesEvalParam } = useMutation(postChemicalChangesEvalParam, {
     onSuccess: ({ data }) => {
-      console.log(data, '===== ini dia reulsttt')
+      console.log(JSON.stringify(data, null, '\t'), '===== ini dia reulsttt')
       let duplicate = [...dynamicFields]
 
       duplicate[selectedIndexDynamicField].isActive = false

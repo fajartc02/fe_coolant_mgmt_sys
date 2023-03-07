@@ -256,6 +256,8 @@ const Draining = () => {
         return data.data
       },
       onSuccess: (data) => {
+        console.log('========')
+        console.log(JSON.stringify(data, null, '\t'))
         let duplicate = [...dynamicFields]
         if (data.chemical_changes.length !== 0 && data.chemical_check.length !== 0) {
           const payload = [
@@ -977,11 +979,11 @@ const Draining = () => {
               biaya: 0,
             },
             Visual: {
-              value: 1,
+              value: '',
               param: {},
             },
             Sludge: {
-              value: 9,
+              value: '',
               param: {},
             },
             isStink: {
@@ -1319,40 +1321,42 @@ const Draining = () => {
 
     const isPassValidation = validationFormEval(indexDynamicFields)
 
-    const filterParameter =
-      duplicate[indexDynamicFields].fields[0].parameter.value.length > 0
-        ? duplicate[indexDynamicFields].fields[0].parameter.value
-        : duplicate[indexDynamicFields].fields[0].oosParam
+    if (isPassValidation) {
+      const filterParameter =
+        duplicate[indexDynamicFields].fields[0].parameter.value.length > 0
+          ? duplicate[indexDynamicFields].fields[0].parameter.value
+          : duplicate[indexDynamicFields].fields[0].oosParam
 
-    const myArrayFiltered = parameterTaskId.filter((el) => {
-      return filterParameter.some((f) => {
-        return f.param_id === el.param_id
+      const myArrayFiltered = parameterTaskId.filter((el) => {
+        return filterParameter.some((f) => {
+          return f.param_id === el.param_id
+        })
       })
-    })
 
-    const tasks_id = []
-    myArrayFiltered.forEach((el) => tasks_id.push(el.task_id))
+      const tasks_id = []
+      myArrayFiltered.forEach((el) => tasks_id.push(el.task_id))
 
-    let drainingRequest = []
-    duplicate[indexDynamicFields].fields.forEach((field) => {
-      drainingRequest = field.listCairan.value.map((cairan) => ({
-        chemical_id: Number(cairan.tipeCairan),
-        vol_changes: Number(cairan.totalCairan),
-        cost_chemical: Number(cairan.biaya),
-        periodic_check_id: Number(periodic_check_id),
-        tasks_id: tasks_id,
-      }))
-    })
+      let drainingRequest = []
+      duplicate[indexDynamicFields].fields.forEach((field) => {
+        drainingRequest = field.listCairan.value.map((cairan) => ({
+          chemical_id: Number(cairan.tipeCairan),
+          vol_changes: Number(cairan.totalCairan),
+          cost_chemical: Number(cairan.biaya),
+          periodic_check_id: Number(periodic_check_id),
+          tasks_id: tasks_id,
+        }))
+      })
 
-    const payload = {
-      periodic_check_id: periodic_check_id,
-      chemical_changes: drainingRequest,
-      param_check: generateParamCheck(filterParameter, duplicate[indexDynamicFields].fields[0]),
+      const payload = {
+        periodic_check_id: periodic_check_id,
+        chemical_changes: drainingRequest,
+        param_check: generateParamCheck(filterParameter, duplicate[indexDynamicFields].fields[0]),
+      }
+
+      console.log(payload, 'ini rquest akhir====')
+
+      mutateChemicalChangesEvalParam(payload)
     }
-
-    console.log(payload, 'ini rquest akhir====')
-
-    mutateChemicalChangesEvalParam(payload)
   }
 
   // ====== ====== LIST MAITENANCE ====== ======
@@ -1480,7 +1484,7 @@ const Draining = () => {
               Oke
             </CButton>
           )}
-          {openModal.type !== 'finish' && (
+          {openModal.type !== 'finish' && openModal.type !== '' && (
             <>
               <CButton
                 color="primary"

@@ -61,6 +61,14 @@ export const getCheckSheetAfterChanges = (machine_id, periodic_check_id, checksh
     },
   })
 
+export const getCostGraph = (start, end) =>
+  axios.get(`${apiUrl}/operational/cost/graph`, {
+    params: {
+      start,
+      end,
+    },
+  })
+
 export const postChemicalChanges = (payload) =>
   axios.post(`${apiUrl}/operational/maintenance/machine/chemicals`, payload)
 

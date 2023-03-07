@@ -41,7 +41,6 @@ import CIcon from '@coreui/icons-react'
 import { cilCheckCircle, cilWarning, cilXCircle } from '@coreui/icons'
 
 const CheckingForm = ({
-  parametersForm,
   handleSubmitCheckingForm,
   dynamicEl,
   dynamicElIdPosition,
@@ -484,7 +483,6 @@ const CheckingForm = ({
 }
 
 CheckingForm.propTypes = {
-  parametersForm: PropTypes.array,
   dynamicElIdPosition: PropTypes.number,
   handleSubmitCheckingForm: PropTypes.func,
   handleOnChangeFormChecking: PropTypes.func,
