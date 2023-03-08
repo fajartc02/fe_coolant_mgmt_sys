@@ -25,51 +25,69 @@ import { getLinesMaster, getCostGraph } from 'src/utils/api'
 import { DocsCallout } from 'src/components'
 import CalculationData from '../../assets/json/cost-calculation.json'
 import { Paragraph } from './StyledComponent'
-import moment from 'moment'
 
+import Chart from 'react-apexcharts'
+
+import moment from 'moment'
 moment.locale('id')
 
 const CostCalculation = () => {
   const [calData, setCalData] = useState(CalculationData)
-  const [startDate, setStartDate] = useState('')
+  const [startFirstDate, setStartFirstDate] = useState('00/00/0000')
+  const [startDate, setStartDate] = useState(new Date())
+  const [todayDate, setTodayDate] = useState(new Date())
+  const [lineName, setLineName] = useState(['Line name'])
   const [endDate, setEndDate] = useState('')
-  const [line, setLine] = useState('')
+  const [selectedLine, setSelectedLine] = useState('')
+  const [isLineSelected, setIsLineSelected] = useState(false)
+  const [showMachineDetailChart, setShowMachineDetailChart] = useState(false)
+  const [lineGraphData, setLineGraphData] = useState([
+    {
+      name: 'Chemical',
+      data: [10],
+    },
+    {
+      name: 'Man Hour',
+      data: [10],
+    },
+  ])
+  const [machineGraphData, setMachineGraphData] = useState([
+    {
+      name: 'Chemical',
+      data: [10],
+    },
+    {
+      name: 'Man Hour',
+      data: [10],
+    },
+  ])
 
+  // methods
   const { data: lineMaster } = useQuery(['lines-master'], () => getLinesMaster(), {
     refetchOnWindowFocus: false,
     select: ({ data }) => {
       return data.data
     },
-    onSuccess: (data) => {
-      // setSelectedEmployee(data[0])
-    },
+    onSuccess: (data) => {},
   })
-
-  useEffect(() => {
-    // setStart(moment().format('YYYY-MM-DD'))
-    // setEnd(moment().format('YYYY-MM-DD'))
-  }, [])
-
   const { data: costGraph } = useQuery(
     ['cost-graph'],
     () => getCostGraph('2023-03-01', '2023-03-08'),
     {
       refetchOnWindowFocus: false,
-
       select: ({ data }) => {
         return data.data
       },
       onSuccess: (data) => {
-        console.log(data, '===')
-
-        // setSelectedEmployee(data[0])
+        if (showMachineDetailChart) {
+          mapMachinesDataToChart(data)
+        } else {
+          mapLinesDataToChart(data)
+        }
       },
     },
   )
-
-  console.log(costGraph, 'costGraph costGraph')
-
-  const handleApply = () => {
+  const onTest = () => {
     var calDataWithDate = CalculationData.map((el) => {
       var dateString = el.date
       var dateParts = dateString.split('/')
@@ -83,7 +101,7 @@ const CostCalculation = () => {
     var filterFunc = {
       moreThanStartDate: (item) => item.dateObject > startDate,
       lessThanEndDate: (item) => item.dateObject < endDate,
-      equalToLine: (item) => item.line.toLowerCase() === line.toLocaleLowerCase(),
+      equalToLine: (item) => item.selectedLine.toLowerCase() === selectedLine.toLocaleLowerCase(),
     }
 
     var selectedFunc = []
@@ -95,7 +113,7 @@ const CostCalculation = () => {
       selectedFunc.push(filterFunc.lessThanEndDate)
     }
 
-    if (line) {
+    if (selectedLine) {
       selectedFunc.push(filterFunc.equalToLine)
     }
 
@@ -103,28 +121,17 @@ const CostCalculation = () => {
 
     setCalData([...result])
   }
-
   const onHandleStartDate = (date) => {
     setStartDate(date)
   }
-
   const onHandleEndDate = (date) => {
     setEndDate(date)
   }
-
-  const handleSelectLine = (e) => {
-    // if (e.target.value === 'placeholder') return
-    setLine(e.target.value)
-    alert(e.target.value)
+  const handleSelectedLine = (e) => {
+    setSelectedLine(e.target.value)
+    changeLineLabel(e.target.value)
+    setIsLineSelected(true)
   }
-
-  const handleReset = () => {
-    setCalData([...CalculationData])
-    setStartDate('')
-    setEndDate('')
-    setLine('')
-  }
-
   const formatDataToArray = (data, name) => {
     let temp = []
     console.log(data)
@@ -134,10 +141,73 @@ const CostCalculation = () => {
 
     return temp
   }
+  const mapLinesDataToChart = (data) => {
+    const line = data.graphData[0]
+
+    // set line name
+    const temp = [`${line.line_nm}`]
+    setLineName(temp)
+
+    let graphLineDataToDisplay = [
+      {
+        name: 'Chemical',
+        data: [line.sum_cost_chemical],
+      },
+      {
+        name: 'Man Hour',
+        data: [line.sum_cost_mh],
+      },
+    ]
+
+    setLineGraphData(graphLineDataToDisplay)
+  }
+  const mapMachinesDataToChart = (data) => {
+    const machines = data.graphData[0].machines
+
+    // set line name on graph
+    const temp = []
+    const chemicalCostTemp = []
+    const mhCostTemp = []
+    machines.map((machine) => {
+      temp.push(machine.machine_nm)
+
+      chemicalCostTemp.push(machine.cost_chemical)
+      mhCostTemp.push(machine.cost_mh)
+    })
+
+    let graphMachineDataToDisplay = [
+      {
+        name: 'Chemical',
+        data: chemicalCostTemp,
+      },
+      {
+        name: 'Man Hour',
+        data: mhCostTemp,
+      },
+    ]
+    setMachineGraphData(graphMachineDataToDisplay)
+    setLineName(temp)
+  }
+  const handleApply = () => {
+    setShowMachineDetailChart(true)
+    mapMachinesDataToChart(costGraph)
+  }
+  const handleReset = () => {
+    setShowMachineDetailChart(false)
+    mapLinesDataToChart(costGraph)
+    changeLineLabel(selectedLine)
+  }
+  const getFirstDateOfTheMonth = () => {
+    const firstDay = `01/${moment().month() + 1}/${moment().year()}`
+    setStartFirstDate(firstDay)
+  }
+  const changeLineLabel = (lineName) => {
+    const temp = [`${lineName}`]
+    setLineName(temp)
+  }
 
   const newDate = new Date()
   const minDate = newDate.setDate(newDate.getDate() - 365)
-
   const formatDataSets = (data) => [
     {
       label: 'Chemical',
@@ -153,6 +223,52 @@ const CostCalculation = () => {
     },
   ]
 
+  // local variables
+  var chartOptions = {
+    chart: {
+      type: 'bar',
+      height: 350,
+    },
+    plotOptions: {
+      bar: {
+        horizontal: false,
+        columnWidth: '100%',
+        endingShape: 'rounded',
+      },
+    },
+    dataLabels: {
+      enabled: false,
+    },
+    stroke: {
+      show: true,
+      width: 2,
+      colors: ['transparent'],
+    },
+    xaxis: {
+      categories: lineName,
+      title: {
+        text: 'Nama mesin',
+      },
+    },
+    yaxis: {
+      title: {
+        text: 'Dalam rupiah',
+      },
+    },
+    fill: {
+      opacity: 1,
+    },
+    tooltip: {},
+    legend: {
+      position: 'top',
+      offsetY: 40,
+    },
+  }
+
+  useEffect(() => {
+    getFirstDateOfTheMonth()
+  }, [])
+
   return (
     <CRow>
       <CCol xs={12}>
@@ -162,13 +278,12 @@ const CostCalculation = () => {
         <CCard className="mb-4" color="white">
           <CCardHeader>
             <strong>Cost Calculation Chart</strong>
-            <CRow className="g-3">
+            <CRow>
               <CCol md={6} lg={6} sm={6} />
 
               <CCol className="ml-auto">
                 <CFormLabel>Start Date</CFormLabel>
                 <DatePicker
-                  selected={startDate}
                   minDate={new Date(minDate)}
                   maxDate={new Date()}
                   onChange={(date) => onHandleStartDate(date)}
@@ -180,7 +295,7 @@ const CostCalculation = () => {
               <CCol>
                 <CFormLabel>End Date</CFormLabel>
                 <DatePicker
-                  selected={endDate}
+                  selected={todayDate}
                   maxDate={new Date()}
                   minDate={startDate}
                   onChange={(date) => onHandleEndDate(date)}
@@ -193,14 +308,14 @@ const CostCalculation = () => {
                 <CFormLabel>Line</CFormLabel>
                 <CFormSelect
                   aria-label="Default select example"
-                  onChange={handleSelectLine}
-                  value={line}
+                  onChange={handleSelectedLine}
+                  value={selectedLine}
                 >
                   <option selected value="placeholder">
                     select
                   </option>
                   {lineMaster?.map((el) => (
-                    <option key={el.line_id} value={el.line_id}>
+                    <option key={el.line_id} value={el.line_nm}>
                       {el.line_nm}
                     </option>
                   ))}
@@ -211,6 +326,7 @@ const CostCalculation = () => {
                   style={{ marginRight: '10px', display: 'inline-block' }}
                   color="primary"
                   onClick={handleApply}
+                  disabled={!isLineSelected}
                 >
                   apply
                 </CButton>
@@ -218,7 +334,7 @@ const CostCalculation = () => {
                 <CButton
                   color="secondary"
                   onClick={handleReset}
-                  style={{ marginRight: '10px', display: 'inline-block' }}
+                  style={{ display: 'inline-block' }}
                 >
                   reset
                 </CButton>
@@ -226,14 +342,20 @@ const CostCalculation = () => {
             </CRow>
           </CCardHeader>
           <CCardBody>
-            {costGraph && (
+            {/* {costGraph && (
               <CChartBar
                 data={{
-                  // labels: formatDataToArray(costGraph.graphData[0].machines, 'machine_nm'),
-                  // datasets: formatDataSets(costGraph.graphData[0].machines),
+                  labels: formatDataToArray(costGraph.graphData[0].machines, 'machine_nm'),
+                  datasets: formatDataSets(costGraph.graphData[0].machines),
                   options: {},
                 }}
               />
+            )} */}
+
+            {showMachineDetailChart ? (
+              <Chart options={chartOptions} series={machineGraphData} type="bar" height={400} />
+            ) : (
+              <Chart options={chartOptions} series={lineGraphData} type="bar" height={400} />
             )}
           </CCardBody>
         </CCard>
