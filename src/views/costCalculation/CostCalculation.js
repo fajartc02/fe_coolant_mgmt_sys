@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react'
+import { Link } from 'react-router-dom'
 import {
   CCol,
   CRow,
@@ -21,9 +22,7 @@ import DatePicker from 'react-datepicker'
 import 'react-datepicker/dist/react-datepicker.css'
 
 import { getLinesMaster, getCostGraph } from 'src/utils/api'
-
 import { DocsCallout } from 'src/components'
-
 import CalculationData from '../../assets/json/cost-calculation.json'
 import { Paragraph } from './StyledComponent'
 import moment from 'moment'
@@ -32,7 +31,6 @@ moment.locale('id')
 
 const CostCalculation = () => {
   const [calData, setCalData] = useState(CalculationData)
-
   const [startDate, setStartDate] = useState('')
   const [endDate, setEndDate] = useState('')
   const [line, setLine] = useState('')
@@ -54,7 +52,7 @@ const CostCalculation = () => {
 
   const { data: costGraph } = useQuery(
     ['cost-graph'],
-    () => getCostGraph('2023-03-04', '2023-03-06'),
+    () => getCostGraph('2023-03-01', '2023-03-08'),
     {
       refetchOnWindowFocus: false,
 
@@ -117,6 +115,7 @@ const CostCalculation = () => {
   const handleSelectLine = (e) => {
     // if (e.target.value === 'placeholder') return
     setLine(e.target.value)
+    alert(e.target.value)
   }
 
   const handleReset = () => {
@@ -174,7 +173,7 @@ const CostCalculation = () => {
                   maxDate={new Date()}
                   onChange={(date) => onHandleStartDate(date)}
                   className={'form-control'}
-                  placeholderText="start date"
+                  placeholderText="select date"
                   dateFormat={'dd/MM/yyyy'}
                 />
               </CCol>
@@ -186,7 +185,7 @@ const CostCalculation = () => {
                   minDate={startDate}
                   onChange={(date) => onHandleEndDate(date)}
                   className={'form-control'}
-                  placeholderText="end date"
+                  placeholderText="select date"
                   dateFormat={'dd/MM/yyyy'}
                 />
               </CCol>
@@ -201,7 +200,7 @@ const CostCalculation = () => {
                     select
                   </option>
                   {lineMaster?.map((el) => (
-                    <option key={el.line_id} value={el.name}>
+                    <option key={el.line_id} value={el.line_id}>
                       {el.line_nm}
                     </option>
                   ))}
@@ -230,8 +229,8 @@ const CostCalculation = () => {
             {costGraph && (
               <CChartBar
                 data={{
-                  labels: formatDataToArray(costGraph.graphData[0].machines, 'machine_nm'),
-                  datasets: formatDataSets(costGraph.graphData[0].machines),
+                  // labels: formatDataToArray(costGraph.graphData[0].machines, 'machine_nm'),
+                  // datasets: formatDataSets(costGraph.graphData[0].machines),
                   options: {},
                 }}
               />
@@ -241,23 +240,25 @@ const CostCalculation = () => {
       </CCol>
       <CCol xs={12}>
         <CCard className="mb-4" color="white">
-          <CCardHeader>
+          <CCardHeader className="py-3">
             <strong>Cost Calculation Detail</strong>
           </CCardHeader>
-          <CCardBody>
+          <CCardBody className="p-0">
             {/* <DocsExample href="components/table#striped-rows"> */}
             <div className="table-responsive">
               <CTable hover>
                 <CTableHead>
                   <CTableRow>
-                    <CTableHeaderCell scope="col">id</CTableHeaderCell>
-                    <CTableHeaderCell scope="col">Maintenance Start</CTableHeaderCell>
-                    <CTableHeaderCell scope="col">Maintenance Finish</CTableHeaderCell>
-                    <CTableHeaderCell scope="col">Machine</CTableHeaderCell>
+                    <CTableHeaderCell scope="col">No</CTableHeaderCell>
+                    <CTableHeaderCell scope="col">Start date</CTableHeaderCell>
+                    <CTableHeaderCell scope="col">Finish date</CTableHeaderCell>
                     <CTableHeaderCell scope="col">Line</CTableHeaderCell>
-                    <CTableHeaderCell scope="col">Chemical</CTableHeaderCell>
-                    <CTableHeaderCell scope="col">Man Hour</CTableHeaderCell>
+                    <CTableHeaderCell scope="col">Machine</CTableHeaderCell>
+                    <CTableHeaderCell scope="col">Activity</CTableHeaderCell>
+                    <CTableHeaderCell scope="col">Cost Chemical</CTableHeaderCell>
+                    <CTableHeaderCell scope="col">Cost Hour Chemical</CTableHeaderCell>
                     <CTableHeaderCell scope="col">Total</CTableHeaderCell>
+                    <CTableHeaderCell scope="col">Detail</CTableHeaderCell>
                   </CTableRow>
                 </CTableHead>
                 <CTableBody>
@@ -270,9 +271,9 @@ const CostCalculation = () => {
                       <CTableDataCell>
                         {moment(element.finish_date).format('YYYY-MM-DD HH:mm:ss')}
                       </CTableDataCell>
-                      <CTableDataCell>{element.machine_nm}</CTableDataCell>
                       <CTableDataCell>{element.line_nm}</CTableDataCell>
-                      {/* <CTableDataCell>{element.pic}</CTableDataCell> */}
+                      <CTableDataCell>{element.machine_nm}</CTableDataCell>
+                      <CTableDataCell>{element.maintenance_nm}</CTableDataCell>
                       <CTableDataCell>
                         <Paragraph color={`#2eb85c`} id="chemical">
                           {new Intl.NumberFormat('id-ID', {
@@ -296,6 +297,13 @@ const CostCalculation = () => {
                             currency: 'IDR',
                           }).format(Number(element.cost_chemical + element.cost_mh))}
                         </Paragraph>
+                      </CTableDataCell>
+                      <CTableDataCell>
+                        <Link to={`/dashboard/report/machine_id/${element.periodic_check_id}`}>
+                          <CButton color="secondary" size="sm">
+                            Detail
+                          </CButton>
+                        </Link>
                       </CTableDataCell>
                     </CTableRow>
                   ))}

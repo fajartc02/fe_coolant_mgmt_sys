@@ -17,7 +17,7 @@
     "changelog": "auto-changelog --starting-version 4.4.0 --commit-limit false --hide-credit",
     "eject": "react-scripts eject",
     "lint": "eslint \"src/**/*.js\"",
-    "start": "NODE_ENV=development react-scripts start",
+    "start": "react-scripts start",
     "test": "react-scripts test",
     "test:cov": "npm test -- --coverage --watchAll=false",
     "test:debug": "react-scripts --inspect-brk test --runInBand"
@@ -56,6 +56,7 @@
     "react-router-dom": "^6.7.0",
     "react-sortable-hoc": "^2.0.0",
     "react-toastify": "^9.1.1",
+    "recharts": "^2.4.3",
     "redux": "4.2.0",
     "redux-thunk": "^2.4.2",
     "simplebar-react": "^2.4.1",
