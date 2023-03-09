@@ -44,21 +44,21 @@ const CostCalculation = () => {
   const [lineGraphData, setLineGraphData] = useState([
     {
       name: 'Chemical',
-      data: [10],
+      data: [1],
     },
     {
       name: 'Man Hour',
-      data: [10],
+      data: [1],
     },
   ])
   const [machineGraphData, setMachineGraphData] = useState([
     {
       name: 'Chemical',
-      data: [10],
+      data: [1],
     },
     {
       name: 'Man Hour',
-      data: [10],
+      data: [1],
     },
   ])
 
@@ -72,7 +72,7 @@ const CostCalculation = () => {
   })
   const { data: costGraph } = useQuery(
     ['cost-graph'],
-    () => getCostGraph('2023-03-01', '2023-03-08'),
+    () => getCostGraph(`${startFirstDate}`, `${endDate}`),
     {
       refetchOnWindowFocus: false,
       select: ({ data }) => {
@@ -200,8 +200,6 @@ const CostCalculation = () => {
   const getFirstDateOfTheMonth = () => {
     const firstDay = `01/${moment().month() + 1}/${moment().year()}`
     setStartFirstDate(firstDay)
-
-    console.log(firstDay)
   }
   const changeLineLabel = (lineName) => {
     const temp = [`${lineName}`]
