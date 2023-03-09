@@ -14,8 +14,16 @@ export const getPublicGroup = () => axios.get(`${apiUrl}/public/group`).then((re
 
 export const getLinesMap = (param) => axios.get(`${apiUrl}/operational/dashboard/linesMap/${param}`)
 
-export const getMachineStatusMap = (param) =>
-  axios.get(`${apiUrl}/operational/dashboard/machinesStatusMap/${param}`)
+export const getMachineStatusMap = (machine_id, startDate, endDate) =>
+  axios.get(`${apiUrl}/operational/dashboard/machinesStatusMap/${machine_id}`, {
+    params: {
+      start_date: startDate,
+      end_date: endDate,
+    },
+    paramsSerializer: {
+      serialize: (params) => QS.stringify(params, { encode: false }),
+    },
+  })
 
 export const getLinesSummaries = () => axios.get(`${apiUrl}/operational/dashboard/linesSummaries`)
 
