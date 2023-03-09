@@ -55,7 +55,7 @@ const CardCube = ({ value, index, onClick }) => {
         bgColor={localStorage.getItem('theme') === DARK_THEME ? '#282a33' : '#fff'}
         onClick={() => onClick(value)}
       >
-        {value.is_chemical_changes && value.is_checked_status === false && (
+        {value.is_chemical_changes === true && value.is_checked_status === false ? (
           <>
             <div style={{ position: 'absolute', right: '8px', top: '-3px', zIndex: 2 }}>
               <CBadge color="secondary" size="sm">
@@ -68,30 +68,32 @@ const CardCube = ({ value, index, onClick }) => {
               </CBadge>
             </div>
           </>
-        )}
-        {value.is_chemical_changes && value.is_checked_status === true && (
+        ) : value.is_chemical_changes === true && value.is_checked_status === true ? (
           <div style={{ position: 'absolute', right: '0', top: '-3px', zIndex: 2 }}>
             <CBadge color="secondary" size="sm">
               <CIcon icon={cilColorFill} />
             </CBadge>
           </div>
-        )}
-        {value.is_checked_status === false && !value.is_chemical_changes && (
+        ) : value.is_chemical_change === false && value.is_checked_status === false ? (
           <div style={{ position: 'absolute', right: '0', top: '-3px', zIndex: 2 }}>
             <CBadge color="secondary" size="sm">
               <CIcon icon={cilPen} />
             </CBadge>
           </div>
-        )}
-        {(value.is_checked_status === true ||
-          value.is_checked_status === null ||
-          value.is_chemical_changes) && (
+        ) : (
           <div style={{ position: 'absolute', right: '0', top: '-3px', zIndex: 2 }}>
             <CBadge color="transparent" size="sm">
               &nbsp;
             </CBadge>
           </div>
         )}
+        {/* {value.is_chemical_changes === true && value.is_checked_status === true && }
+        { && }
+        {(value.is_checked_status === true ||
+          value.is_checked_status === null ||
+          value.is_chemical_changes) && (
+          
+        )} */}
         <div>
           <Cube>
             <TopCube />

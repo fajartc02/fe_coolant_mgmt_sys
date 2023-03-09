@@ -30,18 +30,17 @@ const MainForm = ({
   endTime,
   isActive,
   userGroup,
+  maintenanceData,
 }) => {
-  let { machine_id } = useParams()
-
   return (
     <CCard className="mb-4" color="white">
       <CCardBody>
         <CRow className="mb-3">
           <CFormLabel htmlFor="machineName" className="col-sm-2 col-form-label">
-            Machine Id
+            Machine Name
           </CFormLabel>
           <CCol sm={5}>
-            <CFormInput type="text" id="machineName" value={machine_id} disabled />
+            <CFormInput type="text" id="machineName" value={maintenanceData?.machine_nm} disabled />
           </CCol>
         </CRow>
         <CRow className="mb-3">
@@ -67,10 +66,11 @@ const MainForm = ({
         </CRow>
         <CRow className="mb-3">
           <CFormLabel htmlFor="pic" className="col-sm-2 col-form-label">
-            Group/Shift
+            Group
           </CFormLabel>
           <CCol sm={5}>
             <CButton
+              size="sm"
               style={{
                 border: '0.5px solid #c4c9d0',
                 backgroundColor:
@@ -83,6 +83,7 @@ const MainForm = ({
             >
               &nbsp;&nbsp;&nbsp;&nbsp;
             </CButton>
+            {` / ${selectedEmployee.group_nm}`}
           </CCol>
         </CRow>
         <CRow className="mb-3">
@@ -216,6 +217,7 @@ MainForm.propTypes = {
   endDate: PropTypes.oneOfType([object, instanceOf(Date)]),
   endTime: PropTypes.oneOfType([object, instanceOf(Date)]),
   selectedEmployee: PropTypes.object,
+  maintenanceData: PropTypes.object,
   setStartDate: PropTypes.func,
   setStartTime: PropTypes.func,
   setEndDate: PropTypes.func,

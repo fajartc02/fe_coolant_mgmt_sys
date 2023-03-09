@@ -233,7 +233,7 @@ const CheckingForm = ({
                                   }
                                   type="radio"
                                   value={el.option_id}
-                                  name={param.param_nm}
+                                  name={`${param.param_nm}1`}
                                   label={el.opt_nm}
                                   key={`${index}-${dynamicElIdPosition}cek`}
                                   id={`${index}-${dynamicElIdPosition}cek`}
@@ -312,7 +312,7 @@ const CheckingForm = ({
                                   disabled={!isActive}
                                   type="radio"
                                   value={el.option_id}
-                                  name={param.param_nm}
+                                  name={`${param.param_nm}1`}
                                   label={el.opt_nm}
                                   key={`${index}-${dynamicElIdPosition}`}
                                   id={`${index}-${dynamicElIdPosition}`}
