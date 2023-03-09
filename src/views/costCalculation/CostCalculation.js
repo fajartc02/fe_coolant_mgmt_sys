@@ -30,11 +30,19 @@ import Chart from 'react-apexcharts'
 
 import moment from 'moment'
 moment.locale('id')
+const today = new Date()
 
 const CostCalculation = () => {
   const [calData, setCalData] = useState(CalculationData)
   const [startFirstDate, setStartFirstDate] = useState('00/00/0000')
-  const [startDate, setStartDate] = useState(new Date())
+
+  const [defaultStartDate, setDefaultStartDate] = useState(new Date())
+  const [defaultEndDate, setDefaultEndDate] = useState(new Date())
+
+  const [startDate, setStartDate] = useState(`01/${moment().month() + 1}/${moment().year()}`)
+  const [finishDate, setFinishDate] = useState(
+    `${moment().day() + 1}/${moment().month() + 1}/${moment().year()}`,
+  )
   const [todayDate, setTodayDate] = useState(new Date())
   const [lineName, setLineName] = useState(['Line name'])
   const [endDate, setEndDate] = useState('')
@@ -70,9 +78,9 @@ const CostCalculation = () => {
     },
     onSuccess: (data) => {},
   })
-  const { data: costGraph } = useQuery(
+  const { data: costGraph, refetch: refetchLineList } = useQuery(
     ['cost-graph'],
-    () => getCostGraph(`${startFirstDate}`, `${endDate}`),
+    () => getCostGraph(`${startDate}`, `${finishDate}`),
     {
       refetchOnWindowFocus: false,
       select: ({ data }) => {
@@ -122,15 +130,16 @@ const CostCalculation = () => {
     setCalData([...result])
   }
   const onHandleStartDate = (date) => {
-    setStartDate(date)
+    setStartFirstDate(date)
   }
   const onHandleEndDate = (date) => {
-    setEndDate(date)
+    setTodayDate(date)
   }
   const handleSelectedLine = (e) => {
     setSelectedLine(e.target.value)
     changeLineLabel(e.target.value)
     setIsLineSelected(true)
+    getFirstDateOfTheMonth()
   }
   const formatDataToArray = (data, name) => {
     let temp = []
@@ -191,15 +200,23 @@ const CostCalculation = () => {
   const handleApply = () => {
     setShowMachineDetailChart(true)
     mapMachinesDataToChart(costGraph)
+    getFirstDateOfTheMonth()
+
+    refetchLineList()
   }
   const handleReset = () => {
     setShowMachineDetailChart(false)
     mapLinesDataToChart(costGraph)
     changeLineLabel(selectedLine)
+    getFirstDateOfTheMonth()
+
+    refetchLineList()
   }
   const getFirstDateOfTheMonth = () => {
     const firstDay = `01/${moment().month() + 1}/${moment().year()}`
-    setStartFirstDate(firstDay)
+    const tomorrow = `${new Date().getDate() + 1}/${moment().month() + 1}/${moment().year()}`
+    // setStartFirstDate(firstDay)
+    // setTodayDate(tomorrow)
   }
   const changeLineLabel = (lineName) => {
     const temp = [`${lineName}`]
@@ -286,21 +303,25 @@ const CostCalculation = () => {
                 <DatePicker
                   minDate={new Date(minDate)}
                   maxDate={new Date()}
-                  onChange={(date) => onHandleStartDate(date)}
+                  // onChange={(date) => onHandleStartDate(date)}
+                  onChange={(date) => setDefaultStartDate(date)}
                   className={'form-control'}
                   placeholderText="select date"
                   dateFormat={'dd/MM/yyyy'}
-                  value={startFirstDate}
+                  selected={defaultStartDate}
+                  // value={startFirstDate}
                 />
               </CCol>
               <CCol>
                 <CFormLabel>End Date</CFormLabel>
                 <DatePicker
-                  selected={todayDate}
-                  onChange={(date) => onHandleEndDate(date)}
+                  // onChange={(date) => onHandleEndDate(date)}
+                  onChange={(date) => setDefaultEndDate(date)}
                   className={'form-control'}
                   placeholderText="select date"
                   dateFormat={'dd/MM/yyyy'}
+                  selected={defaultEndDate}
+                  // value={todayDate}
                 />
               </CCol>
               <CCol>
