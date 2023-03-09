@@ -200,6 +200,8 @@ const CostCalculation = () => {
   const getFirstDateOfTheMonth = () => {
     const firstDay = `01/${moment().month() + 1}/${moment().year()}`
     setStartFirstDate(firstDay)
+
+    console.log(firstDay)
   }
   const changeLineLabel = (lineName) => {
     const temp = [`${lineName}`]
@@ -290,14 +292,13 @@ const CostCalculation = () => {
                   className={'form-control'}
                   placeholderText="select date"
                   dateFormat={'dd/MM/yyyy'}
+                  value={startFirstDate}
                 />
               </CCol>
               <CCol>
                 <CFormLabel>End Date</CFormLabel>
                 <DatePicker
                   selected={todayDate}
-                  maxDate={new Date()}
-                  minDate={startDate}
                   onChange={(date) => onHandleEndDate(date)}
                   className={'form-control'}
                   placeholderText="select date"
