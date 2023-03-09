@@ -45,6 +45,7 @@ const CostCalculation = () => {
   )
   const [todayDate, setTodayDate] = useState(new Date())
   const [lineName, setLineName] = useState(['Line name'])
+  const [labelName, setLabelName] = useState('Nama line')
   const [endDate, setEndDate] = useState('')
   const [selectedLine, setSelectedLine] = useState('')
   const [isLineSelected, setIsLineSelected] = useState(false)
@@ -198,13 +199,14 @@ const CostCalculation = () => {
     setLineName(temp)
   }
   const handleApply = () => {
+    setLabelName('Nama mesin')
     setShowMachineDetailChart(true)
     mapMachinesDataToChart(costGraph)
     getFirstDateOfTheMonth()
-
     refetchLineList()
   }
   const handleReset = () => {
+    setLabelName('Nama line')
     setShowMachineDetailChart(false)
     mapLinesDataToChart(costGraph)
     changeLineLabel(selectedLine)
@@ -265,12 +267,17 @@ const CostCalculation = () => {
     xaxis: {
       categories: lineName,
       title: {
-        text: 'Nama mesin',
+        text: labelName,
       },
     },
     yaxis: {
       title: {
         text: 'Dalam rupiah',
+      },
+      labels: {
+        formatter: function (value) {
+          return 'Rp. ' + value
+        },
       },
     },
     fill: {
