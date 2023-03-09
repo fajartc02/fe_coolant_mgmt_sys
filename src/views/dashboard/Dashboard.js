@@ -52,6 +52,8 @@ const Dashboard = () => {
   const [selectedMachine, setSelectedMachine] = useState({})
   const [endMaintenanceDate, setEndMaintenanceDate] = useState('')
   const [startMaintenanceDate, setStartMaintenanceDate] = useState('')
+  const [endDateStatusMap, setEndDateStatusMap] = useState('')
+  const [startStatusMap, setStartStatusMap] = useState('')
   const [lineSummary, setLineSummary] = useState([])
   const [openModal, setOpenModal] = useState(false)
 
@@ -103,6 +105,24 @@ const Dashboard = () => {
       },
     },
   )
+
+  useEffect(() => {
+    const generateDate = () => {
+      var format = 'HH:mm:ss'
+      let startLimitTime = moment('00:00:01', format)
+      let endLimitTime = moment('06:59:59', format)
+
+      if (moment().isBetween(startLimitTime, endLimitTime, undefined, '[]')) {
+        setStartStatusMap(`${moment().add(-1, 'days').format('YYYY-MM-DD')} 07:00:00`)
+        setEndDateStatusMap(`${moment().format('YYYY-MM-DD')} 06:59:59`)
+      } else {
+        setStartStatusMap(`${moment().format('YYYY-MM-DD')} 07:00:00`)
+        setEndDateStatusMap(`${moment().add(1, 'days').format('YYYY-MM-DD')} 06:59:59`)
+      }
+    }
+
+    generateDate()
+  }, [])
 
   useEffect(() => {
     if (selectedMachine.machine_id) {
@@ -210,7 +230,7 @@ const Dashboard = () => {
   const Machine = ({ data }) => {
     const { data: machines } = useQuery(
       ['machine-status', data.line_id],
-      () => getMachineStatusMap(data.line_id),
+      () => getMachineStatusMap(data.line_id, startStatusMap, endDateStatusMap),
       {
         select: ({ data }) => {
           return data.data
