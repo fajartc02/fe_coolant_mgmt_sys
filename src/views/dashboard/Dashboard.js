@@ -194,7 +194,7 @@ const Dashboard = () => {
                           }
                         }}
                       >
-                        Mulai Sekarang
+                        {maintenance.start_date ? 'Lihat Detail' : 'Mulai Sekarang'}
                       </CButton>
                     </CTableDataCell>
                   </CTableRow>

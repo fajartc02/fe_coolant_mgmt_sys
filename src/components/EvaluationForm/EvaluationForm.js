@@ -179,7 +179,6 @@ const EvaluationForm = ({
   }
 
   const filterParamRender = (paramMaster, selectedParam) => {
-    console.log(selectedParam, ' selectedParam')
     const filtered = paramMaster?.filter((el) => {
       return selectedParam.some((f) => {
         return f.param_id === el.param_id
@@ -799,6 +798,7 @@ const EvaluationForm = ({
             <CCardBody>
               <CFormTextarea
                 disabled={dynamicEl.isFilled}
+                value={dynamicEl.reason}
                 id="reason"
                 label="Reason"
                 name="reason"

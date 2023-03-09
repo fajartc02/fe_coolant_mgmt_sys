@@ -296,7 +296,8 @@ const Draining = () => {
         console.log('========')
         console.log(JSON.stringify(data, null, '\t'))
         let duplicate = [...dynamicFields]
-        if (data.chemical_changes.length !== 0 && data.chemical_check.length !== 0) {
+        if (data.start_date !== null) {
+          // && data.chemical_check.length !== 0
           const payload = [
             {
               id: new Date().getTime(),
@@ -322,7 +323,10 @@ const Draining = () => {
                 },
               ],
             },
-            {
+          ]
+
+          if (data.chemical_check.length !== 0) {
+            payload.push({
               id: new Date().getTime(),
               type: 'checking',
               isActive: false,
@@ -363,13 +367,16 @@ const Draining = () => {
                   parameters: data.chemical_check[0].parameters,
                 },
               ],
-            },
-            {
+            })
+          }
+
+          if (data.parameter_evaluate.chemical_changes.length !== 0) {
+            payload.push({
               id: new Date().getTime(),
               type: 'evaluation',
               isActive: false,
               isFilled: true,
-              reason: '',
+              reason: data?.notes,
               fields: [
                 {
                   id: new Date().getTime(),
@@ -435,8 +442,8 @@ const Draining = () => {
                   parameters: data.chemical_check[0].parameters,
                 },
               ],
-            },
-          ]
+            })
+          }
 
           setDynamicFields([...duplicate, ...payload])
         } else {
@@ -563,8 +570,9 @@ const Draining = () => {
         type: 'finish',
       })
     },
-    onError: ({ response }) => {
-      toast.error(response.data.message)
+    onError: (error) => {
+      console.log(error, '----')
+      toast.error(error.message)
     },
   })
 
@@ -786,14 +794,14 @@ const Draining = () => {
     if (e.target.name === 'checkingMaintenanceList') {
       duplicate[indexDynamicFields].selectedCheckMaintenance = e.target.value
       setSelectedChecksitId(e.target.value)
-    } else if (e.target.name === 'Visual') {
-      duplicate[indexDynamicFields].fields[0][e.target.name].isError = false
-      duplicate[indexDynamicFields].fields[0][e.target.name].errorMessage = ''
+    } else if (e.target.name === 'Visual1') {
+      duplicate[indexDynamicFields].fields[0].Visual.isError = false
+      duplicate[indexDynamicFields].fields[0].Visual.errorMessage = ''
       duplicate[indexDynamicFields].fields[0].Visual.value = Number(e.target.value)
       duplicate[indexDynamicFields].fields[0].Visual.param = param
-    } else if (e.target.name === 'Sludge') {
-      duplicate[indexDynamicFields].fields[0][e.target.name].isError = false
-      duplicate[indexDynamicFields].fields[0][e.target.name].errorMessage = ''
+    } else if (e.target.name === 'Sludge1') {
+      duplicate[indexDynamicFields].fields[0].Sludge.isError = false
+      duplicate[indexDynamicFields].fields[0].Sludge.errorMessage = ''
       duplicate[indexDynamicFields].fields[0].Sludge.value = Number(e.target.value)
       duplicate[indexDynamicFields].fields[0].Sludge.param = param
     } else if (e.target.name === 'isStink') {
@@ -1326,6 +1334,7 @@ const Draining = () => {
           param_id: visualData.param.param_id,
           option_id: visualData.param.option_id,
           rule_id: visualData.param.rule_id,
+          rule_lvl: visualData.param.rule_lvl,
           parent_task_id: visualData.param?.task_id,
           task_status: null,
           task_value: null,
@@ -1338,6 +1347,7 @@ const Draining = () => {
           param_id: sludgeData.param.param_id,
           option_id: sludgeData.param.option_id,
           rule_id: sludgeData.param.rule_id,
+          rule_lvl: sludgeData.param.rule_lvl,
           parent_task_id: sludgeData.param?.task_id,
           task_status: null,
           task_value: null,
@@ -1350,6 +1360,7 @@ const Draining = () => {
           param_id: phData?.param?.param_id,
           option_id: phData?.param?.option_id,
           rule_id: phData?.param?.rule_id,
+          rule_lvl: phData?.param?.rule_lvl,
           parent_task_id: phData.param?.task_id,
           task_status:
             Number(phData.value) >= Number(phData?.param?.min_value) &&
@@ -1366,6 +1377,7 @@ const Draining = () => {
           param_id: konsentrasiData?.param?.param_id,
           option_id: konsentrasiData?.param?.option_id,
           rule_id: konsentrasiData?.param?.rule_id,
+          rule_lvl: konsentrasiData?.param?.rule_lvl,
           parent_task_id: konsentrasiData.param?.task_id,
           task_status:
             Number(konsentrasiData.value) >= Number(konsentrasiData?.param?.min_value) &&
@@ -1474,10 +1486,32 @@ const Draining = () => {
         }))
       })
 
+      const parameFilled = generateParamCheck(
+        filterParameter,
+        duplicate[indexDynamicFields].fields[0],
+      )
+
+      let sortedPeaks = parameFilled.sort((a, b) => b.rule_lvl - a.rule_lvl)
+
+      const removeParamLevel = parameFilled.map(({ rule_lvl, ...restData }) => restData)
+
+      const generateColor = (rule_id) => {
+        if (rule_id === 2) {
+          return '#00ff90'
+        } else if (rule_id === 3) {
+          return '#ffbb00'
+        } else {
+          return '#ff3f00'
+        }
+      }
+
       const payload = {
         periodic_check_id: periodic_check_id,
         chemical_changes: drainingRequest,
-        param_check: generateParamCheck(filterParameter, duplicate[indexDynamicFields].fields[0]),
+        param_check: removeParamLevel,
+        rule_id: sortedPeaks[0].rule_id,
+        color_status: generateColor(sortedPeaks[0].rule_id),
+        notes: duplicate[indexDynamicFields].reason,
       }
 
       console.log(payload, 'ini rquest akhir====')
@@ -1513,6 +1547,7 @@ const Draining = () => {
         endDate={endDate}
         setEndTime={setEndTime}
         endTime={endTime}
+        maintenanceData={maintenanceData}
         isActive={dynamicFields?.[0]?.isActive}
       />
       {dynamicFields &&
