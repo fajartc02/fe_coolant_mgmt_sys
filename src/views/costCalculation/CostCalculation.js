@@ -245,11 +245,12 @@ const CostCalculation = () => {
     chart: {
       type: 'bar',
       height: 350,
+      stacked: true,
     },
     plotOptions: {
       bar: {
         horizontal: false,
-        columnWidth: '100%',
+        columnWidth: '50%',
         endingShape: 'rounded',
       },
     },
