@@ -1428,7 +1428,7 @@ const Report = () => {
           <CModalTitle>Sukses</CModalTitle>
         </CModalHeader>
         <CModalBody>
-          {openModal.type === 'finish' && 'Evaluas Selesai'}
+          {openModal.type === 'finish' && 'Evaluasi Selesai'}
 
           {openModal.type === 'checking' &&
             outOfStandardParam.length === 0 &&

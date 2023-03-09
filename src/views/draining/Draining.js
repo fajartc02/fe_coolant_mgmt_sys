@@ -37,6 +37,16 @@ const parameters = [
   { name: 'PH', code: 'PH' },
 ]
 
+const generateColor = (rule_id) => {
+  if (rule_id === 2) {
+    return '#00ff90'
+  } else if (rule_id === 3) {
+    return '#ffbb00'
+  } else {
+    return '#ff3f00'
+  }
+}
+
 const afterCheck = [
   {
     task_id: 110,
@@ -680,6 +690,7 @@ const Draining = () => {
       let arrayHead = Object.keys(duplicate[indexDynamicFields].fields[0])
       let temp = duplicate[indexDynamicFields].fields[0]
       const oosParam = []
+      const arrayParam = []
       arrayHead.forEach((key) => {
         if (
           (temp[key].param.param_id === 4 && temp[key].param.rule_lvl > 1) ||
@@ -706,9 +717,16 @@ const Draining = () => {
             name: temp[key].param.param_nm,
           })
         }
+
+        arrayParam.push({
+          rule_lvl: temp[key].param.rule_lvl,
+          rule_id: temp[key].param.rule_id,
+          param_id: temp[key].param.param_id,
+        })
       })
 
       setOutOfStandardParam(oosParam)
+      let sortedPeaks = arrayParam.sort((a, b) => b.rule_lvl - a.rule_lvl)
 
       // let duplicate = [...dynamicFields]
 
@@ -773,7 +791,13 @@ const Draining = () => {
       // duplicate.push(newDynamicFields)
       // setDynamicFields(duplicate)
 
-      mutateChemicalChangesCheck(payload)
+      const newPayload = {
+        ...payload,
+        rule_id: sortedPeaks[0].rule_id,
+        color_status: generateColor(sortedPeaks[0].rule_id),
+      }
+
+      mutateChemicalChangesCheck(newPayload)
       duplicate[indexDynamicFields].isActive = false
       setDynamicFields(duplicate)
     }
@@ -1495,16 +1519,6 @@ const Draining = () => {
 
       const removeParamLevel = parameFilled.map(({ rule_lvl, ...restData }) => restData)
 
-      const generateColor = (rule_id) => {
-        if (rule_id === 2) {
-          return '#00ff90'
-        } else if (rule_id === 3) {
-          return '#ffbb00'
-        } else {
-          return '#ff3f00'
-        }
-      }
-
       const payload = {
         periodic_check_id: periodic_check_id,
         chemical_changes: drainingRequest,
@@ -1623,7 +1637,7 @@ const Draining = () => {
           <CModalTitle>Sukses</CModalTitle>
         </CModalHeader>
         <CModalBody>
-          {openModal.type === 'finish' && 'Evaluas Selesai'}
+          {openModal.type === 'finish' && 'Evaluasi Selesai'}
 
           {openModal.type === 'checking' &&
             outOfStandardParam.length === 0 &&
