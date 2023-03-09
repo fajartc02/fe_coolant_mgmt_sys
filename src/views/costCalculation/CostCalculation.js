@@ -276,7 +276,7 @@ const CostCalculation = () => {
       },
       labels: {
         formatter: function (value) {
-          return 'Rp. ' + value
+          return 'Rp. ' + value.toLocaleString()
         },
       },
     },
