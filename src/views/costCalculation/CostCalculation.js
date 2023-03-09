@@ -421,7 +421,9 @@ const CostCalculation = () => {
                         </Paragraph>
                       </CTableDataCell>
                       <CTableDataCell>
-                        <Link to={`/dashboard/report/machine_id/${element.periodic_check_id}`}>
+                        <Link
+                          to={`/dashboard/report/${element.machine_id}/${element.periodic_check_id}`}
+                        >
                           <CButton color="secondary" size="sm">
                             Detail
                           </CButton>
